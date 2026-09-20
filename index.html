@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        CETA | Material Académico
+    </title>
+
+    <meta
+        name="description"
+        content="Portal de material académico para estudiantes, docentes y administradores del Instituto CETA."
+    >
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="img/logo-ceta-transparente.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/estilos.css"
+    >
+
+</head>
+
+
+<body class="login-page">
+
+
+    <main class="login-container">
+
+
+        <!-- ================================================
+             CABECERA
+        ================================================= -->
+
+        <section class="login-hero">
+
+            <img
+                src="img/logo-ceta-transparente.png"
+                alt="Logo CETA"
+                class="logo-ceta"
+            >
+
+            <p class="instituto">
+                INSTITUTO CETA
+            </p>
+
+            <h1>
+                Material Académico
+            </h1>
+
+            <p class="descripcion">
+                Portal de acceso a material académico para
+                estudiantes y personal docente.
+            </p>
+
+        </section>
+
+
+
+        <!-- ================================================
+             DOCENTES Y ADMINISTRADORES
+        ================================================= -->
+
+        <section class="login-card">
+
+            <div class="login-icono">
+                👨‍🏫
+            </div>
+
+            <h2>
+                Docentes y Administradores
+            </h2>
+
+            <p class="login-ayuda">
+                Ingresa con tu cuenta institucional.
+            </p>
+
+
+            <form id="formPersonal">
+
+                <div class="campo">
+
+                    <label for="usuario">
+                        Usuario
+                    </label>
+
+                    <input
+                        type="text"
+                        id="usuario"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="password">
+                        Contraseña
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+
+                <p
+                    id="mensajePersonal"
+                    class="mensaje"
+                ></p>
+
+
+                <button
+                    type="submit"
+                    class="btn-principal"
+                    id="btnIngresarPersonal"
+                >
+                    INGRESAR
+                </button>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- ================================================
+             SEPARADOR
+        ================================================= -->
+
+        <div class="separador-login">
+
+            <span>
+                O
+            </span>
+
+        </div>
+
+
+
+        <!-- ================================================
+             ESTUDIANTES
+        ================================================= -->
+
+        <section class="login-card estudiante-card">
+
+            <div class="login-icono">
+                🎓
+            </div>
+
+            <h2>
+                Estudiantes
+            </h2>
+
+            <p class="login-ayuda">
+                Ingresa únicamente tu código CETA.
+            </p>
+
+
+            <form id="formEstudiante">
+
+                <div class="campo">
+
+                    <label for="codigoCeta">
+                        Código CETA
+                    </label>
+
+                    <input
+                        type="text"
+                        id="codigoCeta"
+                        autocomplete="off"
+                        required
+                    >
+
+                </div>
+
+
+                <p
+                    id="mensajeEstudiante"
+                    class="mensaje"
+                ></p>
+
+
+                <button
+                    type="submit"
+                    class="btn-principal"
+                    id="btnIngresarEstudiante"
+                >
+                    ACCEDER AL MATERIAL
+                </button>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- ================================================
+             PIE
+        ================================================= -->
+
+        <footer>
+
+            <p>
+                Instituto CETA
+            </p>
+
+            <strong>
+                Material Académico
+            </strong>
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase.js"></script>
+
+    <script src="js/login.js"></script>
+
+
+</body>
+
+</html>
