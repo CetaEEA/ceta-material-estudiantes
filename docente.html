@@ -1,1 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>CETA | Docente</title>
+
+</head>
+
+<body>
+
+    <h1>Material Docente</h1>
+
+    <p>
+        Acceso docente correcto.
+    </p>
+
+    <button id="btnCerrarSesion">
+        Cerrar sesión
+    </button>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="js/supabase.js"></script>
+
+    <script>
+
+        document
+            .getElementById("btnCerrarSesion")
+            .addEventListener(
+                "click",
+                async function () {
+
+                    await supabaseClient.auth.signOut();
+
+                    window.location.replace(
+                        "index.html"
+                    );
+
+                }
+            );
+
+    </script>
+
+</body>
+
+</html>
