@@ -19,6 +19,11 @@
         href="css/estilos.css"
     >
 
+    <link
+        rel="stylesheet"
+        href="css/tema-ceta.css"
+    >
+
 </head>
 
 
@@ -55,13 +60,27 @@
             </div>
 
 
-            <button
-                id="btnCerrarSesionEstudiante"
-                type="button"
-                class="btn-cerrar-estudiante"
-            >
-                Cerrar sesión
-            </button>
+            <div class="acciones-tema-ceta">
+
+                <button
+                    id="btnTemaEstudiante"
+                    type="button"
+                    class="btn-tema-ceta"
+                    aria-label="Cambiar modo claro u oscuro"
+                    title="Cambiar modo claro u oscuro"
+                >
+                    🌙 Modo oscuro
+                </button>
+
+                <button
+                    id="btnCerrarSesionEstudiante"
+                    type="button"
+                    class="btn-cerrar-estudiante"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
 
         </div>
 
@@ -371,6 +390,103 @@
 
 
         <!-- =================================================
+             OBSERVACIONES DEL ESTUDIANTE
+        ================================================== -->
+
+        <section
+            id="vistaObservacionesEstudiante"
+            class="tarjeta-estudiante oculto"
+        >
+
+            <p class="etiqueta-estudiante">
+                OBSERVACIONES
+            </p>
+
+            <h2>
+                Enviar una observación
+            </h2>
+
+            <p class="descripcion-observacion-estudiante">
+                Puedes informar sobre un enlace que no funciona,
+                un problema con el material o enviar una sugerencia.
+            </p>
+
+
+            <form id="formObservacionEstudiante">
+
+                <div class="campo">
+
+                    <label for="tipoObservacionEstudiante">
+                        Tipo
+                    </label>
+
+                    <select
+                        id="tipoObservacionEstudiante"
+                        required
+                    >
+                        <option value="sugerencia">
+                            Sugerencia
+                        </option>
+
+                        <option value="problema_material">
+                            Problema con material
+                        </option>
+
+                        <option value="enlace_caido">
+                            Enlace caído
+                        </option>
+
+                        <option value="otro">
+                            Otro
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="textoObservacionEstudiante">
+                        Observación
+                    </label>
+
+                    <textarea
+                        id="textoObservacionEstudiante"
+                        rows="6"
+                        maxlength="1500"
+                        placeholder="Escribe aquí tu observación..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="contador-observacion">
+                    <span id="contadorObservacionEstudiante">0</span>
+                    / 1500
+                </div>
+
+
+                <p
+                    id="mensajeObservacionEstudiante"
+                    class="mensaje"
+                ></p>
+
+
+                <button
+                    id="btnEnviarObservacionEstudiante"
+                    type="submit"
+                    class="btn-principal btn-auto"
+                >
+                    ENVIAR OBSERVACIÓN
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =================================================
              ERROR DE SESIÓN
         ================================================== -->
 
@@ -469,6 +585,374 @@
     <script src="js/supabase.js"></script>
 
     <script src="js/estudiante.js"></script>
+
+    <script>
+    // ============================================================
+    // CETA - TEMA CLARO / OSCURO + OBSERVACIONES DEL ESTUDIANTE
+    // ============================================================
+
+    (function () {
+
+        const CLAVE_TEMA = "ceta_tema";
+
+        function aplicarTemaCeta(tema) {
+
+            const oscuro =
+                tema === "oscuro";
+
+            document.documentElement.classList.toggle(
+                "tema-oscuro",
+                oscuro
+            );
+
+            document.body.classList.toggle(
+                "tema-oscuro",
+                oscuro
+            );
+
+            const boton =
+                document.getElementById(
+                    "btnTemaEstudiante"
+                );
+
+            if (boton) {
+
+                boton.textContent =
+                    oscuro
+                        ? "☀️ Modo claro"
+                        : "🌙 Modo oscuro";
+
+            }
+
+        }
+
+
+        function iniciarTemaCeta() {
+
+            const guardado =
+                localStorage.getItem(
+                    CLAVE_TEMA
+                );
+
+            const temaInicial =
+                guardado === "oscuro"
+                    ? "oscuro"
+                    : "claro";
+
+            aplicarTemaCeta(
+                temaInicial
+            );
+
+
+            document
+                .getElementById(
+                    "btnTemaEstudiante"
+                )
+                ?.addEventListener(
+                    "click",
+                    () => {
+
+                        const oscuro =
+                            document.documentElement
+                                .classList
+                                .contains(
+                                    "tema-oscuro"
+                                );
+
+                        const nuevoTema =
+                            oscuro
+                                ? "claro"
+                                : "oscuro";
+
+                        localStorage.setItem(
+                            CLAVE_TEMA,
+                            nuevoTema
+                        );
+
+                        aplicarTemaCeta(
+                            nuevoTema
+                        );
+
+                    }
+                );
+
+        }
+
+
+        function cambiarVistaEstudianteCeta(
+            vista
+        ) {
+
+            document
+                .querySelectorAll(
+                    ".nav-estudiante-btn"
+                )
+                .forEach(
+                    boton => {
+
+                        boton.classList.toggle(
+                            "activo",
+                            boton.dataset.vista === vista
+                        );
+
+                    }
+                );
+
+
+            document
+                .getElementById(
+                    "vistaMaterialEstudiante"
+                )
+                ?.classList
+                .toggle(
+                    "oculto",
+                    vista !== "material"
+                );
+
+
+            document
+                .getElementById(
+                    "vistaObservacionesEstudiante"
+                )
+                ?.classList
+                .toggle(
+                    "oculto",
+                    vista !== "observaciones"
+                );
+
+        }
+
+
+        function mostrarMensajeObservacionCeta(
+            texto,
+            tipo = ""
+        ) {
+
+            const elemento =
+                document.getElementById(
+                    "mensajeObservacionEstudiante"
+                );
+
+            if (!elemento) {
+                return;
+            }
+
+            elemento.textContent =
+                texto;
+
+            elemento.classList.remove(
+                "error",
+                "exito"
+            );
+
+            if (tipo) {
+
+                elemento.classList.add(
+                    tipo
+                );
+
+            }
+
+        }
+
+
+        async function enviarObservacionCeta(
+            event
+        ) {
+
+            event.preventDefault();
+
+            const token =
+                sessionStorage.getItem(
+                    "ceta_estudiante_token"
+                );
+
+            if (!token) {
+
+                window.location.replace(
+                    "index.html"
+                );
+
+                return;
+
+            }
+
+
+            const tipo =
+                document.getElementById(
+                    "tipoObservacionEstudiante"
+                ).value;
+
+
+            const observacion =
+                document.getElementById(
+                    "textoObservacionEstudiante"
+                ).value.trim();
+
+
+            const boton =
+                document.getElementById(
+                    "btnEnviarObservacionEstudiante"
+                );
+
+
+            if (!observacion) {
+
+                mostrarMensajeObservacionCeta(
+                    "Escribe una observación.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            boton.disabled =
+                true;
+
+            boton.textContent =
+                "ENVIANDO...";
+
+
+            try {
+
+                const {
+                    error
+                } =
+                    await supabaseClient.rpc(
+                        "crear_observacion_estudiante",
+                        {
+                            p_token:
+                                token,
+
+                            p_tipo:
+                                tipo,
+
+                            p_observacion:
+                                observacion
+                        }
+                    );
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                document
+                    .getElementById(
+                        "formObservacionEstudiante"
+                    )
+                    .reset();
+
+
+                document
+                    .getElementById(
+                        "contadorObservacionEstudiante"
+                    )
+                    .textContent =
+                        "0";
+
+
+                mostrarMensajeObservacionCeta(
+                    "Observación enviada correctamente.",
+                    "exito"
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Error enviando observación:",
+                    error
+                );
+
+
+                mostrarMensajeObservacionCeta(
+                    error?.message ||
+                    "No fue posible enviar la observación.",
+                    "error"
+                );
+
+            }
+            finally {
+
+                boton.disabled =
+                    false;
+
+                boton.textContent =
+                    "ENVIAR OBSERVACIÓN";
+
+            }
+
+        }
+
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                iniciarTemaCeta();
+
+
+                document
+                    .querySelectorAll(
+                        ".nav-estudiante-btn"
+                    )
+                    .forEach(
+                        boton => {
+
+                            boton.addEventListener(
+                                "click",
+                                () => {
+
+                                    cambiarVistaEstudianteCeta(
+                                        boton.dataset.vista
+                                    );
+
+                                }
+                            );
+
+                        }
+                    );
+
+
+                document
+                    .getElementById(
+                        "formObservacionEstudiante"
+                    )
+                    ?.addEventListener(
+                        "submit",
+                        enviarObservacionCeta
+                    );
+
+
+                document
+                    .getElementById(
+                        "textoObservacionEstudiante"
+                    )
+                    ?.addEventListener(
+                        "input",
+                        event => {
+
+                            document
+                                .getElementById(
+                                    "contadorObservacionEstudiante"
+                                )
+                                .textContent =
+                                    String(
+                                        event.target.value.length
+                                    );
+
+                        }
+                    );
+
+            }
+        );
+
+    })();
+    </script>
 
 </body>
 
