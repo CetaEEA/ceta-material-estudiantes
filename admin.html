@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -17,11 +18,21 @@
         href="img/logo-ceta-transparente.png"
     >
 
+    <!-- ESTILOS PRINCIPALES -->
     <link
         rel="stylesheet"
         href="css/estilos.css"
     >
+
+    <!-- TEMA CETA / MODO OSCURO -->
+    <link
+        id="temaCetaCss"
+        rel="stylesheet"
+        href="css/tema-ceta.css"
+    >
+
 </head>
+
 
 <body class="panel-page">
 
@@ -42,6 +53,7 @@
                 >
 
                 <div>
+
                     <small>
                         INSTITUTO CETA
                     </small>
@@ -49,18 +61,34 @@
                     <h1>
                         Material Académico
                     </h1>
+
                 </div>
 
             </div>
 
 
-            <button
-                id="btnCerrarSesion"
-                class="btn-salir"
-                type="button"
-            >
-                Cerrar sesión
-            </button>
+            <div class="acciones-header-admin">
+
+                <button
+                    id="btnTemaAdmin"
+                    class="btn-tema-ceta"
+                    type="button"
+                    aria-label="Cambiar tema"
+                    title="Cambiar tema"
+                >
+                    🌙 Modo oscuro
+                </button>
+
+
+                <button
+                    id="btnCerrarSesion"
+                    class="btn-salir"
+                    type="button"
+                >
+                    Cerrar sesión
+                </button>
+
+            </div>
 
         </div>
 
@@ -73,11 +101,15 @@
 
     <main class="panel-contenedor">
 
-        <!-- ADMINISTRADOR -->
+
+        <!-- =================================================
+             BIENVENIDA ADMINISTRADOR
+        ================================================== -->
 
         <section class="bienvenida-panel">
 
             <div>
+
                 <p class="etiqueta-panel">
                     PANEL ADMINISTRADOR
                 </p>
@@ -89,6 +121,7 @@
                 <p>
                     Administración del material académico CETA.
                 </p>
+
             </div>
 
         </section>
@@ -101,7 +134,10 @@
         <section class="estadisticas-grid">
 
             <article class="estadistica-card">
-                <span class="estadistica-icono">👨‍🎓</span>
+
+                <span class="estadistica-icono">
+                    👨‍🎓
+                </span>
 
                 <strong id="totalEstudiantes">
                     0
@@ -110,11 +146,15 @@
                 <small>
                     Estudiantes activos
                 </small>
+
             </article>
 
 
             <article class="estadistica-card">
-                <span class="estadistica-icono">👥</span>
+
+                <span class="estadistica-icono">
+                    👥
+                </span>
 
                 <strong id="totalGrupos">
                     0
@@ -123,11 +163,15 @@
                 <small>
                     Grupos activos
                 </small>
+
             </article>
 
 
             <article class="estadistica-card">
-                <span class="estadistica-icono">🎓</span>
+
+                <span class="estadistica-icono">
+                    🎓
+                </span>
 
                 <strong id="totalEgresados">
                     0
@@ -136,11 +180,15 @@
                 <small>
                     Egresados
                 </small>
+
             </article>
 
 
             <article class="estadistica-card">
-                <span class="estadistica-icono">📚</span>
+
+                <span class="estadistica-icono">
+                    📚
+                </span>
 
                 <strong id="totalMaterias">
                     0
@@ -149,13 +197,14 @@
                 <small>
                     Materias
                 </small>
+
             </article>
 
         </section>
 
 
         <!-- =================================================
-             NAVEGACIÓN
+             NAVEGACIÓN PRINCIPAL
         ================================================== -->
 
         <nav class="menu-admin">
@@ -168,6 +217,7 @@
                 🏠 Inicio
             </button>
 
+
             <button
                 class="menu-admin-btn"
                 data-seccion="grupos"
@@ -175,6 +225,7 @@
             >
                 👥 Grupos y estudiantes
             </button>
+
 
             <button
                 class="menu-admin-btn"
@@ -184,6 +235,7 @@
                 📚 Material académico
             </button>
 
+
             <button
                 class="menu-admin-btn"
                 data-seccion="egresados"
@@ -191,6 +243,7 @@
             >
                 🎓 Egresados
             </button>
+
 
             <button
                 class="menu-admin-btn"
@@ -218,22 +271,32 @@
                     Administración
                 </h3>
 
+
                 <p class="texto-secundario">
+
                     Selecciona una opción para administrar
                     el sistema de material académico.
+
                 </p>
 
 
                 <div class="acciones-inicio">
+
+
+                    <!-- GRUPOS -->
 
                     <button
                         type="button"
                         class="accion-grande"
                         data-ir="grupos"
                     >
-                        <span>👥</span>
+
+                        <span>
+                            👥
+                        </span>
 
                         <div>
+
                             <strong>
                                 Grupos y estudiantes
                             </strong>
@@ -241,18 +304,26 @@
                             <small>
                                 Crear grupos y administrar alumnos
                             </small>
+
                         </div>
+
                     </button>
 
+
+                    <!-- MATERIAL -->
 
                     <button
                         type="button"
                         class="accion-grande"
                         data-ir="material"
                     >
-                        <span>📚</span>
+
+                        <span>
+                            📚
+                        </span>
 
                         <div>
+
                             <strong>
                                 Material académico
                             </strong>
@@ -260,18 +331,26 @@
                             <small>
                                 Materias, carpetas y enlaces
                             </small>
+
                         </div>
+
                     </button>
 
+
+                    <!-- EGRESADOS -->
 
                     <button
                         type="button"
                         class="accion-grande"
                         data-ir="egresados"
                     >
-                        <span>🎓</span>
+
+                        <span>
+                            🎓
+                        </span>
 
                         <div>
+
                             <strong>
                                 Egresados
                             </strong>
@@ -279,18 +358,26 @@
                             <small>
                                 Estudiantes con acceso completo
                             </small>
+
                         </div>
+
                     </button>
 
+
+                    <!-- OBSERVACIONES -->
 
                     <button
                         type="button"
                         class="accion-grande"
                         data-ir="observaciones"
                     >
-                        <span>💬</span>
+
+                        <span>
+                            💬
+                        </span>
 
                         <div>
+
                             <strong>
                                 Observaciones
                             </strong>
@@ -298,7 +385,9 @@
                             <small>
                                 Sugerencias y problemas reportados
                             </small>
+
                         </div>
+
                     </button>
 
                 </div>
@@ -317,13 +406,17 @@
             class="seccion-admin"
         >
 
-            <!-- CREAR GRUPO -->
+
+            <!-- =============================================
+                 ADMINISTRACIÓN DE GRUPOS
+            ============================================== -->
 
             <div class="tarjeta-panel">
 
                 <div class="titulo-seccion">
 
                     <div>
+
                         <h3>
                             Grupos
                         </h3>
@@ -331,6 +424,7 @@
                         <p>
                             Crea y administra los grupos de estudiantes.
                         </p>
+
                     </div>
 
 
@@ -344,6 +438,8 @@
 
                 </div>
 
+
+                <!-- FORMULARIO GRUPO -->
 
                 <div
                     id="formularioGrupoContenedor"
@@ -365,6 +461,9 @@
 
                         <div class="form-grid">
 
+
+                            <!-- CÓDIGO -->
+
                             <div class="campo">
 
                                 <label for="codigoGrupo">
@@ -381,16 +480,20 @@
                             </div>
 
 
+                            <!-- SEMESTRE -->
+
                             <div class="campo">
 
                                 <label for="semestreGrupo">
                                     Semestre
                                 </label>
 
+
                                 <select
                                     id="semestreGrupo"
                                     required
                                 >
+
                                     <option value="">
                                         Seleccionar
                                     </option>
@@ -418,6 +521,7 @@
                                     <option value="6">
                                         6° semestre
                                     </option>
+
                                 </select>
 
                             </div>
@@ -425,10 +529,13 @@
                         </div>
 
 
+                        <!-- ESTADO -->
+
                         <label
                             id="contenedorGrupoActivo"
                             class="check-linea oculto"
                         >
+
                             <input
                                 type="checkbox"
                                 id="grupoActivo"
@@ -436,6 +543,7 @@
                             >
 
                             Grupo activo
+
                         </label>
 
 
@@ -477,9 +585,11 @@
                     id="listaGrupos"
                     class="lista-grupos"
                 >
+
                     <p class="estado-carga">
                         Cargando grupos...
                     </p>
+
                 </div>
 
             </div>
@@ -513,38 +623,42 @@
                     </div>
 
 
-                   <div class="acciones-grupo">
+                    <div class="acciones-grupo">
 
-    <button
-        id="btnNuevoEstudiante"
-        type="button"
-        class="btn-principal btn-auto"
-    >
-        + Estudiante
-    </button>
+                        <button
+                            id="btnNuevoEstudiante"
+                            type="button"
+                            class="btn-principal btn-auto"
+                        >
+                            + Estudiante
+                        </button>
 
-    <button
-        id="btnImportarExcel"
-        type="button"
-        class="btn-secundario"
-    >
-        📊 Importar Excel
-    </button>
 
-    <button
-        id="btnPromoverGrupo"
-        type="button"
-        class="btn-secundario"
-    >
-        ⬆ Promover grupo
-    </button>
+                        <button
+                            id="btnImportarExcel"
+                            type="button"
+                            class="btn-secundario"
+                        >
+                            📊 Importar Excel
+                        </button>
 
-</div>
+
+                        <button
+                            id="btnPromoverGrupo"
+                            type="button"
+                            class="btn-secundario"
+                        >
+                            ⬆ Promover grupo
+                        </button>
+
+                    </div>
 
                 </div>
 
 
-                <!-- FORMULARIO ESTUDIANTE -->
+                <!-- =========================================
+                     FORMULARIO ESTUDIANTE
+                ========================================== -->
 
                 <div
                     id="formularioEstudianteContenedor"
@@ -602,6 +716,7 @@
                             id="contenedorEstudianteActivo"
                             class="check-linea oculto"
                         >
+
                             <input
                                 type="checkbox"
                                 id="estudianteActivo"
@@ -609,6 +724,7 @@
                             >
 
                             Estudiante activo
+
                         </label>
 
 
@@ -642,185 +758,211 @@
                     </form>
 
                 </div>
-<!-- =============================================
-     IMPORTAR EXCEL
-============================================== -->
+                <!-- =============================================
+                     IMPORTAR EXCEL
+                ============================================== -->
 
-<div
-    id="panelImportarExcel"
-    class="formulario-desplegable oculto"
->
+                <div
+                    id="panelImportarExcel"
+                    class="formulario-desplegable oculto"
+                >
 
-    <div class="titulo-importacion">
+                    <div class="titulo-importacion">
 
-        <div>
-            <h4>
-                Importar lista desde Excel
-            </h4>
+                        <div>
 
-            <p>
-                La nueva lista reemplazará la lista actual
-                del grupo seleccionado.
-            </p>
-        </div>
+                            <h4>
+                                Importar lista desde Excel
+                            </h4>
 
-    </div>
+                            <p>
+                                La nueva lista reemplazará la lista actual
+                                del grupo seleccionado.
+                            </p>
 
+                        </div>
 
-    <div class="aviso-importante">
-
-        <strong>
-            Formato esperado
-        </strong>
-
-        <p>
-            El archivo debe contener una columna con el
-            nombre del estudiante y otra con su código CETA.
-        </p>
-
-        <div class="ejemplo-excel">
-
-            <span>NOMBRE</span>
-            <span>CODIGO_CETA</span>
-
-            <span>Armando Nogales</span>
-            <span>12345</span>
-
-        </div>
-
-    </div>
+                    </div>
 
 
-    <div class="campo">
+                    <div class="aviso-importante">
 
-        <label for="archivoExcel">
-            Archivo Excel
-        </label>
+                        <strong>
+                            Formato esperado
+                        </strong>
 
-        <input
-            type="file"
-            id="archivoExcel"
-            accept=".xlsx,.xls"
-        >
-
-    </div>
+                        <p>
+                            El archivo debe contener una columna con el
+                            nombre del estudiante y otra con su código CETA.
+                        </p>
 
 
-    <p
-        id="mensajeExcel"
-        class="mensaje"
-    ></p>
+                        <div class="ejemplo-excel">
+
+                            <span>
+                                NOMBRE
+                            </span>
+
+                            <span>
+                                CODIGO_CETA
+                            </span>
+
+                            <span>
+                                Armando Nogales
+                            </span>
+
+                            <span>
+                                12345
+                            </span>
+
+                        </div>
+
+                    </div>
 
 
-    <div
-        id="resumenExcel"
-        class="resumen-excel oculto"
-    >
+                    <div class="campo">
 
-        <div class="resumen-excel-cabecera">
+                        <label for="archivoExcel">
+                            Archivo Excel
+                        </label>
 
-            <div>
-                <strong id="cantidadExcel">
-                    0 estudiantes
-                </strong>
+                        <input
+                            type="file"
+                            id="archivoExcel"
+                            accept=".xlsx,.xls"
+                        >
 
-                <small>
-                    Previsualización del archivo
-                </small>
-            </div>
-
-        </div>
+                    </div>
 
 
-        <div
-            id="vistaPreviaExcel"
-            class="tabla-responsive"
-        ></div>
+                    <p
+                        id="mensajeExcel"
+                        class="mensaje"
+                    ></p>
 
 
-        <div class="aviso-reemplazo">
+                    <!-- =========================================
+                         RESUMEN DEL EXCEL
+                    ========================================== -->
 
-            ⚠️ Al confirmar, esta lista se convertirá
-            en la lista oficial del grupo.
+                    <div
+                        id="resumenExcel"
+                        class="resumen-excel oculto"
+                    >
 
-            Los estudiantes que actualmente pertenecen
-            al grupo pero no aparezcan en el Excel serán
-            retirados del grupo y desactivados.
+                        <div class="resumen-excel-cabecera">
 
-        </div>
+                            <div>
 
+                                <strong id="cantidadExcel">
+                                    0 estudiantes
+                                </strong>
 
-        <div class="botones-formulario">
+                                <small>
+                                    Previsualización del archivo
+                                </small>
 
-            <button
-                id="btnConfirmarExcel"
-                type="button"
-                class="btn-principal btn-auto"
-            >
-                CONFIRMAR IMPORTACIÓN
-            </button>
+                            </div>
 
-
-            <button
-                id="btnCancelarExcel"
-                type="button"
-                class="btn-secundario"
-            >
-                Cancelar
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
+                        </div>
 
 
-<!-- INPUT OCULTO / DATOS PROMOCIÓN -->
-
-<div
-    id="panelPromocion"
-    class="formulario-desplegable oculto"
->
-
-    <h4>
-        Promover grupo
-    </h4>
+                        <div
+                            id="vistaPreviaExcel"
+                            class="tabla-responsive"
+                        ></div>
 
 
-    <div id="contenidoPromocion"></div>
+                        <div class="aviso-reemplazo">
+
+                            ⚠️ Al confirmar, esta lista se convertirá
+                            en la lista oficial del grupo.
+
+                            <br><br>
+
+                            Los estudiantes que actualmente pertenecen
+                            al grupo pero no aparezcan en el Excel serán
+                            retirados del grupo y desactivados.
+
+                        </div>
 
 
-    <p
-        id="mensajePromocion"
-        class="mensaje"
-    ></p>
+                        <div class="botones-formulario">
+
+                            <button
+                                id="btnConfirmarExcel"
+                                type="button"
+                                class="btn-principal btn-auto"
+                            >
+                                CONFIRMAR IMPORTACIÓN
+                            </button>
 
 
-    <div class="botones-formulario">
+                            <button
+                                id="btnCancelarExcel"
+                                type="button"
+                                class="btn-secundario"
+                            >
+                                Cancelar
+                            </button>
 
-        <button
-            id="btnConfirmarPromocion"
-            type="button"
-            class="btn-principal btn-auto"
-        >
-            CONFIRMAR PROMOCIÓN
-        </button>
+                        </div>
+
+                    </div>
+
+                </div>
 
 
-        <button
-            id="btnCancelarPromocion"
-            type="button"
-            class="btn-secundario"
-        >
-            Cancelar
-        </button>
+                <!-- =============================================
+                     PROMOCIÓN DE GRUPO
+                ============================================== -->
 
-    </div>
+                <div
+                    id="panelPromocion"
+                    class="formulario-desplegable oculto"
+                >
 
-</div>
+                    <h4>
+                        Promover grupo
+                    </h4>
 
-                <!-- BUSCADOR -->
+
+                    <div id="contenidoPromocion"></div>
+
+
+                    <p
+                        id="mensajePromocion"
+                        class="mensaje"
+                    ></p>
+
+
+                    <div class="botones-formulario">
+
+                        <button
+                            id="btnConfirmarPromocion"
+                            type="button"
+                            class="btn-principal btn-auto"
+                        >
+                            CONFIRMAR PROMOCIÓN
+                        </button>
+
+
+                        <button
+                            id="btnCancelarPromocion"
+                            type="button"
+                            class="btn-secundario"
+                        >
+                            Cancelar
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     BUSCADOR DE ESTUDIANTES
+                ============================================== -->
 
                 <div class="buscador">
 
@@ -828,12 +970,15 @@
                         type="search"
                         id="buscarEstudiante"
                         placeholder="Buscar por nombre o código CETA..."
+                        autocomplete="off"
                     >
 
                 </div>
 
 
-                <!-- LISTA -->
+                <!-- =============================================
+                     LISTA DE ESTUDIANTES
+                ============================================== -->
 
                 <div id="listaEstudiantes">
 
@@ -849,616 +994,670 @@
 
 
         <!-- =================================================
-             MATERIAL - PRÓXIMA ETAPA
+             MATERIAL ACADÉMICO
         ================================================== -->
 
         <section
-    id="seccion-material"
-    class="seccion-admin"
->
-
-    <!-- =====================================================
-         CABECERA MATERIAL
-    ====================================================== -->
-
-    <div class="tarjeta-panel">
-
-        <div class="titulo-seccion">
-
-            <div>
-
-                <p class="etiqueta-panel">
-                    MATERIAL ACADÉMICO
-                </p>
-
-                <h3>
-                    📚 Administración de material
-                </h3>
-
-                <p>
-                    Organiza materias, carpetas,
-                    documentos, videos y enlaces.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <!-- SEMESTRES -->
-
-        <div class="selector-semestres">
-
-            <button
-                type="button"
-                class="btn-semestre activo"
-                data-semestre="1"
-            >
-                1°
-            </button>
-
-            <button
-                type="button"
-                class="btn-semestre"
-                data-semestre="2"
-            >
-                2°
-            </button>
-
-            <button
-                type="button"
-                class="btn-semestre"
-                data-semestre="3"
-            >
-                3°
-            </button>
-
-            <button
-                type="button"
-                class="btn-semestre"
-                data-semestre="4"
-            >
-                4°
-            </button>
-
-            <button
-                type="button"
-                class="btn-semestre"
-                data-semestre="5"
-            >
-                5°
-            </button>
-
-            <button
-                type="button"
-                class="btn-semestre"
-                data-semestre="6"
-            >
-                6°
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- =====================================================
-         LISTA DE MATERIAS
-    ====================================================== -->
-
-    <div
-        id="panelListaMaterias"
-        class="tarjeta-panel"
-    >
-
-        <div class="titulo-seccion">
-
-            <div>
-
-                <p class="etiqueta-panel">
-                    SEMESTRE
-                </p>
-
-                <h3 id="tituloSemestreMaterial">
-                    1° semestre
-                </h3>
-
-            </div>
-
-
-            <button
-                id="btnNuevaMateria"
-                type="button"
-                class="btn-principal btn-auto"
-            >
-                + Nueva materia
-            </button>
-
-        </div>
-
-
-        <!-- FORMULARIO MATERIA -->
-
-        <div
-            id="formularioMateria"
-            class="formulario-desplegable oculto"
+            id="seccion-material"
+            class="seccion-admin"
         >
 
-            <h4 id="tituloFormularioMateria">
-                Nueva materia
-            </h4>
 
+            <!-- =============================================
+                 CABECERA MATERIAL
+            ============================================== -->
 
-            <form id="formMateria">
+            <div class="tarjeta-panel">
 
-                <input
-                    type="hidden"
-                    id="materiaId"
-                >
+                <div class="titulo-seccion">
 
+                    <div>
 
-                <div class="campo">
+                        <p class="etiqueta-panel">
+                            MATERIAL ACADÉMICO
+                        </p>
 
-                    <label for="nombreMateria">
-                        Nombre de la materia
-                    </label>
+                        <h3>
+                            📚 Administración de material
+                        </h3>
 
-                    <input
-                        type="text"
-                        id="nombreMateria"
-                        placeholder="Ej. Electrónica Digital"
-                        required
-                    >
+                        <p>
+                            Organiza materias, carpetas,
+                            documentos, videos y enlaces.
+                        </p>
 
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="descripcionMateria">
-                        Descripción
-                    </label>
-
-                    <textarea
-                        id="descripcionMateria"
-                        rows="3"
-                        placeholder="Descripción opcional..."
-                    ></textarea>
+                    </div>
 
                 </div>
 
 
-                <div class="campo">
+                <!-- =========================================
+                     SELECTOR DE SEMESTRES
+                ========================================== -->
 
-                    <label for="ordenMateria">
-                        Orden
-                    </label>
-
-                    <input
-                        type="number"
-                        id="ordenMateria"
-                        value="0"
-                        min="0"
-                    >
-
-                </div>
-
-
-                <label
-                    id="contenedorMateriaActiva"
-                    class="check-linea oculto"
-                >
-
-                    <input
-                        type="checkbox"
-                        id="materiaActiva"
-                        checked
-                    >
-
-                    Materia activa
-
-                </label>
-
-
-                <p
-                    id="mensajeMateria"
-                    class="mensaje"
-                ></p>
-
-
-                <div class="botones-formulario">
-
-                    <button
-                        type="submit"
-                        id="btnGuardarMateria"
-                        class="btn-principal btn-auto"
-                    >
-                        GUARDAR
-                    </button>
+                <div class="selector-semestres">
 
                     <button
                         type="button"
-                        id="btnCancelarMateria"
-                        class="btn-secundario"
+                        class="btn-semestre activo"
+                        data-semestre="1"
                     >
-                        Cancelar
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-
-
-        <div
-            id="listaMaterias"
-            class="lista-materias"
-        >
-
-            <p class="estado-carga">
-                Cargando materias...
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <!-- =====================================================
-         INTERIOR DE UNA MATERIA
-    ====================================================== -->
-
-    <div
-        id="panelMateriaAbierta"
-        class="tarjeta-panel oculto"
-    >
-
-        <div class="cabecera-materia-abierta">
-
-            <button
-                id="btnVolverMaterias"
-                type="button"
-                class="btn-secundario"
-            >
-                ← Materias
-            </button>
-
-
-            <div>
-
-                <p
-                    id="semestreMateriaAbierta"
-                    class="etiqueta-panel"
-                >
-                    -
-                </p>
-
-                <h3 id="nombreMateriaAbierta">
-                    -
-                </h3>
-
-            </div>
-
-        </div>
-
-
-        <!-- RUTA -->
-
-        <div
-            id="rutaMaterial"
-            class="ruta-material"
-        ></div>
-
-
-        <!-- ACCIONES -->
-
-        <div class="acciones-material">
-
-            <button
-                id="btnNuevaCarpeta"
-                type="button"
-                class="btn-principal btn-auto"
-            >
-                + Carpeta
-            </button>
-
-            <button
-                id="btnNuevoMaterial"
-                type="button"
-                class="btn-secundario"
-            >
-                + Material
-            </button>
-
-        </div>
-
-
-        <!-- =================================================
-             FORMULARIO CARPETA
-        ================================================== -->
-
-        <div
-            id="formularioCarpeta"
-            class="formulario-desplegable oculto"
-        >
-
-            <h4 id="tituloFormularioCarpeta">
-                Nueva carpeta
-            </h4>
-
-
-            <form id="formCarpeta">
-
-                <input
-                    type="hidden"
-                    id="carpetaId"
-                >
-
-
-                <div class="campo">
-
-                    <label for="nombreCarpeta">
-                        Nombre
-                    </label>
-
-                    <input
-                        type="text"
-                        id="nombreCarpeta"
-                        placeholder="Ej. Unidad 1"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="ordenCarpeta">
-                        Orden
-                    </label>
-
-                    <input
-                        type="number"
-                        id="ordenCarpeta"
-                        value="0"
-                        min="0"
-                    >
-
-                </div>
-
-
-                <label
-                    id="contenedorCarpetaActiva"
-                    class="check-linea oculto"
-                >
-
-                    <input
-                        type="checkbox"
-                        id="carpetaActiva"
-                        checked
-                    >
-
-                    Carpeta activa
-
-                </label>
-
-
-                <p
-                    id="mensajeCarpeta"
-                    class="mensaje"
-                ></p>
-
-
-                <div class="botones-formulario">
-
-                    <button
-                        type="submit"
-                        id="btnGuardarCarpeta"
-                        class="btn-principal btn-auto"
-                    >
-                        GUARDAR
+                        1°
                     </button>
 
 
                     <button
                         type="button"
-                        id="btnCancelarCarpeta"
-                        class="btn-secundario"
+                        class="btn-semestre"
+                        data-semestre="2"
                     >
-                        Cancelar
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-
-
-        <!-- =================================================
-             FORMULARIO MATERIAL
-        ================================================== -->
-
-        <div
-            id="formularioMaterial"
-            class="formulario-desplegable oculto"
-        >
-
-            <h4 id="tituloFormularioMaterial">
-                Nuevo material
-            </h4>
-
-
-            <form id="formMaterialAcademico">
-
-                <input
-                    type="hidden"
-                    id="materialId"
-                >
-
-
-                <div class="campo">
-
-                    <label for="tituloMaterial">
-                        Título
-                    </label>
-
-                    <input
-                        type="text"
-                        id="tituloMaterial"
-                        placeholder="Ej. Sistemas de numeración"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="tipoMaterial">
-                        Tipo
-                    </label>
-
-                    <select
-                        id="tipoMaterial"
-                        required
-                    >
-
-                        <option value="drive">
-                            📄 Google Drive
-                        </option>
-
-                        <option value="video">
-                            ▶️ Video
-                        </option>
-
-                        <option value="enlace">
-                            🔗 Enlace
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="urlMaterial">
-                        Enlace / URL
-                    </label>
-
-                    <input
-                        type="url"
-                        id="urlMaterial"
-                        placeholder="https://..."
-                        required
-                    >
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="descripcionMaterial">
-                        Descripción
-                    </label>
-
-                    <textarea
-                        id="descripcionMaterial"
-                        rows="3"
-                        placeholder="Descripción opcional..."
-                    ></textarea>
-
-                </div>
-
-
-                <div class="campo">
-
-                    <label for="ordenMaterial">
-                        Orden
-                    </label>
-
-                    <input
-                        type="number"
-                        id="ordenMaterial"
-                        value="0"
-                        min="0"
-                    >
-
-                </div>
-
-
-                <label
-                    id="contenedorMaterialActivo"
-                    class="check-linea oculto"
-                >
-
-                    <input
-                        type="checkbox"
-                        id="materialActivo"
-                        checked
-                    >
-
-                    Material activo
-
-                </label>
-
-
-                <p
-                    id="mensajeMaterialAcademico"
-                    class="mensaje"
-                ></p>
-
-
-                <div class="botones-formulario">
-
-                    <button
-                        type="submit"
-                        id="btnGuardarMaterial"
-                        class="btn-principal btn-auto"
-                    >
-                        GUARDAR
+                        2°
                     </button>
 
 
                     <button
                         type="button"
-                        id="btnCancelarMaterial"
-                        class="btn-secundario"
+                        class="btn-semestre"
+                        data-semestre="3"
                     >
-                        Cancelar
+                        3°
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-semestre"
+                        data-semestre="4"
+                    >
+                        4°
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-semestre"
+                        data-semestre="5"
+                    >
+                        5°
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn-semestre"
+                        data-semestre="6"
+                    >
+                        6°
                     </button>
 
                 </div>
 
-            </form>
+            </div>
 
-        </div>
+
+            <!-- =============================================
+                 LISTA DE MATERIAS
+            ============================================== -->
+
+            <div
+                id="panelListaMaterias"
+                class="tarjeta-panel"
+            >
+
+                <div class="titulo-seccion">
+
+                    <div>
+
+                        <p class="etiqueta-panel">
+                            SEMESTRE
+                        </p>
+
+                        <h3 id="tituloSemestreMaterial">
+                            1° semestre
+                        </h3>
+
+                    </div>
+
+
+                    <button
+                        id="btnNuevaMateria"
+                        type="button"
+                        class="btn-principal btn-auto"
+                    >
+                        + Nueva materia
+                    </button>
+
+                </div>
+
+
+                <!-- =========================================
+                     FORMULARIO MATERIA
+                ========================================== -->
+
+                <div
+                    id="formularioMateria"
+                    class="formulario-desplegable oculto"
+                >
+
+                    <h4 id="tituloFormularioMateria">
+                        Nueva materia
+                    </h4>
+
+
+                    <form id="formMateria">
+
+                        <input
+                            type="hidden"
+                            id="materiaId"
+                        >
+
+
+                        <div class="campo">
+
+                            <label for="nombreMateria">
+                                Nombre de la materia
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nombreMateria"
+                                placeholder="Ej. Electrónica Digital"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label for="descripcionMateria">
+                                Descripción
+                            </label>
+
+                            <textarea
+                                id="descripcionMateria"
+                                rows="3"
+                                placeholder="Descripción opcional..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label for="ordenMateria">
+                                Orden
+                            </label>
+
+                            <input
+                                type="number"
+                                id="ordenMateria"
+                                value="0"
+                                min="0"
+                            >
+
+                        </div>
+
+
+                        <label
+                            id="contenedorMateriaActiva"
+                            class="check-linea oculto"
+                        >
+
+                            <input
+                                type="checkbox"
+                                id="materiaActiva"
+                                checked
+                            >
+
+                            Materia activa
+
+                        </label>
+
+
+                        <p
+                            id="mensajeMateria"
+                            class="mensaje"
+                        ></p>
+
+
+                        <div class="botones-formulario">
+
+                            <button
+                                type="submit"
+                                id="btnGuardarMateria"
+                                class="btn-principal btn-auto"
+                            >
+                                GUARDAR
+                            </button>
+
+
+                            <button
+                                type="button"
+                                id="btnCancelarMateria"
+                                class="btn-secundario"
+                            >
+                                Cancelar
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =========================================
+                     CONTENEDOR DE MATERIAS
+                ========================================== -->
+
+                <div
+                    id="listaMaterias"
+                    class="lista-materias"
+                >
+
+                    <p class="estado-carga">
+                        Cargando materias...
+                    </p>
+
+                </div>
+
+            </div>
+            <!-- =============================================
+                 MATERIA ABIERTA
+            ============================================== -->
+
+            <div
+                id="panelMateriaAbierta"
+                class="tarjeta-panel oculto"
+            >
+
+                <!-- =========================================
+                     CABECERA DE LA MATERIA
+                ========================================== -->
+
+                <div class="cabecera-materia-abierta">
+
+                    <button
+                        id="btnVolverMaterias"
+                        type="button"
+                        class="btn-secundario"
+                    >
+                        ← Volver a materias
+                    </button>
+
+
+                    <div class="titulo-materia-abierta">
+
+                        <p
+                            id="semestreMateriaAbierta"
+                            class="etiqueta-panel"
+                        >
+                            -
+                        </p>
+
+                        <h3 id="nombreMateriaAbierta">
+                            -
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     RUTA DE NAVEGACIÓN
+                ========================================== -->
+
+                <div
+                    id="rutaMaterial"
+                    class="ruta-material"
+                ></div>
+
+
+                <!-- =========================================
+                     ACCIONES
+                ========================================== -->
+
+                <div class="acciones-material">
+
+                    <button
+                        id="btnNuevaCarpeta"
+                        type="button"
+                        class="btn-principal btn-auto"
+                    >
+                        📁 + Carpeta
+                    </button>
+
+
+                    <button
+                        id="btnNuevoMaterial"
+                        type="button"
+                        class="btn-principal btn-auto"
+                    >
+                        📄 + Material
+                    </button>
+
+                </div>
+
+
+                <!-- =========================================
+                     FORMULARIO DE CARPETA
+                ========================================== -->
+
+                <div
+                    id="formularioCarpeta"
+                    class="formulario-desplegable oculto"
+                >
+
+                    <h4 id="tituloFormularioCarpeta">
+                        Nueva carpeta
+                    </h4>
+
+
+                    <form id="formCarpeta">
+
+                        <input
+                            type="hidden"
+                            id="carpetaId"
+                        >
+
+
+                        <div class="form-grid">
+
+                            <!-- NOMBRE -->
+
+                            <div class="campo">
+
+                                <label for="nombreCarpeta">
+                                    Nombre de la carpeta
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="nombreCarpeta"
+                                    placeholder="Ej. Unidad 1"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- ORDEN -->
+
+                            <div class="campo">
+
+                                <label for="ordenCarpeta">
+                                    Orden
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="ordenCarpeta"
+                                    value="0"
+                                    min="0"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+
+                        <label
+                            id="contenedorCarpetaActiva"
+                            class="check-linea oculto"
+                        >
+
+                            <input
+                                type="checkbox"
+                                id="carpetaActiva"
+                                checked
+                            >
+
+                            Carpeta activa
+
+                        </label>
+
+
+                        <p
+                            id="mensajeCarpeta"
+                            class="mensaje"
+                        ></p>
+
+
+                        <div class="botones-formulario">
+
+                            <button
+                                id="btnGuardarCarpeta"
+                                type="submit"
+                                class="btn-principal btn-auto"
+                            >
+                                GUARDAR
+                            </button>
+
+
+                            <button
+                                id="btnCancelarCarpeta"
+                                type="button"
+                                class="btn-secundario"
+                            >
+                                Cancelar
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =========================================
+                     FORMULARIO DE MATERIAL
+                ========================================== -->
+
+                <div
+                    id="formularioMaterial"
+                    class="formulario-desplegable oculto"
+                >
+
+                    <h4 id="tituloFormularioMaterial">
+                        Nuevo material
+                    </h4>
+
+
+                    <form id="formMaterialAcademico">
+
+                        <input
+                            type="hidden"
+                            id="materialId"
+                        >
+
+
+                        <!-- TÍTULO -->
+
+                        <div class="campo">
+
+                            <label for="tituloMaterial">
+                                Título del material
+                            </label>
+
+                            <input
+                                type="text"
+                                id="tituloMaterial"
+                                placeholder="Ej. Introducción a compuertas lógicas"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <!-- TIPO -->
+
+                            <div class="campo">
+
+                                <label for="tipoMaterial">
+                                    Tipo de material
+                                </label>
+
+
+                                <select
+                                    id="tipoMaterial"
+                                    required
+                                >
+
+                                    <option value="drive">
+                                        Google Drive
+                                    </option>
+
+                                    <option value="video">
+                                        Video
+                                    </option>
+
+                                    <option value="enlace">
+                                        Enlace externo
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- ORDEN -->
+
+                            <div class="campo">
+
+                                <label for="ordenMaterial">
+                                    Orden
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="ordenMaterial"
+                                    value="0"
+                                    min="0"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- URL -->
+
+                        <div class="campo">
+
+                            <label for="urlMaterial">
+                                Enlace
+                            </label>
+
+                            <input
+                                type="url"
+                                id="urlMaterial"
+                                placeholder="https://drive.google.com/file/d/..."
+                                required
+                            >
+
+                            <small class="ayuda-campo">
+                                Puedes utilizar enlaces de Google Drive,
+                                YouTube u otros recursos web.
+                            </small>
+
+                        </div>
+
+
+                        <!-- DESCRIPCIÓN -->
+
+                        <div class="campo">
+
+                            <label for="descripcionMaterial">
+                                Descripción
+                            </label>
+
+                            <textarea
+                                id="descripcionMaterial"
+                                rows="3"
+                                placeholder="Descripción opcional del material..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+
+                        <label
+                            id="contenedorMaterialActivo"
+                            class="check-linea oculto"
+                        >
+
+                            <input
+                                type="checkbox"
+                                id="materialActivo"
+                                checked
+                            >
+
+                            Material activo
+
+                        </label>
+
+
+                        <p
+                            id="mensajeMaterialAcademico"
+                            class="mensaje"
+                        ></p>
+
+
+                        <div class="botones-formulario">
+
+                            <button
+                                id="btnGuardarMaterial"
+                                type="submit"
+                                class="btn-principal btn-auto"
+                            >
+                                GUARDAR
+                            </button>
+
+
+                            <button
+                                id="btnCancelarMaterial"
+                                type="button"
+                                class="btn-secundario"
+                            >
+                                Cancelar
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =========================================
+                     CONTENIDO DE LA CARPETA / MATERIA
+                ========================================== -->
+
+                <div
+                    id="contenidoMateria"
+                    class="contenido-materia"
+                >
+
+                    <p class="estado-carga">
+                        Cargando contenido...
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
 
 
         <!-- =================================================
-             CONTENIDO
-        ================================================== -->
-
-        <div
-            id="contenidoMateria"
-            class="contenido-materia"
-        >
-
-            <p class="estado-carga">
-                Cargando...
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-        <!-- =================================================
-             EGRESADOS - PRÓXIMA ETAPA
+             EGRESADOS
         ================================================== -->
 
         <section
@@ -1468,14 +1667,296 @@
 
             <div class="tarjeta-panel">
 
-                <h3>
-                    🎓 Egresados
-                </h3>
+                <div class="titulo-seccion">
 
-                <p class="texto-secundario">
-                    Aquí administraremos los estudiantes
-                    egresados y su acceso completo.
-                </p>
+                    <div>
+
+                        <p class="etiqueta-panel">
+                            EGRESADOS
+                        </p>
+
+                        <h3>
+                            🎓 Estudiantes egresados
+                        </h3>
+
+                        <p>
+                            Los egresados tienen acceso al material
+                            académico de los seis semestres.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     BUSCADOR DE EGRESADOS
+                ========================================== -->
+
+                <div class="buscador">
+
+                    <input
+                        type="search"
+                        id="buscarEgresado"
+                        placeholder="Buscar egresado por nombre o código CETA..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <!-- =========================================
+                     LISTA DE EGRESADOS
+                ========================================== -->
+
+                <div id="listaEgresados">
+
+                    <p class="estado-carga">
+                        Cargando egresados...
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =============================================
+                 REINCORPORAR EGRESADO
+            ============================================== -->
+
+            <div
+                id="panelReincorporarEgresado"
+                class="tarjeta-panel oculto"
+            >
+
+                <div class="titulo-seccion">
+
+                    <div>
+
+                        <p class="etiqueta-panel">
+                            REINCORPORACIÓN
+                        </p>
+
+                        <h3>
+                            Reincorporar estudiante
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <input
+                    type="hidden"
+                    id="egresadoSeleccionadoId"
+                >
+
+
+                <div class="campo">
+
+                    <label>
+                        Estudiante
+                    </label>
+
+                    <div
+                        id="nombreEgresadoSeleccionado"
+                        class="dato-destacado"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="grupoReincorporacion">
+                        Grupo de destino
+                    </label>
+
+                    <select id="grupoReincorporacion">
+
+                        <option value="">
+                            Seleccionar grupo
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <p
+                    id="mensajeReincorporacion"
+                    class="mensaje"
+                ></p>
+
+
+                <div class="botones-formulario">
+
+                    <button
+                        id="btnConfirmarReincorporacion"
+                        type="button"
+                        class="btn-principal btn-auto"
+                    >
+                        REINCORPORAR
+                    </button>
+
+
+                    <button
+                        id="btnCancelarReincorporacion"
+                        type="button"
+                        class="btn-secundario"
+                    >
+                        Cancelar
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+        <!-- =================================================
+             OBSERVACIONES
+        ================================================== -->
+
+        <section
+            id="seccion-observaciones"
+            class="seccion-admin"
+        >
+
+            <div class="tarjeta-panel">
+
+                <!-- =========================================
+                     CABECERA
+                ========================================== -->
+
+                <div class="cabecera-seccion-admin">
+
+                    <div>
+
+                        <p class="etiqueta-panel">
+                            COMUNICACIÓN
+                        </p>
+
+                        <h2>
+                            💬 Observaciones
+                        </h2>
+
+                        <p class="texto-secundario-admin">
+                            Revisa las sugerencias y problemas
+                            reportados por estudiantes y docentes.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="btnActualizarObservaciones"
+                        type="button"
+                        class="btn-secundario"
+                    >
+                        ↻ Actualizar
+                    </button>
+
+                </div>
+
+
+                <!-- =========================================
+                     FILTROS
+                ========================================== -->
+
+                <div class="filtros-observaciones-admin">
+
+                    <button
+                        type="button"
+                        class="filtro-observacion activo"
+                        data-filtro="todas"
+                    >
+                        Todas
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="filtro-observacion"
+                        data-filtro="pendiente"
+                    >
+                        Pendientes
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="filtro-observacion"
+                        data-filtro="atendida"
+                    >
+                        Atendidas
+                    </button>
+
+                </div>
+
+
+                <!-- =========================================
+                     CONTADORES
+                ========================================== -->
+
+                <div class="resumen-observaciones-admin">
+
+                    <div>
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong id="totalObservacionesAdmin">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Pendientes
+                        </span>
+
+                        <strong id="totalPendientesAdmin">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Atendidas
+                        </span>
+
+                        <strong id="totalAtendidasAdmin">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     LISTADO DE OBSERVACIONES
+                ========================================== -->
+
+                <div
+                    id="listaObservacionesAdmin"
+                    class="lista-observaciones-admin"
+                >
+
+                    <p class="estado-carga">
+                        Cargando observaciones...
+                    </p>
+
+                </div>
 
             </div>
 
@@ -1483,204 +1964,79 @@
 
 
         <!-- =================================================
-             OBSERVACIONES - PRÓXIMA ETAPA
+             MODAL DE CONFIRMACIÓN
         ================================================== -->
 
-        <section
-            id="seccion-observaciones"
-            class="seccion-admin"
+        <div
+            id="modalConfirmacion"
+            class="modal-fondo oculto"
         >
-<!-- =====================================================
-     OBSERVACIONES
-====================================================== -->
 
-<section
-    id="seccion-observaciones"
-    class="seccion-admin oculto"
->
+            <div class="modal">
 
-    <div class="cabecera-seccion-admin">
-
-        <div>
-
-            <p class="etiqueta-panel">
-                COMUNICACIÓN
-            </p>
-
-            <h2>
-                Observaciones
-            </h2>
-
-            <p class="texto-secundario-admin">
-                Revisa las sugerencias y problemas
-                reportados por estudiantes y docentes.
-            </p>
-
-        </div>
+                <h3 id="modalTitulo">
+                    Confirmar
+                </h3>
 
 
-        <button
-            id="btnActualizarObservaciones"
-            type="button"
-            class="btn-secundario"
-        >
-            ↻ Actualizar
-        </button>
-
-    </div>
+                <p id="modalTexto">
+                    ¿Deseas continuar?
+                </p>
 
 
-    <!-- FILTROS -->
+                <div class="botones-formulario">
 
-    <div class="filtros-observaciones-admin">
-
-        <button
-            type="button"
-            class="filtro-observacion activo"
-            data-filtro="todas"
-        >
-            Todas
-        </button>
-
-        <button
-            type="button"
-            class="filtro-observacion"
-            data-filtro="pendiente"
-        >
-            Pendientes
-        </button>
-
-        <button
-            type="button"
-            class="filtro-observacion"
-            data-filtro="atendida"
-        >
-            Atendidas
-        </button>
-
-    </div>
+                    <button
+                        id="modalAceptar"
+                        type="button"
+                        class="btn-principal btn-auto"
+                    >
+                        Aceptar
+                    </button>
 
 
-    <!-- CONTADORES -->
+                    <button
+                        id="modalCancelar"
+                        type="button"
+                        class="btn-secundario"
+                    >
+                        Cancelar
+                    </button>
 
-    <div class="resumen-observaciones-admin">
-
-        <div>
-
-            <span>
-                Total
-            </span>
-
-            <strong id="totalObservacionesAdmin">
-                0
-            </strong>
-
-        </div>
-
-
-        <div>
-
-            <span>
-                Pendientes
-            </span>
-
-            <strong id="totalPendientesAdmin">
-                0
-            </strong>
-
-        </div>
-
-
-        <div>
-
-            <span>
-                Atendidas
-            </span>
-
-            <strong id="totalAtendidasAdmin">
-                0
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    <!-- LISTADO -->
-
-    <div
-        id="listaObservacionesAdmin"
-        class="lista-observaciones-admin"
-    >
-
-        <p class="estado-carga">
-            Cargando observaciones...
-        </p>
-
-    </div>
-
-</section>
-
-
-    <!-- =====================================================
-         MODAL
-    ====================================================== -->
-
-    <div
-        id="modalConfirmacion"
-        class="modal-fondo oculto"
-    >
-
-        <div class="modal">
-
-            <h3 id="modalTitulo">
-                Confirmar
-            </h3>
-
-            <p id="modalTexto">
-                ¿Deseas continuar?
-            </p>
-
-
-            <div class="botones-formulario">
-
-                <button
-                    id="modalAceptar"
-                    type="button"
-                    class="btn-principal btn-auto"
-                >
-                    Aceptar
-                </button>
-
-
-                <button
-                    id="modalCancelar"
-                    type="button"
-                    class="btn-secundario"
-                >
-                    Cancelar
-                </button>
+                </div>
 
             </div>
 
         </div>
 
-    </div>
+
+    </main>
 
 
     <!-- =====================================================
          SCRIPTS
     ====================================================== -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- SUPABASE -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
 
-<!-- LECTURA DE ARCHIVOS EXCEL -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-<script src="js/supabase.js"></script>
+    <!-- LECTURA DE ARCHIVOS EXCEL -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
+    ></script>
 
-<script src="js/admin.js"></script>
-    
+
+    <!-- CONFIGURACIÓN SUPABASE -->
+    <script src="js/supabase.js"></script>
+
+
+    <!-- PANEL ADMINISTRADOR -->
+    <script src="js/admin.js"></script>
+
+
 </body>
 
 </html>
