@@ -5975,7 +5975,7 @@ function editarCarpeta(id) {
         ?.scrollIntoView({
             behavior: "smooth",
             block: "center"
-        );
+        });
 
 
     nombre?.focus();
@@ -6603,7 +6603,7 @@ function editarMaterialAcademico(id) {
         ?.scrollIntoView({
             behavior: "smooth",
             block: "center"
-        );
+        });
 
 
     titulo?.focus();
