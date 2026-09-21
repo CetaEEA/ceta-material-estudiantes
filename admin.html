@@ -2,7 +2,6 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -10,45 +9,783 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>CETA | Administrador</title>
+    <title>CETA | Administración de Material</title>
 
+    <link
+        rel="icon"
+        type="image/png"
+        href="img/logo-ceta-transparente.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/estilos.css"
+    >
 </head>
 
-<body>
+<body class="panel-page">
 
-    <h1>Panel Administrador</h1>
+    <!-- =====================================================
+         CABECERA
+    ====================================================== -->
 
-    <p>
-        Acceso administrador correcto.
-    </p>
+    <header class="panel-header">
 
-    <button id="btnCerrarSesion">
-        Cerrar sesión
-    </button>
+        <div class="panel-header-contenido">
 
+            <div class="marca-panel">
+
+                <img
+                    src="img/logo-ceta-transparente.png"
+                    alt="CETA"
+                    class="logo-panel"
+                >
+
+                <div>
+                    <small>
+                        INSTITUTO CETA
+                    </small>
+
+                    <h1>
+                        Material Académico
+                    </h1>
+                </div>
+
+            </div>
+
+
+            <button
+                id="btnCerrarSesion"
+                class="btn-salir"
+                type="button"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <main class="panel-contenedor">
+
+        <!-- ADMINISTRADOR -->
+
+        <section class="bienvenida-panel">
+
+            <div>
+                <p class="etiqueta-panel">
+                    PANEL ADMINISTRADOR
+                </p>
+
+                <h2 id="nombreAdministrador">
+                    Cargando...
+                </h2>
+
+                <p>
+                    Administración del material académico CETA.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ESTADÍSTICAS
+        ================================================== -->
+
+        <section class="estadisticas-grid">
+
+            <article class="estadistica-card">
+                <span class="estadistica-icono">👨‍🎓</span>
+
+                <strong id="totalEstudiantes">
+                    0
+                </strong>
+
+                <small>
+                    Estudiantes activos
+                </small>
+            </article>
+
+
+            <article class="estadistica-card">
+                <span class="estadistica-icono">👥</span>
+
+                <strong id="totalGrupos">
+                    0
+                </strong>
+
+                <small>
+                    Grupos activos
+                </small>
+            </article>
+
+
+            <article class="estadistica-card">
+                <span class="estadistica-icono">🎓</span>
+
+                <strong id="totalEgresados">
+                    0
+                </strong>
+
+                <small>
+                    Egresados
+                </small>
+            </article>
+
+
+            <article class="estadistica-card">
+                <span class="estadistica-icono">📚</span>
+
+                <strong id="totalMaterias">
+                    0
+                </strong>
+
+                <small>
+                    Materias
+                </small>
+            </article>
+
+        </section>
+
+
+        <!-- =================================================
+             NAVEGACIÓN
+        ================================================== -->
+
+        <nav class="menu-admin">
+
+            <button
+                class="menu-admin-btn activo"
+                data-seccion="inicio"
+                type="button"
+            >
+                🏠 Inicio
+            </button>
+
+            <button
+                class="menu-admin-btn"
+                data-seccion="grupos"
+                type="button"
+            >
+                👥 Grupos y estudiantes
+            </button>
+
+            <button
+                class="menu-admin-btn"
+                data-seccion="material"
+                type="button"
+            >
+                📚 Material académico
+            </button>
+
+            <button
+                class="menu-admin-btn"
+                data-seccion="egresados"
+                type="button"
+            >
+                🎓 Egresados
+            </button>
+
+            <button
+                class="menu-admin-btn"
+                data-seccion="observaciones"
+                type="button"
+            >
+                💬 Observaciones
+            </button>
+
+        </nav>
+
+
+        <!-- =================================================
+             INICIO
+        ================================================== -->
+
+        <section
+            id="seccion-inicio"
+            class="seccion-admin activa"
+        >
+
+            <div class="tarjeta-panel">
+
+                <h3>
+                    Administración
+                </h3>
+
+                <p class="texto-secundario">
+                    Selecciona una opción para administrar
+                    el sistema de material académico.
+                </p>
+
+
+                <div class="acciones-inicio">
+
+                    <button
+                        type="button"
+                        class="accion-grande"
+                        data-ir="grupos"
+                    >
+                        <span>👥</span>
+
+                        <div>
+                            <strong>
+                                Grupos y estudiantes
+                            </strong>
+
+                            <small>
+                                Crear grupos y administrar alumnos
+                            </small>
+                        </div>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="accion-grande"
+                        data-ir="material"
+                    >
+                        <span>📚</span>
+
+                        <div>
+                            <strong>
+                                Material académico
+                            </strong>
+
+                            <small>
+                                Materias, carpetas y enlaces
+                            </small>
+                        </div>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="accion-grande"
+                        data-ir="egresados"
+                    >
+                        <span>🎓</span>
+
+                        <div>
+                            <strong>
+                                Egresados
+                            </strong>
+
+                            <small>
+                                Estudiantes con acceso completo
+                            </small>
+                        </div>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="accion-grande"
+                        data-ir="observaciones"
+                    >
+                        <span>💬</span>
+
+                        <div>
+                            <strong>
+                                Observaciones
+                            </strong>
+
+                            <small>
+                                Sugerencias y problemas reportados
+                            </small>
+                        </div>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             GRUPOS Y ESTUDIANTES
+        ================================================== -->
+
+        <section
+            id="seccion-grupos"
+            class="seccion-admin"
+        >
+
+            <!-- CREAR GRUPO -->
+
+            <div class="tarjeta-panel">
+
+                <div class="titulo-seccion">
+
+                    <div>
+                        <h3>
+                            Grupos
+                        </h3>
+
+                        <p>
+                            Crea y administra los grupos de estudiantes.
+                        </p>
+                    </div>
+
+
+                    <button
+                        id="btnMostrarCrearGrupo"
+                        type="button"
+                        class="btn-principal btn-auto"
+                    >
+                        + Nuevo grupo
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="formularioGrupoContenedor"
+                    class="formulario-desplegable oculto"
+                >
+
+                    <h4 id="tituloFormularioGrupo">
+                        Crear grupo
+                    </h4>
+
+
+                    <form id="formGrupo">
+
+                        <input
+                            type="hidden"
+                            id="grupoId"
+                        >
+
+
+                        <div class="form-grid">
+
+                            <div class="campo">
+
+                                <label for="codigoGrupo">
+                                    Código del grupo
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="codigoGrupo"
+                                    placeholder="Ej. 101M"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="campo">
+
+                                <label for="semestreGrupo">
+                                    Semestre
+                                </label>
+
+                                <select
+                                    id="semestreGrupo"
+                                    required
+                                >
+                                    <option value="">
+                                        Seleccionar
+                                    </option>
+
+                                    <option value="1">
+                                        1° semestre
+                                    </option>
+
+                                    <option value="2">
+                                        2° semestre
+                                    </option>
+
+                                    <option value="3">
+                                        3° semestre
+                                    </option>
+
+                                    <option value="4">
+                                        4° semestre
+                                    </option>
+
+                                    <option value="5">
+                                        5° semestre
+                                    </option>
+
+                                    <option value="6">
+                                        6° semestre
+                                    </option>
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <label
+                            id="contenedorGrupoActivo"
+                            class="check-linea oculto"
+                        >
+                            <input
+                                type="checkbox"
+                                id="grupoActivo"
+                                checked
+                            >
+
+                            Grupo activo
+                        </label>
+
+
+                        <p
+                            id="mensajeGrupo"
+                            class="mensaje"
+                        ></p>
+
+
+                        <div class="botones-formulario">
+
+                            <button
+                                type="submit"
+                                class="btn-principal btn-auto"
+                                id="btnGuardarGrupo"
+                            >
+                                GUARDAR
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="btn-secundario"
+                                id="btnCancelarGrupo"
+                            >
+                                Cancelar
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- LISTA DE GRUPOS -->
+
+                <div
+                    id="listaGrupos"
+                    class="lista-grupos"
+                >
+                    <p class="estado-carga">
+                        Cargando grupos...
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- =============================================
+                 ESTUDIANTES DEL GRUPO
+            ============================================== -->
+
+            <div
+                id="panelEstudiantesGrupo"
+                class="tarjeta-panel oculto"
+            >
+
+                <div class="titulo-seccion">
+
+                    <div>
+
+                        <p class="etiqueta-panel">
+                            GRUPO SELECCIONADO
+                        </p>
+
+                        <h3 id="tituloGrupoSeleccionado">
+                            -
+                        </h3>
+
+                        <p id="semestreGrupoSeleccionado">
+                            -
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="btnNuevoEstudiante"
+                        type="button"
+                        class="btn-principal btn-auto"
+                    >
+                        + Estudiante
+                    </button>
+
+                </div>
+
+
+                <!-- FORMULARIO ESTUDIANTE -->
+
+                <div
+                    id="formularioEstudianteContenedor"
+                    class="formulario-desplegable oculto"
+                >
+
+                    <h4 id="tituloFormularioEstudiante">
+                        Agregar estudiante
+                    </h4>
+
+
+                    <form id="formEstudianteAdmin">
+
+                        <input
+                            type="hidden"
+                            id="estudianteId"
+                        >
+
+
+                        <div class="form-grid">
+
+                            <div class="campo">
+
+                                <label for="codigoCetaAdmin">
+                                    Código CETA
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="codigoCetaAdmin"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="campo">
+
+                                <label for="nombreEstudiante">
+                                    Nombre completo
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="nombreEstudiante"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <label
+                            id="contenedorEstudianteActivo"
+                            class="check-linea oculto"
+                        >
+                            <input
+                                type="checkbox"
+                                id="estudianteActivo"
+                                checked
+                            >
+
+                            Estudiante activo
+                        </label>
+
+
+                        <p
+                            id="mensajeEstudianteAdmin"
+                            class="mensaje"
+                        ></p>
+
+
+                        <div class="botones-formulario">
+
+                            <button
+                                type="submit"
+                                class="btn-principal btn-auto"
+                                id="btnGuardarEstudiante"
+                            >
+                                GUARDAR
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="btn-secundario"
+                                id="btnCancelarEstudiante"
+                            >
+                                Cancelar
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- BUSCADOR -->
+
+                <div class="buscador">
+
+                    <input
+                        type="search"
+                        id="buscarEstudiante"
+                        placeholder="Buscar por nombre o código CETA..."
+                    >
+
+                </div>
+
+
+                <!-- LISTA -->
+
+                <div id="listaEstudiantes">
+
+                    <p class="estado-carga">
+                        Selecciona un grupo.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MATERIAL - PRÓXIMA ETAPA
+        ================================================== -->
+
+        <section
+            id="seccion-material"
+            class="seccion-admin"
+        >
+
+            <div class="tarjeta-panel">
+
+                <h3>
+                    📚 Material académico
+                </h3>
+
+                <p class="texto-secundario">
+                    El módulo para materias, carpetas, Drive,
+                    videos y enlaces se incorporará en la
+                    siguiente etapa.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             EGRESADOS - PRÓXIMA ETAPA
+        ================================================== -->
+
+        <section
+            id="seccion-egresados"
+            class="seccion-admin"
+        >
+
+            <div class="tarjeta-panel">
+
+                <h3>
+                    🎓 Egresados
+                </h3>
+
+                <p class="texto-secundario">
+                    Aquí administraremos los estudiantes
+                    egresados y su acceso completo.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             OBSERVACIONES - PRÓXIMA ETAPA
+        ================================================== -->
+
+        <section
+            id="seccion-observaciones"
+            class="seccion-admin"
+        >
+
+            <div class="tarjeta-panel">
+
+                <h3>
+                    💬 Observaciones
+                </h3>
+
+                <p class="texto-secundario">
+                    Aquí aparecerán las observaciones y
+                    sugerencias enviadas por estudiantes
+                    y docentes.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         MODAL
+    ====================================================== -->
+
+    <div
+        id="modalConfirmacion"
+        class="modal-fondo oculto"
+    >
+
+        <div class="modal">
+
+            <h3 id="modalTitulo">
+                Confirmar
+            </h3>
+
+            <p id="modalTexto">
+                ¿Deseas continuar?
+            </p>
+
+
+            <div class="botones-formulario">
+
+                <button
+                    id="modalAceptar"
+                    type="button"
+                    class="btn-principal btn-auto"
+                >
+                    Aceptar
+                </button>
+
+
+                <button
+                    id="modalCancelar"
+                    type="button"
+                    class="btn-secundario"
+                >
+                    Cancelar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SCRIPTS
+    ====================================================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="js/supabase.js"></script>
 
-    <script>
-
-        document
-            .getElementById("btnCerrarSesion")
-            .addEventListener(
-                "click",
-                async function () {
-
-                    await supabaseClient.auth.signOut();
-
-                    window.location.replace(
-                        "index.html"
-                    );
-
-                }
-            );
-
-    </script>
+    <script src="js/admin.js"></script>
 
 </body>
 
