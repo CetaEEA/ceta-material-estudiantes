@@ -570,13 +570,11 @@ document
     // ========================================================
 
     document
-        .getElementById(
-            "btnNuevoMaterial"
-        )
-        ?.addEventListener(
-            "click",
-            prepararNuevoMaterialAcademico
-        );
+    .getElementById("btnNuevoMaterial")
+    ?.addEventListener(
+        "click",
+        prepararNuevoMaterial
+    );
 
 
     document
