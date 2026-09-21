@@ -10,45 +10,529 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>CETA | Docente</title>
+    <title>Portal Docente | CETA</title>
+
+    <link
+        rel="stylesheet"
+        href="css/estilos.css"
+    >
 
 </head>
 
-<body>
 
-    <h1>Material Docente</h1>
+<body class="body-docente-material">
 
-    <p>
-        Acceso docente correcto.
-    </p>
+    <!-- =====================================================
+         CABECERA
+    ====================================================== -->
 
-    <button id="btnCerrarSesion">
-        Cerrar sesión
-    </button>
+    <header class="header-docente-material">
+
+        <div class="header-docente-contenido">
+
+            <div class="marca-docente-material">
+
+                <img
+                    src="img/logo-ceta-transparente.png"
+                    alt="CETA"
+                    class="logo-docente-material"
+                >
+
+                <div>
+
+                    <strong>CETA</strong>
+
+                    <span>
+                        Material Académico
+                    </span>
+
+                </div>
+
+            </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+            <button
+                id="btnCerrarSesionDocente"
+                type="button"
+                class="btn-cerrar-docente-material"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ====================================================== -->
+
+    <main class="main-docente-material">
+
+
+        <!-- CARGANDO -->
+
+        <section
+            id="pantallaCargaDocente"
+            class="tarjeta-docente-material cargando-docente-material"
+        >
+
+            <div class="spinner-estudiante"></div>
+
+            <strong>
+                Cargando portal docente...
+            </strong>
+
+            <p>
+                Verificando tu cuenta.
+            </p>
+
+        </section>
+
+
+        <!-- ERROR -->
+
+        <section
+            id="errorDocente"
+            class="tarjeta-docente-material error-docente-material oculto"
+        >
+
+            <span>⚠️</span>
+
+            <h2>
+                Acceso no disponible
+            </h2>
+
+            <p id="textoErrorDocente">
+                No fue posible validar tu cuenta.
+            </p>
+
+            <a
+                href="index.html"
+                class="btn-principal-estudiante"
+            >
+                Volver al ingreso
+            </a>
+
+        </section>
+
+
+        <!-- PORTAL -->
+
+        <div
+            id="portalDocente"
+            class="oculto"
+        >
+
+
+            <!-- =============================================
+                 BIENVENIDA
+            ============================================== -->
+
+            <section class="bienvenida-docente-material">
+
+                <div>
+
+                    <p class="etiqueta-docente-material">
+                        PORTAL DOCENTE
+                    </p>
+
+                    <h1 id="saludoDocente">
+                        Bienvenido
+                    </h1>
+
+                    <p>
+                        Consulta el material académico
+                        disponible en CETA.
+                    </p>
+
+                </div>
+
+
+                <div class="datos-docente-material">
+
+                    <span>
+                        Docente
+                    </span>
+
+                    <strong id="nombreDocente">
+                        -
+                    </strong>
+
+                    <small>
+                        Acceso académico:
+                        1° a 6° semestre
+                    </small>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 NAVEGACIÓN
+            ============================================== -->
+
+            <nav class="nav-docente-material">
+
+                <button
+                    type="button"
+                    class="nav-docente-btn activo"
+                    data-vista="material"
+                >
+                    📚 Material académico
+                </button>
+
+
+                <button
+                    type="button"
+                    class="nav-docente-btn"
+                    data-vista="observaciones"
+                >
+                    💬 Observaciones
+                </button>
+
+            </nav>
+
+
+            <!-- =============================================
+                 MATERIAL
+            ============================================== -->
+
+            <section
+                id="vistaMaterialDocente"
+                class="vista-docente"
+            >
+
+
+                <!-- SELECTOR SEMESTRE -->
+
+                <div class="tarjeta-docente-material">
+
+                    <p class="etiqueta-docente-material">
+                        SEMESTRES
+                    </p>
+
+                    <h2>
+                        Selecciona un semestre
+                    </h2>
+
+
+                    <div class="selector-semestres-docente">
+
+                        <button
+                            type="button"
+                            class="btn-semestre-docente activo"
+                            data-semestre="1"
+                        >
+                            1°
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn-semestre-docente"
+                            data-semestre="2"
+                        >
+                            2°
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn-semestre-docente"
+                            data-semestre="3"
+                        >
+                            3°
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn-semestre-docente"
+                            data-semestre="4"
+                        >
+                            4°
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn-semestre-docente"
+                            data-semestre="5"
+                        >
+                            5°
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn-semestre-docente"
+                            data-semestre="6"
+                        >
+                            6°
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MATERIAS -->
+
+                <section
+                    id="panelMateriasDocente"
+                    class="tarjeta-docente-material"
+                >
+
+                    <p class="etiqueta-docente-material">
+                        MATERIAL ACADÉMICO
+                    </p>
+
+                    <h2 id="tituloMateriasDocente">
+                        1° semestre
+                    </h2>
+
+
+                    <div
+                        id="listaMateriasDocente"
+                        class="grid-materias-estudiante"
+                    >
+
+                        <p class="estado-carga">
+                            Cargando materias...
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- MATERIA ABIERTA -->
+
+                <section
+                    id="panelMateriaDocente"
+                    class="tarjeta-docente-material oculto"
+                >
+
+                    <div class="cabecera-materia-estudiante">
+
+                        <button
+                            id="btnVolverMateriasDocente"
+                            type="button"
+                            class="btn-volver-estudiante"
+                        >
+                            ← Materias
+                        </button>
+
+
+                        <div>
+
+                            <p
+                                id="semestreMateriaDocente"
+                                class="etiqueta-docente-material"
+                            >
+                                -
+                            </p>
+
+                            <h2 id="nombreMateriaDocente">
+                                -
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="rutaDocente"
+                        class="ruta-estudiante"
+                    ></div>
+
+
+                    <div
+                        id="contenidoDocente"
+                        class="contenido-estudiante"
+                    ></div>
+
+                </section>
+
+            </section>
+
+
+            <!-- =============================================
+                 OBSERVACIONES
+            ============================================== -->
+
+            <section
+                id="vistaObservacionesDocente"
+                class="vista-docente oculto"
+            >
+
+                <div class="tarjeta-docente-material">
+
+                    <p class="etiqueta-docente-material">
+                        OBSERVACIONES
+                    </p>
+
+                    <h2>
+                        Enviar una observación
+                    </h2>
+
+                    <p class="descripcion-observacion-docente">
+                        Informa sobre material,
+                        enlaces caídos o envía una
+                        sugerencia al administrador.
+                    </p>
+
+
+                    <form id="formObservacionDocente">
+
+                        <div class="campo">
+
+                            <label for="tipoObservacionDocente">
+                                Tipo
+                            </label>
+
+                            <select
+                                id="tipoObservacionDocente"
+                                required
+                            >
+
+                                <option value="sugerencia">
+                                    Sugerencia
+                                </option>
+
+                                <option value="problema_material">
+                                    Problema con material
+                                </option>
+
+                                <option value="enlace_caido">
+                                    Enlace caído
+                                </option>
+
+                                <option value="otro">
+                                    Otro
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label for="textoObservacionDocente">
+                                Observación
+                            </label>
+
+                            <textarea
+                                id="textoObservacionDocente"
+                                rows="6"
+                                maxlength="1500"
+                                placeholder="Describe tu observación..."
+                                required
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="contador-observacion">
+
+                            <span id="contadorObservacionDocente">
+                                0
+                            </span>
+
+                            / 1500
+
+                        </div>
+
+
+                        <p
+                            id="mensajeObservacionDocente"
+                            class="mensaje"
+                        ></p>
+
+
+                        <button
+                            id="btnEnviarObservacionDocente"
+                            type="submit"
+                            class="btn-principal btn-auto"
+                        >
+                            ENVIAR OBSERVACIÓN
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+
+        <!-- =================================================
+             VIDEO
+        ================================================== -->
+
+        <div
+            id="modalVideoDocente"
+            class="modal-video-estudiante oculto"
+        >
+
+            <div
+                class="fondo-modal-video"
+                onclick="cerrarVideoDocente()"
+            ></div>
+
+
+            <div class="contenedor-video-estudiante">
+
+                <div class="cabecera-video-estudiante">
+
+                    <strong id="tituloVideoDocente">
+                        Video
+                    </strong>
+
+
+                    <button
+                        type="button"
+                        onclick="cerrarVideoDocente()"
+                    >
+                        ✕
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="visorVideoDocente"
+                    class="visor-video-estudiante"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <footer class="footer-estudiante">
+
+        <p>Instituto CETA</p>
+
+        <span>
+            Portal de material académico
+        </span>
+
+    </footer>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
 
     <script src="js/supabase.js"></script>
 
-    <script>
-
-        document
-            .getElementById("btnCerrarSesion")
-            .addEventListener(
-                "click",
-                async function () {
-
-                    await supabaseClient.auth.signOut();
-
-                    window.location.replace(
-                        "index.html"
-                    );
-
-                }
-            );
-
-    </script>
+    <script src="js/docente.js"></script>
 
 </body>
 
