@@ -1,270 +1,2695 @@
-/* CETA - modo oscuro, marca de agua y observaciones */
-:root{--ceta-fondo-oscuro:#0b1220;--ceta-superficie-oscura:rgba(17,24,39,.96);--ceta-superficie-oscura-2:rgba(30,41,59,.96);--ceta-borde-oscuro:#334155;--ceta-texto-oscuro:#e5edf7;--ceta-texto-secundario-oscuro:#aebed0}
-body{position:relative;min-height:100vh}
-body::before{content:"";position:fixed;inset:0;z-index:-1;background-image:linear-gradient(rgba(244,247,251,.91),rgba(244,247,251,.91)),url("../img/logo-ceta-transparente.png");background-repeat:no-repeat,no-repeat;background-position:center,center;background-size:cover,min(54vw,560px);pointer-events:none}
-html.tema-oscuro body::before,body.tema-oscuro::before{background-image:linear-gradient(rgba(11,18,32,.91),rgba(11,18,32,.91)),url("../img/logo-ceta-transparente.png")}
-.acciones-tema-ceta{display:flex;align-items:center;gap:9px}.btn-tema-ceta{min-height:40px;padding:8px 13px;border:1px solid rgba(255,255,255,.35);border-radius:9px;background:rgba(255,255,255,.12);color:inherit;font:inherit;font-size:.82rem;font-weight:800;cursor:pointer}.btn-tema-ceta:hover{background:rgba(255,255,255,.22)}.btn-tema-flotante{position:fixed;right:18px;bottom:18px;z-index:1000;background:#173f73;color:#fff;border-color:#173f73}
-.nav-estudiante-material{display:flex;gap:8px;margin-bottom:18px;padding:7px;border:1px solid #e2e8f0;border-radius:12px;background:rgba(255,255,255,.96)}.nav-estudiante-btn{flex:1;min-height:43px;padding:8px 14px;border:0;border-radius:8px;background:transparent;color:var(--texto-secundario,#64748b);font-weight:800;cursor:pointer}.nav-estudiante-btn:hover{background:#f1f5f9}.nav-estudiante-btn.activo{background:var(--azul,#2563eb);color:#fff}.descripcion-observacion-estudiante{margin:0 0 20px;color:var(--texto-secundario,#64748b);line-height:1.5}.contador-observacion{margin:5px 0 12px;color:var(--texto-secundario,#64748b);font-size:.78rem;text-align:right}
-.cabecera-seccion-admin{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}.texto-secundario-admin{margin:5px 0 0;color:var(--texto-secundario,#64748b)}.filtros-observaciones-admin{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}.filtro-observacion{padding:8px 13px;border:1px solid #cbd5e1;border-radius:20px;background:#fff;color:var(--texto-secundario,#64748b);font-weight:700;cursor:pointer}.filtro-observacion.activo{border-color:var(--azul,#2563eb);background:var(--azul,#2563eb);color:#fff}.resumen-observaciones-admin{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}.resumen-observaciones-admin>div{padding:14px;border:1px solid #e2e8f0;border-radius:11px;background:rgba(255,255,255,.96)}.resumen-observaciones-admin span{display:block;margin-bottom:5px;color:var(--texto-secundario,#64748b);font-size:.75rem;font-weight:700}.resumen-observaciones-admin strong{color:var(--azul-oscuro,#173f73);font-size:1.4rem}.lista-observaciones-admin{display:grid;gap:12px}.observacion-admin-card{overflow:hidden;padding:17px;border:1px solid #e2e8f0;border-left:4px solid #f59e0b;border-radius:12px;background:rgba(255,255,255,.97)}.observacion-admin-card.atendida{border-left-color:#16a34a}.cabecera-observacion-admin{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}.origen-observacion-admin{display:flex;align-items:center;gap:10px}.icono-origen-observacion{display:flex;align-items:center;justify-content:center;width:43px;height:43px;border-radius:50%;background:#f1f5f9;font-size:1.3rem}.tipo-origen-observacion{display:block;margin-bottom:2px;color:var(--texto-secundario,#64748b);font-size:.7rem;font-weight:800;text-transform:uppercase}.estado-observacion-admin{padding:5px 9px;border-radius:20px;font-size:.7rem;font-weight:800;white-space:nowrap}.estado-observacion-admin.pendiente{background:#fff7ed;color:#c2410c}.estado-observacion-admin.atendida{background:#f0fdf4;color:#15803d}.datos-observacion-admin{display:flex;flex-wrap:wrap;gap:6px 15px;margin:13px 0;padding:9px 11px;border-radius:8px;background:#f8fafc;color:var(--texto-secundario,#64748b);font-size:.76rem}.texto-observacion-admin{padding:13px 14px;border:1px solid #e2e8f0;border-radius:9px;background:#fafafa;color:var(--texto,#1e293b);line-height:1.55;white-space:pre-wrap;word-break:break-word}.respuesta-observacion-admin{margin-top:14px}.respuesta-observacion-admin label{display:block;margin-bottom:6px;color:var(--azul-oscuro,#173f73);font-size:.78rem;font-weight:800}.respuesta-observacion-admin textarea{width:100%;resize:vertical;padding:10px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:var(--texto,#1e293b);font:inherit;outline:0}.acciones-observacion-admin{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}.acciones-observacion-admin button{min-height:38px;padding:7px 11px;border-radius:8px;font-weight:800;cursor:pointer}.btn-atender-observacion{border:1px solid #16a34a;background:#16a34a;color:#fff}.btn-reabrir-observacion{border:1px solid #f59e0b;background:#fff7ed;color:#b45309}.btn-guardar-respuesta-observacion{border:1px solid var(--azul,#2563eb);background:#fff;color:var(--azul,#2563eb)}.btn-eliminar-observacion{margin-left:auto;border:1px solid #fecaca;background:#fff;color:#dc2626}
-html.tema-oscuro{color-scheme:dark}html.tema-oscuro body,body.tema-oscuro{background-color:var(--ceta-fondo-oscuro)!important;color:var(--ceta-texto-oscuro)}html.tema-oscuro .tarjeta-estudiante,html.tema-oscuro .bienvenida-estudiante,html.tema-oscuro .nav-estudiante-material,html.tema-oscuro .seccion-admin,html.tema-oscuro .panel-admin,html.tema-oscuro .tarjeta-admin,html.tema-oscuro .grupo-card,html.tema-oscuro .materia-card,html.tema-oscuro .carpeta-material-card,html.tema-oscuro .recurso-material-card,html.tema-oscuro .resumen-observaciones-admin>div,html.tema-oscuro .observacion-admin-card,html.tema-oscuro .formulario-desplegable,html.tema-oscuro table{background:var(--ceta-superficie-oscura)!important;color:var(--ceta-texto-oscuro)!important;border-color:var(--ceta-borde-oscuro)!important}html.tema-oscuro h1,html.tema-oscuro h2,html.tema-oscuro h3,html.tema-oscuro h4,html.tema-oscuro strong,html.tema-oscuro label{color:var(--ceta-texto-oscuro)!important}html.tema-oscuro p,html.tema-oscuro small,html.tema-oscuro .texto-secundario-admin,html.tema-oscuro .descripcion-observacion-estudiante,html.tema-oscuro .datos-observacion-admin,html.tema-oscuro .tipo-origen-observacion,html.tema-oscuro .contador-observacion{color:var(--ceta-texto-secundario-oscuro)!important}html.tema-oscuro input,html.tema-oscuro select,html.tema-oscuro textarea{background:#111827!important;color:var(--ceta-texto-oscuro)!important;border-color:#475569!important}html.tema-oscuro input::placeholder,html.tema-oscuro textarea::placeholder{color:#7f91a7!important}html.tema-oscuro .nav-estudiante-btn:not(.activo),html.tema-oscuro .filtro-observacion:not(.activo),html.tema-oscuro .btn-secundario,html.tema-oscuro .btn-icono,html.tema-oscuro .btn-volver-estudiante,html.tema-oscuro .btn-ver-material{background:#172033!important;color:#dce7f4!important;border-color:#40516a!important}html.tema-oscuro .datos-observacion-admin,html.tema-oscuro .texto-observacion-admin,html.tema-oscuro .icono-origen-observacion{background:var(--ceta-superficie-oscura-2)!important;border-color:var(--ceta-borde-oscuro)!important}html.tema-oscuro th{background:#172033!important;color:#e5edf7!important}html.tema-oscuro td{color:#dbe6f3!important;border-color:#334155!important}
-@media(max-width:650px){.acciones-tema-ceta{gap:6px}.btn-tema-ceta{padding:7px 9px;font-size:.74rem}.nav-estudiante-material{flex-direction:column}.cabecera-seccion-admin,.cabecera-observacion-admin{align-items:stretch;flex-direction:column}.acciones-observacion-admin{flex-direction:column}.acciones-observacion-admin button{width:100%}.btn-eliminar-observacion{margin-left:0}}@media(max-width:430px){.resumen-observaciones-admin{grid-template-columns:1fr}body::before{background-size:cover,82vw}}
-/* CETA - modo oscuro, marca de agua y observaciones */
-/* =========================================================
-   CETA
-   TARJETAS AZULES - MATERIAL ACADÉMICO
-   ========================================================= */
+/* ============================================================
+   CETA - TEMA INSTITUCIONAL
+   Material Académico
+
+   Incluye:
+   - Marca de agua CETA
+   - Modo claro
+   - Modo oscuro
+   - Botón de cambio de tema
+   - Mejoras visuales generales
+   ============================================================ */
 
 
-/* =========================================================
-   PESTAÑAS ESTUDIANTE
-   Material académico / Observaciones
-   ========================================================= */
+/* ============================================================
+   VARIABLES
+   ============================================================ */
 
-.nav-estudiante-material {
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid #cbd5e1;
-}
+:root {
 
-.nav-estudiante-btn {
-    background: #123b68;
-    color: #ffffff;
+    --ceta-azul:
+        #123b68;
 
-    border-radius: 8px;
+    --ceta-azul-medio:
+        #174a7d;
 
-    transition:
-        background 0.2s ease,
-        transform 0.15s ease,
-        box-shadow 0.2s ease;
-}
+    --ceta-azul-claro:
+        #2563a5;
 
-.nav-estudiante-btn:hover {
-    background: #1d5188;
-    color: #ffffff;
+    --ceta-azul-oscuro:
+        #0b2746;
 
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 4px 10px
-        rgba(18, 59, 104, 0.20);
-}
-
-.nav-estudiante-btn.activo {
-    background: #0b2746;
-    color: #ffffff;
-
-    box-shadow:
-        0 4px 12px
-        rgba(11, 39, 70, 0.25);
-}
+    --ceta-borde-azul:
+        #214f7e;
 
 
-/* =========================================================
-   PESTAÑAS DOCENTE
-   Material académico / Observaciones
-   ========================================================= */
+    --ceta-fondo:
+        #f4f7fb;
 
-.nav-docente-material {
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid #cbd5e1;
-}
+    --ceta-superficie:
+        rgba(255, 255, 255, 0.96);
 
-.nav-docente-btn {
-    background: #123b68;
-    color: #ffffff;
+    --ceta-superficie-secundaria:
+        #f8fafc;
 
-    border-radius: 8px;
+    --ceta-borde:
+        #dbe3ec;
 
-    transition:
-        background 0.2s ease,
-        transform 0.15s ease,
-        box-shadow 0.2s ease;
-}
+    --ceta-texto:
+        #1e293b;
 
-.nav-docente-btn:hover {
-    background: #1d5188;
-    color: #ffffff;
+    --ceta-texto-secundario:
+        #64748b;
 
-    transform: translateY(-1px);
-}
 
-.nav-docente-btn.activo {
-    background: #0b2746;
-    color: #ffffff;
+    /* MODO OSCURO */
 
-    box-shadow:
-        0 4px 12px
-        rgba(11, 39, 70, 0.25);
+    --ceta-fondo-oscuro:
+        #08111f;
+
+    --ceta-superficie-oscura:
+        #101c2d;
+
+    --ceta-superficie-oscura-2:
+        #17263a;
+
+    --ceta-borde-oscuro:
+        #334b67;
+
+    --ceta-texto-oscuro:
+        #edf4fc;
+
+    --ceta-texto-secundario-oscuro:
+        #b5c5d8;
+
 }
 
 
-/* =========================================================
-   MATERIAS DEL ESTUDIANTE
-   ========================================================= */
+/* ============================================================
+   BASE
+   ============================================================ */
 
-.materia-estudiante-card {
+html {
+
+    min-height: 100%;
+
+}
+
+
+body {
+
+    position: relative;
+
+    min-height: 100vh;
+
+}
+
+
+/* ============================================================
+   MARCA DE AGUA CETA
+   ============================================================ */
+
+body::before {
+
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: -1;
+
+    pointer-events: none;
+
+
+    background-image:
+
+        linear-gradient(
+            rgba(244, 247, 251, 0.91),
+            rgba(244, 247, 251, 0.91)
+        ),
+
+        url("../img/logo-ceta-transparente.png");
+
+
+    background-repeat:
+        no-repeat,
+        no-repeat;
+
+
+    background-position:
+        center,
+        center;
+
+
+    background-size:
+        cover,
+        min(54vw, 560px);
+
+}
+
+
+/* Marca de agua modo oscuro */
+
+body.tema-oscuro::before {
+
+    background-image:
+
+        linear-gradient(
+            rgba(8, 17, 31, 0.92),
+            rgba(8, 17, 31, 0.92)
+        ),
+
+        url("../img/logo-ceta-transparente.png");
+
+}
+
+
+/* ============================================================
+   ACCIONES DE CABECERA
+   ============================================================ */
+
+.acciones-header-admin,
+.acciones-tema-ceta {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+/* ============================================================
+   BOTÓN CAMBIAR TEMA
+   ============================================================ */
+
+.btn-tema-ceta {
+
+    min-height: 40px;
+
+    padding:
+        8px
+        14px;
+
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.38);
+
+
+    border-radius:
+        9px;
+
+
     background:
+        rgba(255, 255, 255, 0.12);
+
+
+    color:
+        #ffffff;
+
+
+    font:
+        inherit;
+
+
+    font-size:
+        0.82rem;
+
+
+    font-weight:
+        800;
+
+
+    cursor:
+        pointer;
+
+
+    transition:
+
+        background 0.2s ease,
+
+        transform 0.15s ease,
+
+        border-color 0.2s ease;
+
+}
+
+
+.btn-tema-ceta:hover {
+
+    background:
+        rgba(255, 255, 255, 0.23);
+
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* Si alguna página necesita botón flotante */
+
+.btn-tema-flotante {
+
+    position:
+        fixed;
+
+
+    right:
+        18px;
+
+
+    bottom:
+        18px;
+
+
+    z-index:
+        1000;
+
+
+    background:
+        var(--ceta-azul);
+
+
+    color:
+        #ffffff;
+
+
+    border-color:
+        var(--ceta-azul);
+
+}
+
+
+/* ============================================================
+   NAVEGACIÓN ADMINISTRADOR
+   ============================================================ */
+
+.menu-admin {
+
+    gap:
+        8px;
+
+}
+
+
+.menu-admin-btn {
+
+    transition:
+
+        background 0.2s ease,
+
+        color 0.2s ease,
+
+        transform 0.15s ease,
+
+        box-shadow 0.2s ease;
+
+}
+
+
+.menu-admin-btn:not(.activo) {
+
+    background:
+        #e8f0f8;
+
+
+    color:
+        var(--ceta-azul);
+
+
+    border:
+        1px solid
+        #c7d8e9;
+
+}
+
+
+.menu-admin-btn:not(.activo):hover {
+
+    background:
+        #d8e8f6;
+
+
+    color:
+        var(--ceta-azul-oscuro);
+
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.menu-admin-btn.activo {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--ceta-azul),
+            var(--ceta-azul-medio)
+        );
+
+
+    color:
+        #ffffff;
+
+
+    border-color:
+        var(--ceta-azul);
+
+
+    box-shadow:
+
+        0 4px 12px
+        rgba(11, 39, 70, 0.20);
+
+}
+
+
+/* ============================================================
+   TARJETAS GENERALES DEL ADMINISTRADOR
+   ============================================================ */
+
+.tarjeta-panel {
+
+    border:
+        1px solid
+        rgba(203, 213, 225, 0.90);
+
+
+    box-shadow:
+
+        0 5px 18px
+        rgba(15, 23, 42, 0.06);
+
+}
+
+
+.estadistica-card {
+
+    border:
+        1px solid
+        rgba(203, 213, 225, 0.90);
+
+
+    box-shadow:
+
+        0 4px 14px
+        rgba(15, 23, 42, 0.05);
+
+}
+
+
+/* ============================================================
+   FORMULARIOS
+   ============================================================ */
+
+.formulario-desplegable {
+
+    border:
+        1px solid
+        #cbd5e1;
+
+
+    box-shadow:
+
+        0 4px 14px
+        rgba(15, 23, 42, 0.05);
+
+}
+
+
+.formulario-desplegable input,
+.formulario-desplegable select,
+.formulario-desplegable textarea {
+
+    transition:
+
+        border-color 0.2s ease,
+
+        box-shadow 0.2s ease,
+
+        background 0.2s ease;
+
+}
+
+
+.formulario-desplegable input:focus,
+.formulario-desplegable select:focus,
+.formulario-desplegable textarea:focus {
+
+    border-color:
+        var(--ceta-azul-claro);
+
+
+    box-shadow:
+
+        0 0 0 3px
+        rgba(37, 99, 165, 0.12);
+
+}
+
+
+/* ============================================================
+   SELECTOR DE SEMESTRES - ADMIN
+   ============================================================ */
+
+.selector-semestres {
+
+    gap:
+        8px;
+
+}
+
+
+.btn-semestre {
+
+    background:
+        #e8f0f8;
+
+
+    color:
+        var(--ceta-azul);
+
+
+    border:
+        1px solid
+        #c4d7e9;
+
+
+    font-weight:
+        800;
+
+
+    transition:
+
+        background 0.2s ease,
+
+        color 0.2s ease,
+
+        transform 0.15s ease,
+
+        box-shadow 0.2s ease;
+
+}
+
+
+.btn-semestre:hover {
+
+    background:
+        #d8e8f6;
+
+
+    color:
+        var(--ceta-azul-oscuro);
+
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.btn-semestre.activo {
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--ceta-azul),
+            var(--ceta-azul-medio)
+        );
+
+
+    color:
+        #ffffff;
+
+
+    border-color:
+        var(--ceta-azul);
+
+
+    box-shadow:
+
+        0 4px 12px
+        rgba(11, 39, 70, 0.20);
+
+}
+
+
+/* ============================================================
+   MATERIAS - ADMINISTRADOR
+   ============================================================ */
+
+.materia-card {
+
+    overflow:
+        hidden;
+
+
+    background:
+
         linear-gradient(
             135deg,
             #123b68,
             #174a7d
         );
 
-    border: 1px solid #214f7e;
+
+    border:
+        1px solid
+        #214f7e;
+
+
+    border-radius:
+        12px;
+
+
+    color:
+        #ffffff;
+
 
     box-shadow:
-        0 5px 14px
-        rgba(11, 39, 70, 0.14);
 
-    color: #ffffff;
+        0 5px 14px
+        rgba(11, 39, 70, 0.15);
+
+
+    transition:
+
+        transform 0.15s ease,
+
+        box-shadow 0.2s ease,
+
+        border-color 0.2s ease;
+
 }
 
-.materia-estudiante-card:hover {
+
+.materia-card:hover {
+
+    transform:
+        translateY(-2px);
+
+
+    border-color:
+        #4c8bc5;
+
+
+    box-shadow:
+
+        0 8px 20px
+        rgba(11, 39, 70, 0.23);
+
+}
+
+
+/*
+   IMPORTANTE:
+   Esta es la clase que realmente genera
+   el admin.js nuevo.
+*/
+
+.materia-card-principal {
+
     background:
+        transparent;
+
+
+    color:
+        #ffffff;
+
+
+    border:
+        0;
+
+
+    cursor:
+        pointer;
+
+}
+
+
+.materia-card-principal strong,
+.materia-card-info strong {
+
+    color:
+        #ffffff;
+
+}
+
+
+.materia-card-principal p,
+.materia-card-info p {
+
+    color:
+        #dbeafe;
+
+}
+
+
+.materia-card-principal small,
+.materia-card-info small {
+
+    color:
+        #bfdbfe;
+
+}
+
+
+.materia-card-icono {
+
+    background:
+        rgba(255, 255, 255, 0.14);
+
+
+    color:
+        #ffffff;
+
+}
+
+
+/* ============================================================
+   RUTA DEL ADMINISTRADOR
+   ============================================================ */
+
+.ruta-material {
+
+    padding:
+        10px
+        12px;
+
+
+    margin-bottom:
+        15px;
+
+
+    background:
+        #e8f0f8;
+
+
+    border:
+        1px solid
+        #c4d7e9;
+
+
+    border-radius:
+        10px;
+
+
+    color:
+        var(--ceta-azul);
+
+}
+
+
+.ruta-material-item {
+
+    padding:
+        4px
+        7px;
+
+
+    border:
+        0;
+
+
+    border-radius:
+        6px;
+
+
+    background:
+        transparent;
+
+
+    color:
+        var(--ceta-azul);
+
+
+    font:
+        inherit;
+
+
+    font-weight:
+        700;
+
+
+    cursor:
+        pointer;
+
+}
+
+
+.ruta-material-item:hover {
+
+    background:
+        rgba(18, 59, 104, 0.10);
+
+
+    color:
+        var(--ceta-azul-oscuro);
+
+}
+
+
+.ruta-material-separador {
+
+    margin:
+        0
+        4px;
+
+
+    color:
+        #7890aa;
+
+}
+
+
+.ruta-material-actual {
+
+    color:
+        var(--ceta-azul-oscuro);
+
+
+    font-weight:
+        800;
+
+}
+/* ============================================================
+   CARPETAS - ADMINISTRADOR
+   ============================================================ */
+
+.carpeta-material-card {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        12px;
+
+
+    padding:
+        15px;
+
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #123b68,
+            #174a7d
+        );
+
+
+    border:
+        1px solid
+        #214f7e;
+
+
+    border-radius:
+        12px;
+
+
+    color:
+        #ffffff;
+
+
+    box-shadow:
+
+        0 4px 12px
+        rgba(11, 39, 70, 0.14);
+
+
+    transition:
+
+        transform 0.15s ease,
+
+        box-shadow 0.2s ease,
+
+        border-color 0.2s ease,
+
+        background 0.2s ease;
+
+}
+
+
+.carpeta-material-card:hover {
+
+    background:
+
         linear-gradient(
             135deg,
             #174a7d,
             #1d5a94
         );
 
-    border-color: #4c8bc5;
 
-    transform: translateY(-2px);
+    border-color:
+        #4c8bc5;
+
+
+    transform:
+        translateY(-2px);
+
 
     box-shadow:
+
+        0 7px 18px
+        rgba(11, 39, 70, 0.22);
+
+}
+
+
+/*
+   Estas clases corresponden al contenido
+   generado por el admin.js nuevo.
+*/
+
+.carpeta-material-principal {
+
+    flex:
+        1;
+
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+
+    min-width:
+        0;
+
+
+    padding:
+        0;
+
+
+    border:
+        0;
+
+
+    background:
+        transparent;
+
+
+    color:
+        #ffffff;
+
+
+    text-align:
+        left;
+
+
+    font:
+        inherit;
+
+
+    cursor:
+        pointer;
+
+}
+
+
+.carpeta-material-icono {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+
+    flex:
+        0 0 auto;
+
+
+    width:
+        44px;
+
+    height:
+        44px;
+
+
+    border-radius:
+        10px;
+
+
+    background:
+        rgba(255, 255, 255, 0.14);
+
+
+    color:
+        #ffffff;
+
+
+    font-size:
+        1.35rem;
+
+}
+
+
+.carpeta-material-info {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+
+    min-width:
+        0;
+
+
+    gap:
+        3px;
+
+}
+
+
+.carpeta-material-info strong {
+
+    color:
+        #ffffff;
+
+
+    font-weight:
+        800;
+
+}
+
+
+.carpeta-material-info small {
+
+    color:
+        #dbeafe;
+
+}
+
+
+.carpeta-material-flecha {
+
+    margin-left:
+        auto;
+
+
+    color:
+        #ffffff;
+
+
+    font-size:
+        1.15rem;
+
+}
+
+
+/* ============================================================
+   RECURSOS - ADMINISTRADOR
+   ============================================================ */
+
+.recurso-material-card {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        13px;
+
+
+    padding:
+        15px;
+
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #123b68,
+            #174a7d
+        );
+
+
+    border:
+        1px solid
+        #214f7e;
+
+
+    border-radius:
+        12px;
+
+
+    color:
+        #ffffff;
+
+
+    box-shadow:
+
+        0 4px 12px
+        rgba(11, 39, 70, 0.14);
+
+}
+
+
+.recurso-material-icono {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+
+    flex:
+        0 0 auto;
+
+
+    width:
+        44px;
+
+    height:
+        44px;
+
+
+    border-radius:
+        10px;
+
+
+    background:
+        rgba(255, 255, 255, 0.14);
+
+
+    color:
+        #ffffff;
+
+
+    font-size:
+        1.3rem;
+
+}
+
+
+.recurso-material-info {
+
+    flex:
+        1;
+
+
+    min-width:
+        0;
+
+}
+
+
+.recurso-material-info strong {
+
+    display:
+        block;
+
+
+    color:
+        #ffffff;
+
+
+    font-weight:
+        800;
+
+
+    overflow-wrap:
+        anywhere;
+
+}
+
+
+.recurso-material-info small,
+.recurso-material-info p {
+
+    color:
+        #dbeafe;
+
+}
+
+
+.recurso-material-info p {
+
+    margin:
+        4px
+        0
+        0;
+
+
+    line-height:
+        1.45;
+
+}
+
+
+/* ============================================================
+   ACCIONES DE CARPETAS Y RECURSOS
+   ============================================================ */
+
+.acciones-item-material {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    flex-wrap:
+        wrap;
+
+
+    gap:
+        6px;
+
+}
+
+
+.acciones-item-material button,
+.acciones-item-material a {
+
+    min-height:
+        36px;
+
+
+    padding:
+        7px
+        10px;
+
+
+    border-radius:
+        8px;
+
+
+    font-size:
+        0.78rem;
+
+
+    font-weight:
+        800;
+
+
+    cursor:
+        pointer;
+
+}
+
+
+/* Botones dentro de tarjetas azules */
+
+.carpeta-material-card
+.btn-secundario,
+
+.recurso-material-card
+.btn-secundario {
+
+    background:
+        rgba(255, 255, 255, 0.94);
+
+
+    color:
+        var(--ceta-azul);
+
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.75);
+
+}
+
+
+.carpeta-material-card
+.btn-secundario:hover,
+
+.recurso-material-card
+.btn-secundario:hover {
+
+    background:
+        #ffffff;
+
+
+    color:
+        var(--ceta-azul-oscuro);
+
+}
+
+
+/* ============================================================
+   CONTENIDO DE MATERIA
+   ============================================================ */
+
+.contenido-materia {
+
+    display:
+        grid;
+
+
+    gap:
+        12px;
+
+
+    margin-top:
+        18px;
+
+}
+
+
+/* ============================================================
+   OBSERVACIONES - CABECERA
+   ============================================================ */
+
+.cabecera-seccion-admin {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+
+    gap:
+        20px;
+
+
+    margin-bottom:
+        18px;
+
+}
+
+
+.texto-secundario-admin {
+
+    margin:
+        5px
+        0
+        0;
+
+
+    color:
+        var(--ceta-texto-secundario);
+
+
+    line-height:
+        1.5;
+
+}
+
+
+/* ============================================================
+   FILTROS DE OBSERVACIONES
+   ============================================================ */
+
+.filtros-observaciones-admin {
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+
+    gap:
+        8px;
+
+
+    margin-bottom:
+        15px;
+
+}
+
+
+.filtro-observacion {
+
+    min-height:
+        38px;
+
+
+    padding:
+        8px
+        14px;
+
+
+    border:
+        1px solid
+        #c4d7e9;
+
+
+    border-radius:
+        20px;
+
+
+    background:
+        #e8f0f8;
+
+
+    color:
+        var(--ceta-azul);
+
+
+    font:
+        inherit;
+
+
+    font-size:
+        0.82rem;
+
+
+    font-weight:
+        800;
+
+
+    cursor:
+        pointer;
+
+
+    transition:
+
+        background 0.2s ease,
+
+        color 0.2s ease,
+
+        transform 0.15s ease;
+
+}
+
+
+.filtro-observacion:hover {
+
+    background:
+        #d8e8f6;
+
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.filtro-observacion.activo {
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--ceta-azul),
+            var(--ceta-azul-medio)
+        );
+
+
+    border-color:
+        var(--ceta-azul);
+
+
+    color:
+        #ffffff;
+
+}
+
+
+/* ============================================================
+   CONTADORES DE OBSERVACIONES
+   ============================================================ */
+
+.resumen-observaciones-admin {
+
+    display:
+        grid;
+
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+
+    gap:
+        10px;
+
+
+    margin-bottom:
+        18px;
+
+}
+
+
+.resumen-observaciones-admin > div {
+
+    padding:
+        14px;
+
+
+    border:
+        1px solid
+        #dbe3ec;
+
+
+    border-radius:
+        11px;
+
+
+    background:
+        #f8fafc;
+
+}
+
+
+.resumen-observaciones-admin span {
+
+    display:
+        block;
+
+
+    margin-bottom:
+        5px;
+
+
+    color:
+        var(--ceta-texto-secundario);
+
+
+    font-size:
+        0.75rem;
+
+
+    font-weight:
+        700;
+
+}
+
+
+.resumen-observaciones-admin strong {
+
+    color:
+        var(--ceta-azul-oscuro);
+
+
+    font-size:
+        1.4rem;
+
+}
+
+
+/* ============================================================
+   LISTA DE OBSERVACIONES
+   ============================================================ */
+
+.lista-observaciones-admin {
+
+    display:
+        grid;
+
+
+    gap:
+        13px;
+
+}
+
+
+/* ============================================================
+   TARJETA DE OBSERVACIÓN
+
+   Incluyo ambos nombres de clases para que funcione
+   tanto con el JS nuevo como con el formato anterior.
+   ============================================================ */
+
+.observacion-admin-card {
+
+    overflow:
+        hidden;
+
+
+    padding:
+        17px;
+
+
+    border:
+        1px solid
+        #dbe3ec;
+
+
+    border-left:
+        5px solid
+        #f59e0b;
+
+
+    border-radius:
+        12px;
+
+
+    background:
+        #ffffff;
+
+
+    box-shadow:
+
+        0 4px 14px
+        rgba(15, 23, 42, 0.05);
+
+}
+
+
+.observacion-admin-card.atendida {
+
+    border-left-color:
+        #16a34a;
+
+}
+
+
+/* ============================================================
+   CABECERA DE OBSERVACIÓN
+   ============================================================ */
+
+.observacion-admin-cabecera,
+.cabecera-observacion-admin {
+
+    display:
+        flex;
+
+
+    align-items:
+        flex-start;
+
+
+    justify-content:
+        space-between;
+
+
+    gap:
+        15px;
+
+
+    margin-bottom:
+        10px;
+
+}
+
+
+.observacion-admin-cabecera > div {
+
+    display:
+        flex;
+
+
+    flex-wrap:
+        wrap;
+
+
+    align-items:
+        center;
+
+
+    gap:
+        6px
+        10px;
+
+}
+
+
+.observacion-admin-cabecera strong {
+
+    color:
+        var(--ceta-azul-oscuro);
+
+}
+
+
+.observacion-admin-cabecera span {
+
+    color:
+        var(--ceta-texto-secundario);
+
+
+    font-size:
+        0.78rem;
+
+}
+
+
+/* ============================================================
+   ESTADO DE OBSERVACIÓN
+   ============================================================ */
+
+.estado-badge,
+.estado-observacion-admin {
+
+    display:
+        inline-flex;
+
+
+    align-items:
+        center;
+
+
+    justify-content:
+        center;
+
+
+    padding:
+        5px
+        9px;
+
+
+    border-radius:
+        20px;
+
+
+    font-size:
+        0.70rem;
+
+
+    font-weight:
+        800;
+
+
+    white-space:
+        nowrap;
+
+}
+
+
+.estado-badge.pendiente,
+.estado-observacion-admin.pendiente {
+
+    background:
+        #fff7ed;
+
+
+    color:
+        #c2410c;
+
+}
+
+
+.estado-badge.atendida,
+.estado-observacion-admin.atendida {
+
+    background:
+        #f0fdf4;
+
+
+    color:
+        #15803d;
+
+}
+
+
+/* ============================================================
+   METADATOS
+   ============================================================ */
+
+.observacion-admin-meta,
+.datos-observacion-admin {
+
+    display:
+        flex;
+
+
+    flex-wrap:
+        wrap;
+
+
+    gap:
+        6px
+        15px;
+
+
+    margin:
+        12px
+        0;
+
+
+    padding:
+        9px
+        11px;
+
+
+    border-radius:
+        8px;
+
+
+    background:
+        #f1f5f9;
+
+
+    color:
+        var(--ceta-texto-secundario);
+
+
+    font-size:
+        0.76rem;
+
+}
+
+
+/* ============================================================
+   TEXTO DE LA OBSERVACIÓN
+   ============================================================ */
+
+.observacion-admin-texto,
+.texto-observacion-admin {
+
+    padding:
+        13px
+        14px;
+
+
+    border:
+        1px solid
+        #e2e8f0;
+
+
+    border-radius:
+        9px;
+
+
+    background:
+        #f8fafc;
+
+
+    color:
+        var(--ceta-texto);
+
+
+    line-height:
+        1.55;
+
+
+    white-space:
+        pre-wrap;
+
+
+    overflow-wrap:
+        anywhere;
+
+}
+
+
+/* ============================================================
+   RESPUESTA DEL ADMINISTRADOR
+   ============================================================ */
+
+.observacion-admin-respuesta,
+.respuesta-observacion-admin {
+
+    margin-top:
+        14px;
+
+}
+
+
+.observacion-admin-respuesta label,
+.respuesta-observacion-admin label {
+
+    display:
+        block;
+
+
+    margin-bottom:
+        6px;
+
+
+    color:
+        var(--ceta-azul-oscuro);
+
+
+    font-size:
+        0.78rem;
+
+
+    font-weight:
+        800;
+
+}
+
+
+.observacion-admin-respuesta textarea,
+.respuesta-observacion-admin textarea {
+
+    width:
+        100%;
+
+
+    min-height:
+        85px;
+
+
+    resize:
+        vertical;
+
+
+    padding:
+        10px;
+
+
+    border:
+        1px solid
+        #cbd5e1;
+
+
+    border-radius:
+        8px;
+
+
+    background:
+        #ffffff;
+
+
+    color:
+        var(--ceta-texto);
+
+
+    font:
+        inherit;
+
+
+    outline:
+        none;
+
+}
+
+
+.observacion-admin-respuesta textarea:focus,
+.respuesta-observacion-admin textarea:focus {
+
+    border-color:
+        var(--ceta-azul-claro);
+
+
+    box-shadow:
+
+        0 0 0 3px
+        rgba(37, 99, 165, 0.12);
+
+}
+
+
+/* ============================================================
+   BOTONES DE OBSERVACIONES
+   ============================================================ */
+
+.observacion-admin-acciones,
+.acciones-observacion-admin {
+
+    display:
+        flex;
+
+
+    flex-wrap:
+        wrap;
+
+
+    gap:
+        8px;
+
+
+    margin-top:
+        13px;
+
+}
+
+
+.observacion-admin-acciones button,
+.acciones-observacion-admin button {
+
+    min-height:
+        38px;
+
+
+    padding:
+        7px
+        11px;
+
+
+    border-radius:
+        8px;
+
+
+    font-weight:
+        800;
+
+
+    cursor:
+        pointer;
+
+}
+
+
+/* Botón peligro */
+
+.btn-peligro,
+.btn-eliminar-observacion {
+
+    border:
+        1px solid
+        #fecaca;
+
+
+    background:
+        #fff5f5;
+
+
+    color:
+        #dc2626;
+
+}
+
+
+.btn-peligro:hover,
+.btn-eliminar-observacion:hover {
+
+    background:
+        #fee2e2;
+
+}
+
+
+/* Compatibilidad con botones anteriores */
+
+.btn-atender-observacion {
+
+    border:
+        1px solid
+        #16a34a;
+
+
+    background:
+        #16a34a;
+
+
+    color:
+        #ffffff;
+
+}
+
+
+.btn-reabrir-observacion {
+
+    border:
+        1px solid
+        #f59e0b;
+
+
+    background:
+        #fff7ed;
+
+
+    color:
+        #b45309;
+
+}
+
+
+.btn-guardar-respuesta-observacion {
+
+    border:
+        1px solid
+        var(--ceta-azul);
+
+
+    background:
+        #ffffff;
+
+
+    color:
+        var(--ceta-azul);
+
+}
+
+
+/* ============================================================
+   ESTADOS VACÍOS
+   ============================================================ */
+
+.vacio {
+
+    padding:
+        30px
+        20px;
+
+
+    text-align:
+        center;
+
+
+    border:
+        1px dashed
+        #cbd5e1;
+
+
+    border-radius:
+        12px;
+
+
+    background:
+        rgba(248, 250, 252, 0.85);
+
+
+    color:
+        var(--ceta-texto-secundario);
+
+}
+
+
+.vacio > span {
+
+    display:
+        block;
+
+
+    margin-bottom:
+        8px;
+
+
+    font-size:
+        2rem;
+
+}
+
+
+.vacio strong {
+
+    display:
+        block;
+
+
+    margin-bottom:
+        5px;
+
+
+    color:
+        var(--ceta-azul-oscuro);
+
+}
+/* ============================================================
+   ESTUDIANTE
+   NAVEGACIÓN MATERIAL / OBSERVACIONES
+   ============================================================ */
+
+.nav-estudiante-material {
+
+    display:
+        flex;
+
+    gap:
+        8px;
+
+    margin-bottom:
+        18px;
+
+    padding:
+        7px;
+
+    border:
+        1px solid
+        #cbd5e1;
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(255, 255, 255, 0.92);
+
+}
+
+
+.nav-estudiante-btn {
+
+    flex:
+        1;
+
+    min-height:
+        43px;
+
+    padding:
+        8px
+        14px;
+
+    border:
+        1px solid
+        #214f7e;
+
+    border-radius:
+        8px;
+
+    background:
+        #123b68;
+
+    color:
+        #ffffff;
+
+    font:
+        inherit;
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+
+    transition:
+
+        background 0.2s ease,
+
+        transform 0.15s ease,
+
+        box-shadow 0.2s ease;
+
+}
+
+
+.nav-estudiante-btn:hover {
+
+    background:
+        #1d5188;
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+
+        0 4px 10px
+        rgba(18, 59, 104, 0.20);
+
+}
+
+
+.nav-estudiante-btn.activo {
+
+    background:
+        #0b2746;
+
+    color:
+        #ffffff;
+
+    border-color:
+        #0b2746;
+
+    box-shadow:
+
+        0 4px 12px
+        rgba(11, 39, 70, 0.25);
+
+}
+
+
+/* ============================================================
+   DOCENTE
+   NAVEGACIÓN MATERIAL / OBSERVACIONES
+   ============================================================ */
+
+.nav-docente-material {
+
+    display:
+        flex;
+
+    gap:
+        8px;
+
+    margin-bottom:
+        18px;
+
+    padding:
+        7px;
+
+    border:
+        1px solid
+        #cbd5e1;
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(255, 255, 255, 0.92);
+
+}
+
+
+.nav-docente-btn {
+
+    flex:
+        1;
+
+    min-height:
+        43px;
+
+    padding:
+        8px
+        14px;
+
+    border:
+        1px solid
+        #214f7e;
+
+    border-radius:
+        8px;
+
+    background:
+        #123b68;
+
+    color:
+        #ffffff;
+
+    font:
+        inherit;
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+
+    transition:
+
+        background 0.2s ease,
+
+        transform 0.15s ease,
+
+        box-shadow 0.2s ease;
+
+}
+
+
+.nav-docente-btn:hover {
+
+    background:
+        #1d5188;
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.nav-docente-btn.activo {
+
+    background:
+        #0b2746;
+
+    color:
+        #ffffff;
+
+    border-color:
+        #0b2746;
+
+    box-shadow:
+
+        0 4px 12px
+        rgba(11, 39, 70, 0.25);
+
+}
+
+
+/* ============================================================
+   SELECTOR DE SEMESTRES
+   ESTUDIANTE
+   ============================================================ */
+
+.btn-semestre-estudiante {
+
+    background:
+        #123b68;
+
+    color:
+        #ffffff;
+
+    border:
+        1px solid
+        #214f7e;
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+
+    transition:
+
+        background 0.2s ease,
+
+        transform 0.15s ease,
+
+        box-shadow 0.2s ease;
+
+}
+
+
+.btn-semestre-estudiante:hover {
+
+    background:
+        #1d5188;
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.btn-semestre-estudiante.activo {
+
+    background:
+        #0b2746;
+
+    color:
+        #ffffff;
+
+    border-color:
+        #0b2746;
+
+    box-shadow:
+
+        0 4px 12px
+        rgba(11, 39, 70, 0.25);
+
+}
+
+
+/* ============================================================
+   SELECTOR DE SEMESTRES
+   DOCENTE
+   ============================================================ */
+
+.btn-semestre-docente {
+
+    background:
+        #123b68;
+
+    color:
+        #ffffff;
+
+    border:
+        1px solid
+        #214f7e;
+
+    font-weight:
+        800;
+
+    cursor:
+        pointer;
+
+    transition:
+
+        background 0.2s ease,
+
+        transform 0.15s ease,
+
+        box-shadow 0.2s ease;
+
+}
+
+
+.btn-semestre-docente:hover {
+
+    background:
+        #1d5188;
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.btn-semestre-docente.activo {
+
+    background:
+        #0b2746;
+
+    color:
+        #ffffff;
+
+    border-color:
+        #0b2746;
+
+    box-shadow:
+
+        0 4px 12px
+        rgba(11, 39, 70, 0.25);
+
+}
+
+
+/* ============================================================
+   MATERIAS - ESTUDIANTE
+   ============================================================ */
+
+.materia-estudiante-card {
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #123b68,
+            #174a7d
+        );
+
+    border:
+        1px solid
+        #214f7e;
+
+    color:
+        #ffffff;
+
+    box-shadow:
+
+        0 5px 14px
+        rgba(11, 39, 70, 0.14);
+
+    transition:
+
+        background 0.2s ease,
+
+        transform 0.15s ease,
+
+        box-shadow 0.2s ease,
+
+        border-color 0.2s ease;
+
+}
+
+
+.materia-estudiante-card:hover {
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #174a7d,
+            #1d5a94
+        );
+
+    border-color:
+        #4c8bc5;
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+
         0 8px 20px
         rgba(11, 39, 70, 0.22);
+
 }
 
-
-/* Nombre de materia */
 
 .materia-estudiante-card
-.info-materia-estudiante strong {
-    color: #ffffff;
+.info-materia-estudiante strong,
+
+.materia-estudiante-card strong {
+
+    color:
+        #ffffff;
+
 }
 
-
-/* Información secundaria */
 
 .materia-estudiante-card
 .info-materia-estudiante small,
 
 .materia-estudiante-card
-.info-materia-estudiante > span {
-    color: #dbeafe;
+.info-materia-estudiante > span,
+
+.materia-estudiante-card small,
+
+.materia-estudiante-card p {
+
+    color:
+        #dbeafe;
+
 }
 
-
-/* Icono */
 
 .materia-estudiante-card
 .icono-materia-estudiante {
+
     background:
         rgba(255, 255, 255, 0.14);
 
-    color: #ffffff;
+    color:
+        #ffffff;
+
 }
 
-
-/* Flecha */
 
 .materia-estudiante-card
 .flecha-materia-estudiante {
-    color: #ffffff;
+
+    color:
+        #ffffff;
+
 }
 
 
-/* =========================================================
-   CARPETAS DEL ESTUDIANTE
-   ========================================================= */
+/* ============================================================
+   CARPETAS - ESTUDIANTE
+   ============================================================ */
 
 .carpeta-estudiante-card {
+
     background:
+
         linear-gradient(
             135deg,
             #123b68,
             #174a7d
         );
 
-    border: 1px solid #214f7e;
+    border:
+        1px solid
+        #214f7e;
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
     box-shadow:
+
         0 4px 12px
         rgba(11, 39, 70, 0.12);
 
     transition:
+
         background 0.2s ease,
+
         transform 0.15s ease,
-        box-shadow 0.2s ease;
+
+        box-shadow 0.2s ease,
+
+        border-color 0.2s ease;
+
 }
 
 
 .carpeta-estudiante-card:hover {
+
     background:
+
         linear-gradient(
             135deg,
             #174a7d,
             #1d5a94
         );
 
-    border-color: #4c8bc5;
+    border-color:
+        #4c8bc5;
 
-    transform: translateY(-2px);
+    transform:
+        translateY(-2px);
 
     box-shadow:
+
         0 7px 18px
         rgba(11, 39, 70, 0.22);
+
 }
 
-
-/* Nombre carpeta */
 
 .carpeta-estudiante-card strong {
-    color: #ffffff;
+
+    color:
+        #ffffff;
+
 }
 
 
-/* Abrir carpeta */
+.carpeta-estudiante-card small,
+.carpeta-estudiante-card p {
 
-.carpeta-estudiante-card small {
-    color: #dbeafe;
+    color:
+        #dbeafe;
+
 }
 
-
-/* Flecha */
 
 .carpeta-estudiante-card b {
-    color: #ffffff;
+
+    color:
+        #ffffff;
+
 }
 
 
-/* =========================================================
-   RECURSOS / ARCHIVOS DEL ESTUDIANTE
-   ========================================================= */
+/* ============================================================
+   RECURSOS - ESTUDIANTE
+   ============================================================ */
 
 .recurso-estudiante-card {
+
     background:
+
         linear-gradient(
             135deg,
             #123b68,
             #174a7d
         );
 
-    border: 1px solid #214f7e;
+    border:
+        1px solid
+        #214f7e;
 
-    color: #ffffff;
+    color:
+        #ffffff;
 
     box-shadow:
+
         0 4px 12px
         rgba(11, 39, 70, 0.12);
+
 }
 
 
 .recurso-estudiante-card
-.info-recurso-estudiante strong {
-    color: #ffffff;
+.info-recurso-estudiante strong,
+
+.recurso-estudiante-card strong {
+
+    color:
+        #ffffff;
+
 }
 
 
@@ -272,352 +2697,1605 @@ html.tema-oscuro{color-scheme:dark}html.tema-oscuro body,body.tema-oscuro{backgr
 .info-recurso-estudiante small,
 
 .recurso-estudiante-card
-.info-recurso-estudiante p {
-    color: #dbeafe;
+.info-recurso-estudiante p,
+
+.recurso-estudiante-card small,
+
+.recurso-estudiante-card p {
+
+    color:
+        #dbeafe;
+
 }
 
 
 .recurso-estudiante-card
 .icono-recurso-estudiante {
+
     background:
         rgba(255, 255, 255, 0.14);
 
-    color: #ffffff;
+    color:
+        #ffffff;
+
 }
 
 
-/* Botón abrir recurso */
+/* ============================================================
+   BOTÓN ABRIR RECURSO
+   ============================================================ */
 
 .recurso-estudiante-card
 .btn-abrir-recurso-estudiante {
-    background: #ffffff;
-    color: #123b68;
 
-    border: 1px solid
-        rgba(255, 255, 255, 0.8);
+    background:
+        #ffffff;
+
+    color:
+        #123b68;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.80);
+
+    font-weight:
+        800;
+
 }
 
 
 .recurso-estudiante-card
 .btn-abrir-recurso-estudiante:hover {
-    background: #eaf2fb;
-    color: #0b2746;
+
+    background:
+        #eaf2fb;
+
+    color:
+        #0b2746;
+
 }
 
 
-/* =========================================================
-   RUTA / MIGAS DE PAN
-   Ejemplo:
-   Electrónica automotriz II
-   ========================================================= */
+/* ============================================================
+   RUTA - ESTUDIANTE
+   ============================================================ */
 
 .ruta-estudiante {
-    background: #123b68;
+
+    background:
+        #123b68;
 
     border:
         1px solid
         #214f7e;
 
-    color: #ffffff;
+    color:
+        #ffffff;
+
 }
 
 
 .ruta-estudiante button {
-    color: #ffffff;
+
+    color:
+        #ffffff;
+
 }
 
 
 .ruta-estudiante button:hover {
-    color: #dbeafe;
+
+    color:
+        #dbeafe;
+
 }
 
 
 .ruta-estudiante span {
-    color: #bfdbfe;
+
+    color:
+        #bfdbfe;
+
 }
 
 
-/* =========================================================
-   ADMINISTRADOR
-   CARPETAS
-   ========================================================= */
+/* ============================================================
+   MATERIAS - DOCENTE
 
-.carpeta-material-card {
+   Dejamos compatibilidad con distintos nombres de clases
+   para no depender de una sola versión del docente.js.
+   ============================================================ */
+
+.materia-docente-card {
+
     background:
+
         linear-gradient(
             135deg,
             #123b68,
             #174a7d
         );
 
-    border: 1px solid #214f7e;
+    border:
+        1px solid
+        #214f7e;
 
-    color: #ffffff;
+    color:
+        #ffffff;
+
+    box-shadow:
+
+        0 5px 14px
+        rgba(11, 39, 70, 0.14);
+
+    transition:
+
+        background 0.2s ease,
+
+        transform 0.15s ease,
+
+        box-shadow 0.2s ease,
+
+        border-color 0.2s ease;
+
 }
 
 
-.carpeta-material-card:hover {
+.materia-docente-card:hover {
+
     background:
+
         linear-gradient(
             135deg,
             #174a7d,
             #1d5a94
         );
 
-    border-color: #4c8bc5;
+    border-color:
+        #4c8bc5;
+
+    transform:
+        translateY(-2px);
+
 }
 
 
-.carpeta-material-card
-.carpeta-abrir strong {
-    color: #ffffff;
+.materia-docente-card strong {
+
+    color:
+        #ffffff;
+
 }
 
 
-.carpeta-material-card
-.carpeta-abrir small {
-    color: #dbeafe;
+.materia-docente-card small,
+.materia-docente-card p {
+
+    color:
+        #dbeafe;
+
 }
 
 
-/* =========================================================
-   ADMINISTRADOR
-   MATERIAS
-   ========================================================= */
+/* ============================================================
+   CARPETAS - DOCENTE
+   ============================================================ */
 
-.materia-card {
+.carpeta-docente-card {
+
     background:
+
         linear-gradient(
             135deg,
             #123b68,
             #174a7d
         );
 
-    border: 1px solid #214f7e;
+    border:
+        1px solid
+        #214f7e;
 
-    color: #ffffff;
+    color:
+        #ffffff;
+
+    box-shadow:
+
+        0 4px 12px
+        rgba(11, 39, 70, 0.12);
+
+    transition:
+
+        background 0.2s ease,
+
+        transform 0.15s ease,
+
+        border-color 0.2s ease;
+
 }
 
 
-.materia-card:hover {
-    border-color: #4c8bc5;
-}
+.carpeta-docente-card:hover {
 
-
-.materia-card-info strong {
-    color: #ffffff;
-}
-
-
-.materia-card-info small,
-.materia-card-info p {
-    color: #dbeafe;
-}
-
-
-.materia-card-icono {
     background:
-        rgba(255, 255, 255, 0.14);
+
+        linear-gradient(
+            135deg,
+            #174a7d,
+            #1d5a94
+        );
+
+    border-color:
+        #4c8bc5;
+
+    transform:
+        translateY(-2px);
+
 }
 
 
-/* =========================================================
-   ADMINISTRADOR
-   RECURSOS
-   ========================================================= */
+.carpeta-docente-card strong {
 
-.recurso-material-card {
+    color:
+        #ffffff;
+
+}
+
+
+.carpeta-docente-card small,
+.carpeta-docente-card p {
+
+    color:
+        #dbeafe;
+
+}
+
+
+/* ============================================================
+   RECURSOS - DOCENTE
+   ============================================================ */
+
+.recurso-docente-card {
+
     background:
+
         linear-gradient(
             135deg,
             #123b68,
             #174a7d
         );
 
-    border: 1px solid #214f7e;
+    border:
+        1px solid
+        #214f7e;
 
-    color: #ffffff;
+    color:
+        #ffffff;
+
+    box-shadow:
+
+        0 4px 12px
+        rgba(11, 39, 70, 0.12);
+
 }
 
 
-.recurso-info strong {
-    color: #ffffff;
+.recurso-docente-card strong {
+
+    color:
+        #ffffff;
+
 }
 
 
-.recurso-info small,
-.recurso-info p {
-    color: #dbeafe;
+.recurso-docente-card small,
+.recurso-docente-card p {
+
+    color:
+        #dbeafe;
+
 }
 
 
-.recurso-icono {
+/* ============================================================
+   RUTA - DOCENTE
+   ============================================================ */
+
+.ruta-docente {
+
     background:
-        rgba(255, 255, 255, 0.14);
+        #123b68;
+
+    border:
+        1px solid
+        #214f7e;
+
+    color:
+        #ffffff;
+
 }
 
 
-/* =========================================================
-   MODO OSCURO
-   ========================================================= */
+.ruta-docente button {
 
-.tema-oscuro
+    color:
+        #ffffff;
+
+}
+
+
+.ruta-docente button:hover {
+
+    color:
+        #dbeafe;
+
+}
+
+
+.ruta-docente span {
+
+    color:
+        #bfdbfe;
+
+}
+
+
+/* ============================================================
+   OBSERVACIONES DEL ESTUDIANTE
+   ============================================================ */
+
+.descripcion-observacion-estudiante {
+
+    margin:
+        0
+        0
+        20px;
+
+    color:
+        var(--ceta-texto-secundario);
+
+    line-height:
+        1.5;
+
+}
+
+
+.contador-observacion {
+
+    margin:
+        5px
+        0
+        12px;
+
+    color:
+        var(--ceta-texto-secundario);
+
+    font-size:
+        0.78rem;
+
+    text-align:
+        right;
+
+}
+
+
+/* ============================================================
+   FORMULARIO OBSERVACIONES
+   ESTUDIANTE / DOCENTE
+   ============================================================ */
+
+.form-observacion-estudiante,
+.form-observacion-docente {
+
+    padding:
+        18px;
+
+    border:
+        1px solid
+        #dbe3ec;
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(255, 255, 255, 0.94);
+
+}
+
+
+.form-observacion-estudiante textarea,
+.form-observacion-docente textarea {
+
+    width:
+        100%;
+
+    resize:
+        vertical;
+
+}
+
+
+/* ============================================================
+   TARJETAS PRINCIPALES
+   ESTUDIANTE / DOCENTE
+   ============================================================ */
+
+.tarjeta-estudiante,
+.tarjeta-docente {
+
+    border:
+        1px solid
+        rgba(203, 213, 225, 0.90);
+
+    box-shadow:
+
+        0 5px 18px
+        rgba(15, 23, 42, 0.06);
+
+}
+
+
+/* ============================================================
+   ESTADO DE CARGA
+   ============================================================ */
+
+.estado-carga {
+
+    padding:
+        16px;
+
+    text-align:
+        center;
+
+    color:
+        var(--ceta-texto-secundario);
+
+}
+
+
+/* ============================================================
+   MENSAJES
+   ============================================================ */
+
+.mensaje {
+
+    margin-top:
+        8px;
+
+    font-weight:
+        700;
+
+}
+
+
+.mensaje.error {
+
+    color:
+        #dc2626;
+
+}
+
+
+.mensaje.exito {
+
+    color:
+        #15803d;
+
+}
+/* ============================================================
+   MODO OSCURO GENERAL
+   ============================================================ */
+
+html.tema-oscuro {
+
+    color-scheme:
+        dark;
+
+}
+
+
+body.tema-oscuro {
+
+    background-color:
+        var(--ceta-fondo-oscuro) !important;
+
+    color:
+        var(--ceta-texto-oscuro);
+
+}
+
+
+/* ============================================================
+   SUPERFICIES PRINCIPALES
+   ============================================================ */
+
+body.tema-oscuro
+.tarjeta-panel,
+
+body.tema-oscuro
+.estadistica-card,
+
+body.tema-oscuro
+.tarjeta-estudiante,
+
+body.tema-oscuro
+.tarjeta-docente,
+
+body.tema-oscuro
+.bienvenida-estudiante,
+
+body.tema-oscuro
+.bienvenida-docente,
+
+body.tema-oscuro
+.formulario-desplegable,
+
+body.tema-oscuro
+.form-observacion-estudiante,
+
+body.tema-oscuro
+.form-observacion-docente,
+
+body.tema-oscuro
+.observacion-admin-card {
+
+    background:
+        var(--ceta-superficie-oscura) !important;
+
+    color:
+        var(--ceta-texto-oscuro) !important;
+
+    border-color:
+        var(--ceta-borde-oscuro) !important;
+
+}
+
+
+/* ============================================================
+   TEXTOS GENERALES
+   ============================================================ */
+
+body.tema-oscuro h1,
+body.tema-oscuro h2,
+body.tema-oscuro h3,
+body.tema-oscuro h4,
+body.tema-oscuro h5,
+body.tema-oscuro label {
+
+    color:
+        var(--ceta-texto-oscuro) !important;
+
+}
+
+
+body.tema-oscuro p,
+body.tema-oscuro small,
+body.tema-oscuro .texto-secundario-admin,
+body.tema-oscuro .descripcion-observacion-estudiante,
+body.tema-oscuro .contador-observacion,
+body.tema-oscuro .estado-carga {
+
+    color:
+        var(--ceta-texto-secundario-oscuro) !important;
+
+}
+
+
+/* ============================================================
+   INPUTS / SELECTS / TEXTAREA
+   ============================================================ */
+
+body.tema-oscuro input,
+body.tema-oscuro select,
+body.tema-oscuro textarea {
+
+    background:
+        #0d1929 !important;
+
+    color:
+        var(--ceta-texto-oscuro) !important;
+
+    border-color:
+        #405875 !important;
+
+}
+
+
+body.tema-oscuro input::placeholder,
+body.tema-oscuro textarea::placeholder {
+
+    color:
+        #8297af !important;
+
+}
+
+
+body.tema-oscuro input:focus,
+body.tema-oscuro select:focus,
+body.tema-oscuro textarea:focus {
+
+    border-color:
+        #5d9bd5 !important;
+
+    box-shadow:
+
+        0 0 0 3px
+        rgba(93, 155, 213, 0.15) !important;
+
+}
+
+
+/* ============================================================
+   BOTONES SECUNDARIOS
+   ============================================================ */
+
+body.tema-oscuro
+.btn-secundario,
+
+body.tema-oscuro
+.btn-icono {
+
+    background:
+        #17263a !important;
+
+    color:
+        #e3edf8 !important;
+
+    border-color:
+        #405875 !important;
+
+}
+
+
+body.tema-oscuro
+.btn-secundario:hover,
+
+body.tema-oscuro
+.btn-icono:hover {
+
+    background:
+        #203550 !important;
+
+    color:
+        #ffffff !important;
+
+}
+
+
+/* ============================================================
+   NAVEGACIÓN ADMIN
+   ============================================================ */
+
+body.tema-oscuro
+.menu-admin-btn:not(.activo) {
+
+    background:
+        #17263a;
+
+    color:
+        #d8e6f5;
+
+    border-color:
+        #405875;
+
+}
+
+
+body.tema-oscuro
+.menu-admin-btn:not(.activo):hover {
+
+    background:
+        #203550;
+
+    color:
+        #ffffff;
+
+}
+
+
+body.tema-oscuro
+.menu-admin-btn.activo {
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #174a7d,
+            #2563a5
+        );
+
+    color:
+        #ffffff;
+
+    border-color:
+        #3779b7;
+
+}
+
+
+/* ============================================================
+   SELECTOR SEMESTRES ADMIN
+   ============================================================ */
+
+body.tema-oscuro
+.btn-semestre {
+
+    background:
+        #17263a;
+
+    color:
+        #d8e6f5;
+
+    border-color:
+        #405875;
+
+}
+
+
+body.tema-oscuro
+.btn-semestre:hover {
+
+    background:
+        #203550;
+
+    color:
+        #ffffff;
+
+}
+
+
+body.tema-oscuro
+.btn-semestre.activo {
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #174a7d,
+            #2563a5
+        );
+
+    color:
+        #ffffff;
+
+    border-color:
+        #3779b7;
+
+}
+
+
+/* ============================================================
+   NAVEGACIÓN ESTUDIANTE / DOCENTE
+   ============================================================ */
+
+body.tema-oscuro
 .nav-estudiante-material,
 
-.tema-oscuro
+body.tema-oscuro
 .nav-docente-material {
-    background: #07192c;
 
-    border-color: #274a70;
+    background:
+        #07192c;
+
+    border-color:
+        #274a70;
+
 }
 
 
-/* Pestañas */
-
-.tema-oscuro
+body.tema-oscuro
 .nav-estudiante-btn,
 
-.tema-oscuro
+body.tema-oscuro
 .nav-docente-btn {
-    background: #123b68;
-    color: #ffffff;
+
+    background:
+        #123b68;
+
+    color:
+        #ffffff;
+
+    border-color:
+        #286292;
+
 }
 
 
-.tema-oscuro
+body.tema-oscuro
 .nav-estudiante-btn:hover,
 
-.tema-oscuro
+body.tema-oscuro
 .nav-docente-btn:hover {
-    background: #1d5a94;
-    color: #ffffff;
+
+    background:
+        #1d5a94;
+
+    color:
+        #ffffff;
+
 }
 
 
-.tema-oscuro
+body.tema-oscuro
 .nav-estudiante-btn.activo,
 
-.tema-oscuro
+body.tema-oscuro
 .nav-docente-btn.activo {
-    background: #2563a5;
-    color: #ffffff;
+
+    background:
+        #2563a5;
+
+    color:
+        #ffffff;
+
+    border-color:
+        #4a86bd;
+
 }
 
 
-/* Materias */
+/* ============================================================
+   SEMESTRES ESTUDIANTE / DOCENTE
+   ============================================================ */
 
-.tema-oscuro
+body.tema-oscuro
+.btn-semestre-estudiante,
+
+body.tema-oscuro
+.btn-semestre-docente {
+
+    background:
+        #123b68;
+
+    color:
+        #ffffff;
+
+    border-color:
+        #286292;
+
+}
+
+
+body.tema-oscuro
+.btn-semestre-estudiante:hover,
+
+body.tema-oscuro
+.btn-semestre-docente:hover {
+
+    background:
+        #1d5a94;
+
+}
+
+
+body.tema-oscuro
+.btn-semestre-estudiante.activo,
+
+body.tema-oscuro
+.btn-semestre-docente.activo {
+
+    background:
+        #2563a5;
+
+    border-color:
+        #4a86bd;
+
+}
+
+
+/* ============================================================
+   MATERIAS EN MODO OSCURO
+   ============================================================ */
+
+body.tema-oscuro
+.materia-card,
+
+body.tema-oscuro
 .materia-estudiante-card,
 
-.tema-oscuro
-.materia-card {
+body.tema-oscuro
+.materia-docente-card {
+
     background:
+
         linear-gradient(
             135deg,
             #0b3158,
             #124a7c
-        );
+        ) !important;
 
-    border-color: #286292;
+    border-color:
+        #286292 !important;
+
+    color:
+        #ffffff !important;
+
 }
 
 
-/* Carpetas */
+/* ============================================================
+   CARPETAS EN MODO OSCURO
+   ============================================================ */
 
-.tema-oscuro
+body.tema-oscuro
+.carpeta-material-card,
+
+body.tema-oscuro
 .carpeta-estudiante-card,
 
-.tema-oscuro
-.carpeta-material-card {
+body.tema-oscuro
+.carpeta-docente-card {
+
     background:
+
         linear-gradient(
             135deg,
             #0b3158,
             #124a7c
-        );
+        ) !important;
 
-    border-color: #286292;
+    border-color:
+        #286292 !important;
+
+    color:
+        #ffffff !important;
+
 }
 
 
-/* Recursos */
+/* ============================================================
+   RECURSOS EN MODO OSCURO
+   ============================================================ */
 
-.tema-oscuro
+body.tema-oscuro
+.recurso-material-card,
+
+body.tema-oscuro
 .recurso-estudiante-card,
 
-.tema-oscuro
-.recurso-material-card {
+body.tema-oscuro
+.recurso-docente-card {
+
     background:
+
         linear-gradient(
             135deg,
             #0b3158,
             #124a7c
-        );
+        ) !important;
 
-    border-color: #286292;
+    border-color:
+        #286292 !important;
+
+    color:
+        #ffffff !important;
+
 }
 
 
-/* Ruta */
+/* ============================================================
+   FORZAR TEXTO BLANCO EN TARJETAS AZULES
+   ============================================================ */
 
-.tema-oscuro
-.ruta-estudiante {
-    background: #0b3158;
-
-    border-color: #286292;
-}
-
-
-/* =========================================================
-   GARANTIZAR TEXTO BLANCO EN MODO OSCURO
-   ========================================================= */
-
-.tema-oscuro
-.materia-estudiante-card strong,
-
-.tema-oscuro
-.carpeta-estudiante-card strong,
-
-.tema-oscuro
-.recurso-estudiante-card strong,
-
-.tema-oscuro
+body.tema-oscuro
 .materia-card strong,
 
-.tema-oscuro
+body.tema-oscuro
+.materia-estudiante-card strong,
+
+body.tema-oscuro
+.materia-docente-card strong,
+
+body.tema-oscuro
 .carpeta-material-card strong,
 
-.tema-oscuro
-.recurso-material-card strong {
-    color: #ffffff !important;
+body.tema-oscuro
+.carpeta-estudiante-card strong,
+
+body.tema-oscuro
+.carpeta-docente-card strong,
+
+body.tema-oscuro
+.recurso-material-card strong,
+
+body.tema-oscuro
+.recurso-estudiante-card strong,
+
+body.tema-oscuro
+.recurso-docente-card strong {
+
+    color:
+        #ffffff !important;
+
 }
 
 
-.tema-oscuro
-.materia-estudiante-card small,
-
-.tema-oscuro
-.carpeta-estudiante-card small,
-
-.tema-oscuro
-.recurso-estudiante-card small,
-
-.tema-oscuro
-.recurso-estudiante-card p,
-
-.tema-oscuro
+body.tema-oscuro
 .materia-card small,
 
-.tema-oscuro
+body.tema-oscuro
 .materia-card p,
 
-.tema-oscuro
+body.tema-oscuro
+.materia-estudiante-card small,
+
+body.tema-oscuro
+.materia-estudiante-card p,
+
+body.tema-oscuro
+.materia-docente-card small,
+
+body.tema-oscuro
+.materia-docente-card p,
+
+body.tema-oscuro
 .carpeta-material-card small,
 
-.tema-oscuro
+body.tema-oscuro
+.carpeta-estudiante-card small,
+
+body.tema-oscuro
+.carpeta-docente-card small,
+
+body.tema-oscuro
 .recurso-material-card small,
 
-.tema-oscuro
-.recurso-material-card p {
-    color: #dbeafe !important;
+body.tema-oscuro
+.recurso-material-card p,
+
+body.tema-oscuro
+.recurso-estudiante-card small,
+
+body.tema-oscuro
+.recurso-estudiante-card p,
+
+body.tema-oscuro
+.recurso-docente-card small,
+
+body.tema-oscuro
+.recurso-docente-card p {
+
+    color:
+        #dbeafe !important;
+
+}
+
+
+/* ============================================================
+   RUTAS
+   ============================================================ */
+
+body.tema-oscuro
+.ruta-material,
+
+body.tema-oscuro
+.ruta-estudiante,
+
+body.tema-oscuro
+.ruta-docente {
+
+    background:
+        #0b3158 !important;
+
+    color:
+        #ffffff !important;
+
+    border-color:
+        #286292 !important;
+
+}
+
+
+body.tema-oscuro
+.ruta-material-item,
+
+body.tema-oscuro
+.ruta-material-actual,
+
+body.tema-oscuro
+.ruta-estudiante button,
+
+body.tema-oscuro
+.ruta-docente button {
+
+    color:
+        #ffffff !important;
+
+}
+
+
+body.tema-oscuro
+.ruta-material-separador,
+
+body.tema-oscuro
+.ruta-estudiante span,
+
+body.tema-oscuro
+.ruta-docente span {
+
+    color:
+        #bfdbfe !important;
+
+}
+
+
+/* ============================================================
+   OBSERVACIONES - MODO OSCURO
+   ============================================================ */
+
+body.tema-oscuro
+.resumen-observaciones-admin > div {
+
+    background:
+        var(--ceta-superficie-oscura-2);
+
+    border-color:
+        var(--ceta-borde-oscuro);
+
+}
+
+
+body.tema-oscuro
+.resumen-observaciones-admin span {
+
+    color:
+        var(--ceta-texto-secundario-oscuro);
+
+}
+
+
+body.tema-oscuro
+.resumen-observaciones-admin strong {
+
+    color:
+        #ffffff;
+
+}
+
+
+body.tema-oscuro
+.filtro-observacion:not(.activo) {
+
+    background:
+        #17263a;
+
+    color:
+        #d8e6f5;
+
+    border-color:
+        #405875;
+
+}
+
+
+body.tema-oscuro
+.filtro-observacion:not(.activo):hover {
+
+    background:
+        #203550;
+
+    color:
+        #ffffff;
+
+}
+
+
+body.tema-oscuro
+.observacion-admin-meta,
+
+body.tema-oscuro
+.datos-observacion-admin {
+
+    background:
+        var(--ceta-superficie-oscura-2);
+
+    color:
+        var(--ceta-texto-secundario-oscuro);
+
+}
+
+
+body.tema-oscuro
+.observacion-admin-texto,
+
+body.tema-oscuro
+.texto-observacion-admin {
+
+    background:
+        var(--ceta-superficie-oscura-2);
+
+    color:
+        var(--ceta-texto-oscuro);
+
+    border-color:
+        var(--ceta-borde-oscuro);
+
+}
+
+
+body.tema-oscuro
+.observacion-admin-respuesta label,
+
+body.tema-oscuro
+.respuesta-observacion-admin label {
+
+    color:
+        #dceafb !important;
+
+}
+
+
+body.tema-oscuro
+.btn-guardar-respuesta-observacion {
+
+    background:
+        #17263a;
+
+    color:
+        #dceafb;
+
+    border-color:
+        #4d739b;
+
+}
+
+
+body.tema-oscuro
+.btn-reabrir-observacion {
+
+    background:
+        #3b2b12;
+
+    color:
+        #fbd38d;
+
+    border-color:
+        #9a681c;
+
+}
+
+
+body.tema-oscuro
+.btn-peligro,
+
+body.tema-oscuro
+.btn-eliminar-observacion {
+
+    background:
+        #3b171b;
+
+    color:
+        #fecaca;
+
+    border-color:
+        #7f3038;
+
+}
+
+
+/* ============================================================
+   ESTADO VACÍO
+   ============================================================ */
+
+body.tema-oscuro
+.vacio {
+
+    background:
+        rgba(23, 38, 58, 0.88);
+
+    color:
+        var(--ceta-texto-secundario-oscuro);
+
+    border-color:
+        #405875;
+
+}
+
+
+body.tema-oscuro
+.vacio strong {
+
+    color:
+        #ffffff;
+
+}
+
+
+/* ============================================================
+   TABLAS
+   ============================================================ */
+
+body.tema-oscuro table {
+
+    background:
+        var(--ceta-superficie-oscura);
+
+    color:
+        var(--ceta-texto-oscuro);
+
+}
+
+
+body.tema-oscuro th {
+
+    background:
+        #17263a !important;
+
+    color:
+        #edf4fc !important;
+
+    border-color:
+        #334b67 !important;
+
+}
+
+
+body.tema-oscuro td {
+
+    color:
+        #dce7f4 !important;
+
+    border-color:
+        #334b67 !important;
+
+}
+
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+
+body.tema-oscuro
+.modal {
+
+    background:
+        var(--ceta-superficie-oscura);
+
+    color:
+        var(--ceta-texto-oscuro);
+
+    border:
+        1px solid
+        var(--ceta-borde-oscuro);
+
+}
+
+
+/* ============================================================
+   SCROLLBAR - MODO OSCURO
+   ============================================================ */
+
+body.tema-oscuro {
+
+    scrollbar-color:
+        #405875
+        #0d1929;
+
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   TABLET / CELULAR
+   ============================================================ */
+
+@media (max-width: 760px) {
+
+    .acciones-header-admin {
+
+        gap:
+            6px;
+
+    }
+
+
+    .btn-tema-ceta {
+
+        padding:
+            7px
+            9px;
+
+        font-size:
+            0.74rem;
+
+    }
+
+
+    .cabecera-seccion-admin {
+
+        align-items:
+            stretch;
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .resumen-observaciones-admin {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+    }
+
+
+    .carpeta-material-card,
+    .recurso-material-card {
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .acciones-item-material {
+
+        justify-content:
+            flex-start;
+
+    }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   CELULAR
+   ============================================================ */
+
+@media (max-width: 650px) {
+
+    .acciones-header-admin,
+    .acciones-tema-ceta {
+
+        gap:
+            6px;
+
+    }
+
+
+    .nav-estudiante-material,
+    .nav-docente-material {
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .nav-estudiante-btn,
+    .nav-docente-btn {
+
+        width:
+            100%;
+
+    }
+
+
+    .cabecera-seccion-admin,
+    .observacion-admin-cabecera,
+    .cabecera-observacion-admin {
+
+        align-items:
+            stretch;
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .observacion-admin-acciones,
+    .acciones-observacion-admin {
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .observacion-admin-acciones button,
+    .acciones-observacion-admin button {
+
+        width:
+            100%;
+
+    }
+
+
+    .carpeta-material-card,
+    .recurso-material-card {
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .carpeta-material-principal {
+
+        width:
+            100%;
+
+    }
+
+
+    .acciones-item-material {
+
+        width:
+            100%;
+
+    }
+
+
+    .acciones-item-material button,
+    .acciones-item-material a {
+
+        flex:
+            1;
+
+        text-align:
+            center;
+
+    }
+
+}
+
+
+/* ============================================================
+   PANTALLAS PEQUEÑAS
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+    .resumen-observaciones-admin {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    body::before {
+
+        background-size:
+            cover,
+            82vw;
+
+    }
+
+
+    .btn-tema-ceta {
+
+        min-height:
+            36px;
+
+        padding:
+            6px
+            8px;
+
+        font-size:
+            0.70rem;
+
+    }
+
+
+    .filtros-observaciones-admin {
+
+        display:
+            grid;
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .filtro-observacion {
+
+        width:
+            100%;
+
+    }
+
 }
