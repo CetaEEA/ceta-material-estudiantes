@@ -1490,24 +1490,136 @@
             id="seccion-observaciones"
             class="seccion-admin"
         >
+<!-- =====================================================
+     OBSERVACIONES
+====================================================== -->
 
-            <div class="tarjeta-panel">
+<section
+    id="seccion-observaciones"
+    class="seccion-admin oculto"
+>
 
-                <h3>
-                    💬 Observaciones
-                </h3>
+    <div class="cabecera-seccion-admin">
 
-                <p class="texto-secundario">
-                    Aquí aparecerán las observaciones y
-                    sugerencias enviadas por estudiantes
-                    y docentes.
-                </p>
+        <div>
 
-            </div>
+            <p class="etiqueta-panel">
+                COMUNICACIÓN
+            </p>
 
-        </section>
+            <h2>
+                Observaciones
+            </h2>
 
-    </main>
+            <p class="texto-secundario-admin">
+                Revisa las sugerencias y problemas
+                reportados por estudiantes y docentes.
+            </p>
+
+        </div>
+
+
+        <button
+            id="btnActualizarObservaciones"
+            type="button"
+            class="btn-secundario"
+        >
+            ↻ Actualizar
+        </button>
+
+    </div>
+
+
+    <!-- FILTROS -->
+
+    <div class="filtros-observaciones-admin">
+
+        <button
+            type="button"
+            class="filtro-observacion activo"
+            data-filtro="todas"
+        >
+            Todas
+        </button>
+
+        <button
+            type="button"
+            class="filtro-observacion"
+            data-filtro="pendiente"
+        >
+            Pendientes
+        </button>
+
+        <button
+            type="button"
+            class="filtro-observacion"
+            data-filtro="atendida"
+        >
+            Atendidas
+        </button>
+
+    </div>
+
+
+    <!-- CONTADORES -->
+
+    <div class="resumen-observaciones-admin">
+
+        <div>
+
+            <span>
+                Total
+            </span>
+
+            <strong id="totalObservacionesAdmin">
+                0
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Pendientes
+            </span>
+
+            <strong id="totalPendientesAdmin">
+                0
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Atendidas
+            </span>
+
+            <strong id="totalAtendidasAdmin">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- LISTADO -->
+
+    <div
+        id="listaObservacionesAdmin"
+        class="lista-observaciones-admin"
+    >
+
+        <p class="estado-carga">
+            Cargando observaciones...
+        </p>
+
+    </div>
+
+</section>
 
 
     <!-- =====================================================
