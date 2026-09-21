@@ -1,18 +1,453 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CETA | Estudiante</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Material Académico | CETA
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="css/estilos.css"
+    >
+
 </head>
 
-<body>
 
-    <h1>Material Estudiante</h1>
+<body class="body-estudiante">
 
-    <p>
-        Acceso estudiante correcto.
-    </p>
+    <!-- =====================================================
+         CABECERA
+    ====================================================== -->
+
+    <header class="header-estudiante">
+
+        <div class="header-estudiante-contenido">
+
+            <div class="marca-estudiante">
+
+                <img
+                    src="img/logo-ceta-transparente.png"
+                    alt="CETA"
+                    class="logo-estudiante"
+                >
+
+                <div>
+
+                    <strong>
+                        CETA
+                    </strong>
+
+                    <span>
+                        Material Académico
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button
+                id="btnCerrarSesionEstudiante"
+                type="button"
+                class="btn-cerrar-estudiante"
+            >
+                Cerrar sesión
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
+
+    <main class="main-estudiante">
+
+
+        <!-- =================================================
+             CARGANDO
+        ================================================== -->
+
+        <section
+            id="pantallaCargaEstudiante"
+            class="tarjeta-estudiante tarjeta-cargando"
+        >
+
+            <div class="spinner-estudiante"></div>
+
+            <strong>
+                Cargando material...
+            </strong>
+
+            <p>
+                Validando tu acceso.
+            </p>
+
+        </section>
+
+
+        <!-- =================================================
+             PORTAL
+        ================================================== -->
+
+        <div
+            id="portalEstudiante"
+            class="oculto"
+        >
+
+
+            <!-- =============================================
+                 INFORMACIÓN DEL ESTUDIANTE
+            ============================================== -->
+
+            <section class="bienvenida-estudiante">
+
+                <div>
+
+                    <p class="etiqueta-estudiante">
+                        PORTAL DEL ESTUDIANTE
+                    </p>
+
+                    <h1 id="saludoEstudiante">
+                        Bienvenido
+                    </h1>
+
+                    <p>
+                        Consulta el material académico
+                        disponible para ti.
+                    </p>
+
+                </div>
+
+
+                <div class="datos-estudiante">
+
+                    <div>
+
+                        <span>
+                            Estudiante
+                        </span>
+
+                        <strong id="nombreEstudiante">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Grupo
+                        </span>
+
+                        <strong id="grupoEstudiante">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Acceso
+                        </span>
+
+                        <strong id="accesoEstudiante">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 SELECTOR PARA EGRESADOS
+            ============================================== -->
+
+            <section
+                id="selectorSemestreEstudiante"
+                class="tarjeta-estudiante oculto"
+            >
+
+                <p class="etiqueta-estudiante">
+                    SEMESTRES
+                </p>
+
+                <h2>
+                    Material disponible
+                </h2>
+
+
+                <div class="selector-semestres-estudiante">
+
+                    <button
+                        type="button"
+                        class="btn-semestre-estudiante activo"
+                        data-semestre="1"
+                    >
+                        1°
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-semestre-estudiante"
+                        data-semestre="2"
+                    >
+                        2°
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-semestre-estudiante"
+                        data-semestre="3"
+                    >
+                        3°
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-semestre-estudiante"
+                        data-semestre="4"
+                    >
+                        4°
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-semestre-estudiante"
+                        data-semestre="5"
+                    >
+                        5°
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-semestre-estudiante"
+                        data-semestre="6"
+                    >
+                        6°
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 MATERIAS
+            ============================================== -->
+
+            <section
+                id="panelMateriasEstudiante"
+                class="tarjeta-estudiante"
+            >
+
+                <div class="cabecera-contenido-estudiante">
+
+                    <div>
+
+                        <p class="etiqueta-estudiante">
+                            MATERIAL ACADÉMICO
+                        </p>
+
+                        <h2 id="tituloMateriasEstudiante">
+                            Mis materias
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="listaMateriasEstudiante"
+                    class="grid-materias-estudiante"
+                >
+
+                    <p class="estado-carga">
+                        Cargando materias...
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 MATERIA ABIERTA
+            ============================================== -->
+
+            <section
+                id="panelMateriaEstudiante"
+                class="tarjeta-estudiante oculto"
+            >
+
+                <div class="cabecera-materia-estudiante">
+
+                    <button
+                        id="btnVolverMateriasEstudiante"
+                        type="button"
+                        class="btn-volver-estudiante"
+                    >
+                        ← Materias
+                    </button>
+
+
+                    <div>
+
+                        <p
+                            id="semestreMateriaEstudiante"
+                            class="etiqueta-estudiante"
+                        >
+                            -
+                        </p>
+
+                        <h2 id="nombreMateriaEstudiante">
+                            -
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RUTA -->
+
+                <div
+                    id="rutaEstudiante"
+                    class="ruta-estudiante"
+                ></div>
+
+
+                <!-- CONTENIDO -->
+
+                <div
+                    id="contenidoEstudiante"
+                    class="contenido-estudiante"
+                ></div>
+
+            </section>
+
+
+        </div>
+
+
+        <!-- =================================================
+             ERROR DE SESIÓN
+        ================================================== -->
+
+        <section
+            id="errorSesionEstudiante"
+            class="tarjeta-estudiante error-sesion-estudiante oculto"
+        >
+
+            <span>
+                ⚠️
+            </span>
+
+            <h2>
+                Sesión no disponible
+            </h2>
+
+            <p id="textoErrorSesionEstudiante">
+                Tu sesión ha expirado.
+            </p>
+
+
+            <a
+                href="index.html"
+                class="btn-principal-estudiante"
+            >
+                Volver al ingreso
+            </a>
+
+        </section>
+
+
+        <!-- =================================================
+             VISOR DE VIDEO
+        ================================================== -->
+
+        <div
+            id="modalVideoEstudiante"
+            class="modal-video-estudiante oculto"
+        >
+
+            <div
+                class="fondo-modal-video"
+                onclick="cerrarVideoEstudiante()"
+            ></div>
+
+
+            <div class="contenedor-video-estudiante">
+
+                <div class="cabecera-video-estudiante">
+
+                    <strong id="tituloVideoEstudiante">
+                        Video
+                    </strong>
+
+
+                    <button
+                        type="button"
+                        onclick="cerrarVideoEstudiante()"
+                    >
+                        ✕
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="visorVideoEstudiante"
+                    class="visor-video-estudiante"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <footer class="footer-estudiante">
+
+        <p>
+            Instituto CETA
+        </p>
+
+        <span>
+            Material académico para estudiantes
+        </span>
+
+    </footer>
+
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
+    <script src="js/supabase.js"></script>
+
+    <script src="js/estudiante.js"></script>
 
 </body>
+
 </html>
