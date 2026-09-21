@@ -221,7 +221,26 @@ function registrarEventos() {
     // ========================================================
     // CERRAR SESIÓN
     // ========================================================
+document
+    .getElementById("btnTemaAdmin")
+    ?.addEventListener("click", () => {
 
+        const actual =
+            document.documentElement.dataset.tema || "claro";
+
+        const nuevo =
+            actual === "oscuro"
+                ? "claro"
+                : "oscuro";
+
+        aplicarTemaAdministrador(nuevo);
+
+        localStorage.setItem(
+            "ceta_tema",
+            nuevo
+        );
+
+    });
     document
         .getElementById(
             "btnCerrarSesion"
