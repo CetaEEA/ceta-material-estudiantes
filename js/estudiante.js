@@ -146,7 +146,46 @@ function registrarEventosEstudiante() {
 
         }
     );
+document
+    .querySelectorAll(
+        ".nav-estudiante-btn"
+    )
+    .forEach(
+        boton => {
 
+            boton.addEventListener(
+                "click",
+                () => {
+
+                    cambiarVistaEstudiante(
+                        boton.dataset.vista
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "formObservacionEstudiante"
+    )
+    ?.addEventListener(
+        "submit",
+        enviarObservacionEstudiante
+    );
+
+
+document
+    .getElementById(
+        "textoObservacionEstudiante"
+    )
+    ?.addEventListener(
+        "input",
+        actualizarContadorObservacionEstudiante
+    );
 }
 
 
@@ -1388,6 +1427,250 @@ function reproducirVideoEstudiante(
 
 }
 
+// ============================================================
+// CAMBIAR VISTA DEL ESTUDIANTE
+// ============================================================
+
+function cambiarVistaEstudiante(
+    vista
+) {
+
+    document
+        .querySelectorAll(
+            ".nav-estudiante-btn"
+        )
+        .forEach(
+            boton => {
+
+                boton.classList.toggle(
+                    "activo",
+                    boton.dataset.vista === vista
+                );
+
+            }
+        );
+
+
+    document.getElementById(
+        "vistaMaterialEstudiante"
+    ).classList.toggle(
+        "oculto",
+        vista !== "material"
+    );
+
+
+    document.getElementById(
+        "vistaObservacionesEstudiante"
+    ).classList.toggle(
+        "oculto",
+        vista !== "observaciones"
+    );
+
+}
+
+
+// ============================================================
+// ENVIAR OBSERVACIÓN
+// ============================================================
+
+async function enviarObservacionEstudiante(
+    event
+) {
+
+    event.preventDefault();
+
+
+    const tipo =
+        document.getElementById(
+            "tipoObservacionEstudiante"
+        ).value;
+
+
+    const observacion =
+        document.getElementById(
+            "textoObservacionEstudiante"
+        ).value.trim();
+
+
+    const boton =
+        document.getElementById(
+            "btnEnviarObservacionEstudiante"
+        );
+
+
+    if (!observacion) {
+
+        mostrarMensajeObservacionEstudiante(
+            "Escribe una observación.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (observacion.length > 1500) {
+
+        mostrarMensajeObservacionEstudiante(
+            "La observación no puede superar los 1500 caracteres.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    boton.disabled = true;
+
+    boton.textContent =
+        "ENVIANDO...";
+
+
+    try {
+
+        const {
+            error
+        } =
+            await supabaseClient.rpc(
+                "crear_observacion_estudiante",
+                {
+                    p_token:
+                        tokenEstudiante,
+
+                    p_tipo:
+                        tipo,
+
+                    p_observacion:
+                        observacion
+                }
+            );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        document.getElementById(
+            "formObservacionEstudiante"
+        ).reset();
+
+
+        actualizarContadorObservacionEstudiante();
+
+
+        mostrarMensajeObservacionEstudiante(
+            "Observación enviada correctamente.",
+            "exito"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Error enviando observación:",
+            error
+        );
+
+
+        if (esErrorSesion(error)) {
+
+            mostrarErrorSesion(
+                "Tu sesión ha expirado. Ingresa nuevamente."
+            );
+
+            return;
+
+        }
+
+
+        mostrarMensajeObservacionEstudiante(
+            error.message ||
+            "No fue posible enviar la observación.",
+            "error"
+        );
+
+    }
+    finally {
+
+        boton.disabled = false;
+
+        boton.textContent =
+            "ENVIAR OBSERVACIÓN";
+
+    }
+
+}
+
+
+// ============================================================
+// CONTADOR
+// ============================================================
+
+function actualizarContadorObservacionEstudiante() {
+
+    const textarea =
+        document.getElementById(
+            "textoObservacionEstudiante"
+        );
+
+
+    const contador =
+        document.getElementById(
+            "contadorObservacionEstudiante"
+        );
+
+
+    if (!textarea || !contador) {
+        return;
+    }
+
+
+    contador.textContent =
+        textarea.value.length;
+
+}
+
+
+// ============================================================
+// MENSAJE DE OBSERVACIÓN
+// ============================================================
+
+function mostrarMensajeObservacionEstudiante(
+    texto,
+    tipo = ""
+) {
+
+    const elemento =
+        document.getElementById(
+            "mensajeObservacionEstudiante"
+        );
+
+
+    if (!elemento) {
+        return;
+    }
+
+
+    elemento.textContent =
+        texto;
+
+
+    elemento.className =
+        "mensaje";
+
+
+    if (tipo) {
+
+        elemento.classList.add(
+            tipo
+        );
+
+    }
+
+}
 
 // ============================================================
 // CONVERTIR URL A EMBED
