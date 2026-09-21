@@ -15,7 +15,23 @@ let grupoSeleccionado = null;
 let estudiantesExcel = [];
 
 let grupoDestinoPromocion = null;
+// ============================================================
+// MATERIAL ACADÉMICO
+// ============================================================
 
+let semestreMaterialActual = 1;
+
+let materiasMaterial = [];
+
+let materiaAbierta = null;
+
+let seccionesMateria = [];
+
+let seccionActual = null;
+
+let rutaSecciones = [];
+
+let materialesSeccionActual = [];
 // ============================================================
 // INICIO
 // ============================================================
@@ -40,9 +56,10 @@ async function iniciarPanelAdministrador() {
 
 
     await Promise.all([
-        cargarEstadisticas(),
-        cargarGrupos()
-    ]);
+    cargarEstadisticas(),
+    cargarGrupos(),
+    cargarMaterias()
+]);
 
 }
 
@@ -342,6 +359,132 @@ function registrarEventos() {
         ?.addEventListener(
             "click",
             confirmarPromocionGrupo
+        );
+        // ========================================================
+    // MATERIAL ACADÉMICO
+    // ========================================================
+
+    document
+        .querySelectorAll(
+            ".btn-semestre"
+        )
+        .forEach(
+            boton => {
+
+                boton.addEventListener(
+                    "click",
+                    () => {
+
+                        seleccionarSemestreMaterial(
+                            Number(
+                                boton.dataset.semestre
+                            )
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+    document
+        .getElementById(
+            "btnNuevaMateria"
+        )
+        ?.addEventListener(
+            "click",
+            prepararNuevaMateria
+        );
+
+
+    document
+        .getElementById(
+            "btnCancelarMateria"
+        )
+        ?.addEventListener(
+            "click",
+            cerrarFormularioMateria
+        );
+
+
+    document
+        .getElementById(
+            "formMateria"
+        )
+        ?.addEventListener(
+            "submit",
+            guardarMateria
+        );
+
+
+    document
+        .getElementById(
+            "btnVolverMaterias"
+        )
+        ?.addEventListener(
+            "click",
+            volverAListaMaterias
+        );
+
+
+    document
+        .getElementById(
+            "btnNuevaCarpeta"
+        )
+        ?.addEventListener(
+            "click",
+            prepararNuevaCarpeta
+        );
+
+
+    document
+        .getElementById(
+            "btnCancelarCarpeta"
+        )
+        ?.addEventListener(
+            "click",
+            cerrarFormularioCarpeta
+        );
+
+
+    document
+        .getElementById(
+            "formCarpeta"
+        )
+        ?.addEventListener(
+            "submit",
+            guardarCarpeta
+        );
+
+
+    document
+        .getElementById(
+            "btnNuevoMaterial"
+        )
+        ?.addEventListener(
+            "click",
+            prepararNuevoMaterialAcademico
+        );
+
+
+    document
+        .getElementById(
+            "btnCancelarMaterial"
+        )
+        ?.addEventListener(
+            "click",
+            cerrarFormularioMaterial
+        );
+
+
+    document
+        .getElementById(
+            "formMaterialAcademico"
+        )
+        ?.addEventListener(
+            "submit",
+            guardarMaterialAcademico
         );
 }
 
@@ -2988,5 +3131,2115 @@ async function confirmarPromocionGrupo() {
             "CONFIRMAR PROMOCIÓN";
 
     }
+
+}
+// ============================================================
+// PARTE 9A
+// MATERIAL ACADÉMICO
+// ============================================================
+
+
+// ============================================================
+// SELECCIONAR SEMESTRE
+// ============================================================
+
+async function seleccionarSemestreMaterial(
+    semestre
+) {
+
+    semestreMaterialActual =
+        semestre;
+
+
+    document
+        .querySelectorAll(
+            ".btn-semestre"
+        )
+        .forEach(
+            boton => {
+
+                boton.classList.toggle(
+                    "activo",
+                    Number(
+                        boton.dataset.semestre
+                    ) === semestre
+                );
+
+            }
+        );
+
+
+    document.getElementById(
+        "tituloSemestreMaterial"
+    ).textContent =
+        `${semestre}° semestre`;
+
+
+    volverAListaMaterias();
+
+
+    await cargarMaterias();
+
+}
+
+
+// ============================================================
+// CARGAR MATERIAS
+// ============================================================
+
+async function cargarMaterias() {
+
+    const contenedor =
+        document.getElementById(
+            "listaMaterias"
+        );
+
+
+    if (!contenedor) {
+        return;
+    }
+
+
+    contenedor.innerHTML = `
+        <p class="estado-carga">
+            Cargando materias...
+        </p>
+    `;
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from(
+                "materias_estudiantes"
+            )
+            .select(
+                "id, nombre, semestre, descripcion, orden, activo"
+            )
+            .eq(
+                "semestre",
+                semestreMaterialActual
+            )
+            .order(
+                "orden",
+                {
+                    ascending: true
+                }
+            )
+            .order(
+                "nombre",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+
+        contenedor.innerHTML = `
+            <p class="mensaje error">
+                No se pudieron cargar las materias.
+            </p>
+        `;
+
+
+        return;
+
+    }
+
+
+    materiasMaterial =
+        data || [];
+
+
+    renderizarMaterias();
+
+}
+
+
+// ============================================================
+// MOSTRAR MATERIAS
+// ============================================================
+
+function renderizarMaterias() {
+
+    const contenedor =
+        document.getElementById(
+            "listaMaterias"
+        );
+
+
+    if (!materiasMaterial.length) {
+
+        contenedor.innerHTML = `
+
+            <div class="vacio">
+
+                <span>📚</span>
+
+                <strong>
+                    No existen materias
+                </strong>
+
+                <p>
+                    Crea la primera materia del
+                    ${semestreMaterialActual}° semestre.
+                </p>
+
+            </div>
+        `;
+
+
+        return;
+
+    }
+
+
+    contenedor.innerHTML =
+        materiasMaterial
+            .map(
+                materia => `
+
+                    <article class="materia-card">
+
+                        <div class="materia-card-icono">
+                            📘
+                        </div>
+
+
+                        <div class="materia-card-info">
+
+                            <strong>
+                                ${escaparHTML(materia.nombre)}
+                            </strong>
+
+                            <small>
+                                ${semestreMaterialActual}° semestre
+                            </small>
+
+                            ${
+                                materia.descripcion
+                                    ? `
+                                        <p>
+                                            ${escaparHTML(materia.descripcion)}
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                !materia.activo
+                                    ? `
+                                        <span class="estado-badge inactivo">
+                                            Inactiva
+                                        </span>
+                                    `
+                                    : ""
+                            }
+
+                        </div>
+
+
+                        <div class="materia-card-acciones">
+
+                            <button
+                                type="button"
+                                class="btn-principal btn-auto"
+                                onclick="abrirMateria(${materia.id})"
+                            >
+                                ABRIR
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="btn-icono"
+                                title="Editar materia"
+                                onclick="editarMateria(${materia.id})"
+                            >
+                                ✏️
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                `
+            )
+            .join("");
+
+}
+
+
+// ============================================================
+// NUEVA MATERIA
+// ============================================================
+
+function prepararNuevaMateria() {
+
+    document.getElementById(
+        "formMateria"
+    ).reset();
+
+
+    document.getElementById(
+        "materiaId"
+    ).value = "";
+
+
+    document.getElementById(
+        "ordenMateria"
+    ).value = 0;
+
+
+    document.getElementById(
+        "materiaActiva"
+    ).checked = true;
+
+
+    document.getElementById(
+        "contenedorMateriaActiva"
+    ).classList.add(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "tituloFormularioMateria"
+    ).textContent =
+        `Nueva materia — ${semestreMaterialActual}° semestre`;
+
+
+    mostrarMensajeAdmin(
+        "mensajeMateria",
+        ""
+    );
+
+
+    document.getElementById(
+        "formularioMateria"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "nombreMateria"
+    ).focus();
+
+}
+
+
+// ============================================================
+// EDITAR MATERIA
+// ============================================================
+
+function editarMateria(id) {
+
+    const materia =
+        materiasMaterial.find(
+            item => item.id === id
+        );
+
+
+    if (!materia) {
+        return;
+    }
+
+
+    document.getElementById(
+        "materiaId"
+    ).value =
+        materia.id;
+
+
+    document.getElementById(
+        "nombreMateria"
+    ).value =
+        materia.nombre;
+
+
+    document.getElementById(
+        "descripcionMateria"
+    ).value =
+        materia.descripcion || "";
+
+
+    document.getElementById(
+        "ordenMateria"
+    ).value =
+        materia.orden ?? 0;
+
+
+    document.getElementById(
+        "materiaActiva"
+    ).checked =
+        materia.activo;
+
+
+    document.getElementById(
+        "contenedorMateriaActiva"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "tituloFormularioMateria"
+    ).textContent =
+        "Editar materia";
+
+
+    mostrarMensajeAdmin(
+        "mensajeMateria",
+        ""
+    );
+
+
+    document.getElementById(
+        "formularioMateria"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "formularioMateria"
+    ).scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+// ============================================================
+// GUARDAR MATERIA
+// ============================================================
+
+async function guardarMateria(event) {
+
+    event.preventDefault();
+
+
+    const id =
+        document.getElementById(
+            "materiaId"
+        ).value;
+
+
+    const nombre =
+        document.getElementById(
+            "nombreMateria"
+        ).value.trim();
+
+
+    const descripcion =
+        document.getElementById(
+            "descripcionMateria"
+        ).value.trim();
+
+
+    const orden =
+        Number(
+            document.getElementById(
+                "ordenMateria"
+            ).value
+        ) || 0;
+
+
+    const activo =
+        document.getElementById(
+            "materiaActiva"
+        ).checked;
+
+
+    const boton =
+        document.getElementById(
+            "btnGuardarMateria"
+        );
+
+
+    if (!nombre) {
+
+        mostrarMensajeAdmin(
+            "mensajeMateria",
+            "Escribe el nombre de la materia."
+        );
+
+        return;
+
+    }
+
+
+    boton.disabled = true;
+
+    boton.textContent =
+        "GUARDANDO...";
+
+
+    try {
+
+        let resultado;
+
+
+        if (id) {
+
+            resultado =
+                await supabaseClient
+                    .from(
+                        "materias_estudiantes"
+                    )
+                    .update({
+                        nombre,
+                        descripcion:
+                            descripcion || null,
+                        orden,
+                        activo
+                    })
+                    .eq(
+                        "id",
+                        Number(id)
+                    );
+
+        }
+        else {
+
+            resultado =
+                await supabaseClient
+                    .from(
+                        "materias_estudiantes"
+                    )
+                    .insert({
+                        nombre,
+                        semestre:
+                            semestreMaterialActual,
+                        descripcion:
+                            descripcion || null,
+                        orden,
+                        activo: true
+                    });
+
+        }
+
+
+        if (resultado.error) {
+            throw resultado.error;
+        }
+
+
+        cerrarFormularioMateria();
+
+
+        await Promise.all([
+            cargarMaterias(),
+            cargarEstadisticas()
+        ]);
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+
+        mostrarMensajeAdmin(
+            "mensajeMateria",
+            obtenerMensajeError(error)
+        );
+
+    }
+    finally {
+
+        boton.disabled = false;
+
+        boton.textContent =
+            "GUARDAR";
+
+    }
+
+}
+
+
+// ============================================================
+// CERRAR FORMULARIO MATERIA
+// ============================================================
+
+function cerrarFormularioMateria() {
+
+    document.getElementById(
+        "formularioMateria"
+    ).classList.add(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "formMateria"
+    ).reset();
+
+
+    document.getElementById(
+        "materiaId"
+    ).value = "";
+
+
+    mostrarMensajeAdmin(
+        "mensajeMateria",
+        ""
+    );
+
+}
+
+
+// ============================================================
+// ABRIR MATERIA
+// ============================================================
+
+async function abrirMateria(id) {
+
+    const materia =
+        materiasMaterial.find(
+            item => item.id === id
+        );
+
+
+    if (!materia) {
+        return;
+    }
+
+
+    materiaAbierta =
+        materia;
+
+
+    seccionActual =
+        null;
+
+
+    rutaSecciones =
+        [];
+
+
+    cerrarFormularioMateria();
+
+    cerrarFormularioCarpeta();
+
+    cerrarFormularioMaterial();
+
+
+    document.getElementById(
+        "panelListaMaterias"
+    ).classList.add(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "panelMateriaAbierta"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "nombreMateriaAbierta"
+    ).textContent =
+        materia.nombre;
+
+
+    document.getElementById(
+        "semestreMateriaAbierta"
+    ).textContent =
+        `${materia.semestre}° SEMESTRE`;
+
+
+    await cargarSeccionesMateria();
+
+
+    actualizarRutaMaterial();
+
+    await cargarContenidoActual();
+
+}
+
+
+// ============================================================
+// VOLVER A MATERIAS
+// ============================================================
+
+function volverAListaMaterias() {
+
+    materiaAbierta =
+        null;
+
+
+    seccionActual =
+        null;
+
+
+    rutaSecciones =
+        [];
+
+
+    cerrarFormularioCarpeta();
+
+    cerrarFormularioMaterial();
+
+
+    document.getElementById(
+        "panelMateriaAbierta"
+    )?.classList.add(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "panelListaMaterias"
+    )?.classList.remove(
+        "oculto"
+    );
+
+}
+
+
+// ============================================================
+// CARGAR TODAS LAS SECCIONES DE LA MATERIA
+// ============================================================
+
+async function cargarSeccionesMateria() {
+
+    if (!materiaAbierta) {
+        return;
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from(
+                "secciones_material"
+            )
+            .select(
+                "id, materia_id, seccion_padre_id, nombre, orden, activo"
+            )
+            .eq(
+                "materia_id",
+                materiaAbierta.id
+            )
+            .order(
+                "orden",
+                {
+                    ascending: true
+                }
+            )
+            .order(
+                "nombre",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        throw error;
+
+    }
+
+
+    seccionesMateria =
+        data || [];
+
+}
+
+
+// ============================================================
+// CARGAR CONTENIDO ACTUAL
+// ============================================================
+
+async function cargarContenidoActual() {
+
+    if (!materiaAbierta) {
+        return;
+    }
+
+
+    const contenedor =
+        document.getElementById(
+            "contenidoMateria"
+        );
+
+
+    contenedor.innerHTML = `
+        <p class="estado-carga">
+            Cargando contenido...
+        </p>
+    `;
+
+
+    const seccionesHijas =
+        seccionesMateria.filter(
+            seccion => {
+
+                if (seccionActual) {
+
+                    return (
+                        seccion.seccion_padre_id ===
+                        seccionActual.id
+                    );
+
+                }
+
+
+                return (
+                    seccion.seccion_padre_id === null
+                );
+
+            }
+        );
+
+
+    let materiales = [];
+
+
+    // Los materiales deben estar dentro de una sección.
+    if (seccionActual) {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from(
+                    "material_estudiantes"
+                )
+                .select(
+                    "id, seccion_id, titulo, descripcion, tipo, url, orden, activo"
+                )
+                .eq(
+                    "seccion_id",
+                    seccionActual.id
+                )
+                .order(
+                    "orden",
+                    {
+                        ascending: true
+                    }
+                )
+                .order(
+                    "titulo",
+                    {
+                        ascending: true
+                    }
+                );
+
+
+        if (error) {
+
+            console.error(error);
+
+
+            contenedor.innerHTML = `
+                <p class="mensaje error">
+                    No se pudo cargar el material.
+                </p>
+            `;
+
+
+            return;
+
+        }
+
+
+        materiales =
+            data || [];
+
+    }
+
+
+    materialesSeccionActual =
+        materiales;
+
+
+    renderizarContenidoMateria(
+        seccionesHijas,
+        materiales
+    );
+
+}
+
+
+// ============================================================
+// RENDERIZAR CONTENIDO
+// ============================================================
+
+function renderizarContenidoMateria(
+    carpetas,
+    materiales
+) {
+
+    const contenedor =
+        document.getElementById(
+            "contenidoMateria"
+        );
+
+
+    let html = "";
+
+
+    if (carpetas.length) {
+
+        html += `
+            <div class="subtitulo-contenido">
+                Carpetas
+            </div>
+
+            <div class="lista-carpetas-material">
+        `;
+
+
+        html += carpetas
+            .map(
+                carpeta => `
+
+                    <article class="carpeta-material-card">
+
+                        <button
+                            type="button"
+                            class="carpeta-abrir"
+                            onclick="abrirCarpeta(${carpeta.id})"
+                        >
+
+                            <span class="icono-carpeta">
+                                📁
+                            </span>
+
+
+                            <div>
+
+                                <strong>
+                                    ${escaparHTML(carpeta.nombre)}
+                                </strong>
+
+                                ${
+                                    carpeta.activo
+                                        ? `
+                                            <small>
+                                                Carpeta
+                                            </small>
+                                        `
+                                        : `
+                                            <small class="texto-inactivo">
+                                                Inactiva
+                                            </small>
+                                        `
+                                }
+
+                            </div>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn-icono"
+                            title="Editar carpeta"
+                            onclick="editarCarpeta(${carpeta.id})"
+                        >
+                            ✏️
+                        </button>
+
+                    </article>
+
+                `
+            )
+            .join("");
+
+
+        html += `
+            </div>
+        `;
+
+    }
+
+
+    if (seccionActual && materiales.length) {
+
+        html += `
+            <div class="subtitulo-contenido">
+                Material
+            </div>
+
+            <div class="lista-materiales">
+        `;
+
+
+        html += materiales
+            .map(
+                material => {
+
+                    const icono =
+                        material.tipo === "drive"
+                            ? "📄"
+                            : material.tipo === "video"
+                                ? "▶️"
+                                : "🔗";
+
+
+                    const tipo =
+                        material.tipo === "drive"
+                            ? "Google Drive"
+                            : material.tipo === "video"
+                                ? "Video"
+                                : "Enlace";
+
+
+                    return `
+
+                        <article class="recurso-material-card">
+
+                            <div class="recurso-icono">
+                                ${icono}
+                            </div>
+
+
+                            <div class="recurso-info">
+
+                                <strong>
+                                    ${escaparHTML(material.titulo)}
+                                </strong>
+
+                                <small>
+                                    ${tipo}
+                                </small>
+
+                                ${
+                                    material.descripcion
+                                        ? `
+                                            <p>
+                                                ${escaparHTML(material.descripcion)}
+                                            </p>
+                                        `
+                                        : ""
+                                }
+
+                                ${
+                                    !material.activo
+                                        ? `
+                                            <span class="estado-badge inactivo">
+                                                Inactivo
+                                            </span>
+                                        `
+                                        : ""
+                                }
+
+                            </div>
+
+
+                            <div class="recurso-acciones">
+
+                                <a
+                                    href="${escaparHTML(material.url)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="btn-ver-material"
+                                >
+                                    Abrir
+                                </a>
+
+
+                                <button
+                                    type="button"
+                                    class="btn-icono"
+                                    onclick="editarMaterialAcademico(${material.id})"
+                                    title="Editar material"
+                                >
+                                    ✏️
+                                </button>
+
+                            </div>
+
+                        </article>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+
+        html += `
+            </div>
+        `;
+
+    }
+
+
+    if (
+        !carpetas.length
+        &&
+        !materiales.length
+    ) {
+
+        html = `
+
+            <div class="vacio">
+
+                <span>
+                    ${
+                        seccionActual
+                            ? "📂"
+                            : "📚"
+                    }
+                </span>
+
+                <strong>
+                    Esta ubicación está vacía
+                </strong>
+
+                <p>
+                    ${
+                        seccionActual
+                            ? "Puedes crear una subcarpeta o agregar material."
+                            : "Crea una carpeta para comenzar a organizar la materia."
+                    }
+                </p>
+
+            </div>
+        `;
+
+    }
+
+
+    contenedor.innerHTML =
+        html;
+
+
+    // La base exige que cada material pertenezca
+    // a una sección.
+    document.getElementById(
+        "btnNuevoMaterial"
+    ).disabled =
+        !seccionActual;
+
+
+    document.getElementById(
+        "btnNuevoMaterial"
+    ).title =
+        seccionActual
+            ? "Agregar material"
+            : "Primero abre o crea una carpeta";
+
+}
+
+
+// ============================================================
+// ABRIR CARPETA
+// ============================================================
+
+async function abrirCarpeta(id) {
+
+    const carpeta =
+        seccionesMateria.find(
+            item => item.id === id
+        );
+
+
+    if (!carpeta) {
+        return;
+    }
+
+
+    seccionActual =
+        carpeta;
+
+
+    construirRutaHastaSeccion(
+        carpeta
+    );
+
+
+    cerrarFormularioCarpeta();
+
+    cerrarFormularioMaterial();
+
+
+    actualizarRutaMaterial();
+
+
+    await cargarContenidoActual();
+
+}
+
+
+// ============================================================
+// CONSTRUIR RUTA
+// ============================================================
+
+function construirRutaHastaSeccion(
+    seccion
+) {
+
+    const ruta = [];
+
+    let actual =
+        seccion;
+
+
+    const visitados =
+        new Set();
+
+
+    while (actual) {
+
+        if (
+            visitados.has(actual.id)
+        ) {
+
+            console.error(
+                "Ciclo detectado en secciones."
+            );
+
+            break;
+
+        }
+
+
+        visitados.add(
+            actual.id
+        );
+
+
+        ruta.unshift(
+            actual
+        );
+
+
+        if (
+            actual.seccion_padre_id === null
+        ) {
+
+            break;
+
+        }
+
+
+        actual =
+            seccionesMateria.find(
+                item =>
+                    item.id ===
+                    actual.seccion_padre_id
+            );
+
+    }
+
+
+    rutaSecciones =
+        ruta;
+
+}
+
+
+// ============================================================
+// ACTUALIZAR RUTA
+// ============================================================
+
+function actualizarRutaMaterial() {
+
+    const contenedor =
+        document.getElementById(
+            "rutaMaterial"
+        );
+
+
+    if (!materiaAbierta) {
+
+        contenedor.innerHTML = "";
+
+        return;
+
+    }
+
+
+    let html = `
+
+        <button
+            type="button"
+            onclick="irRaizMateria()"
+        >
+            ${escaparHTML(materiaAbierta.nombre)}
+        </button>
+
+    `;
+
+
+    rutaSecciones.forEach(
+        seccion => {
+
+            html += `
+
+                <span>
+                    ›
+                </span>
+
+                <button
+                    type="button"
+                    onclick="irASeccionRuta(${seccion.id})"
+                >
+                    ${escaparHTML(seccion.nombre)}
+                </button>
+
+            `;
+
+        }
+    );
+
+
+    contenedor.innerHTML =
+        html;
+
+}
+
+
+// ============================================================
+// IR A RAÍZ
+// ============================================================
+
+async function irRaizMateria() {
+
+    seccionActual =
+        null;
+
+
+    rutaSecciones =
+        [];
+
+
+    cerrarFormularioCarpeta();
+
+    cerrarFormularioMaterial();
+
+
+    actualizarRutaMaterial();
+
+
+    await cargarContenidoActual();
+
+}
+
+
+// ============================================================
+// IR A UNA SECCIÓN DE LA RUTA
+// ============================================================
+
+async function irASeccionRuta(id) {
+
+    const seccion =
+        seccionesMateria.find(
+            item => item.id === id
+        );
+
+
+    if (!seccion) {
+        return;
+    }
+
+
+    seccionActual =
+        seccion;
+
+
+    construirRutaHastaSeccion(
+        seccion
+    );
+
+
+    cerrarFormularioCarpeta();
+
+    cerrarFormularioMaterial();
+
+
+    actualizarRutaMaterial();
+
+
+    await cargarContenidoActual();
+
+}
+
+
+// ============================================================
+// NUEVA CARPETA
+// ============================================================
+
+function prepararNuevaCarpeta() {
+
+    cerrarFormularioMaterial();
+
+
+    document.getElementById(
+        "formCarpeta"
+    ).reset();
+
+
+    document.getElementById(
+        "carpetaId"
+    ).value = "";
+
+
+    document.getElementById(
+        "ordenCarpeta"
+    ).value = 0;
+
+
+    document.getElementById(
+        "carpetaActiva"
+    ).checked = true;
+
+
+    document.getElementById(
+        "contenedorCarpetaActiva"
+    ).classList.add(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "tituloFormularioCarpeta"
+    ).textContent =
+        seccionActual
+            ? `Nueva subcarpeta en ${seccionActual.nombre}`
+            : "Nueva carpeta";
+
+
+    mostrarMensajeAdmin(
+        "mensajeCarpeta",
+        ""
+    );
+
+
+    document.getElementById(
+        "formularioCarpeta"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "nombreCarpeta"
+    ).focus();
+
+}
+
+
+// ============================================================
+// EDITAR CARPETA
+// ============================================================
+
+function editarCarpeta(id) {
+
+    const carpeta =
+        seccionesMateria.find(
+            item => item.id === id
+        );
+
+
+    if (!carpeta) {
+        return;
+    }
+
+
+    document.getElementById(
+        "carpetaId"
+    ).value =
+        carpeta.id;
+
+
+    document.getElementById(
+        "nombreCarpeta"
+    ).value =
+        carpeta.nombre;
+
+
+    document.getElementById(
+        "ordenCarpeta"
+    ).value =
+        carpeta.orden ?? 0;
+
+
+    document.getElementById(
+        "carpetaActiva"
+    ).checked =
+        carpeta.activo;
+
+
+    document.getElementById(
+        "contenedorCarpetaActiva"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "tituloFormularioCarpeta"
+    ).textContent =
+        "Editar carpeta";
+
+
+    mostrarMensajeAdmin(
+        "mensajeCarpeta",
+        ""
+    );
+
+
+    document.getElementById(
+        "formularioCarpeta"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "formularioCarpeta"
+    ).scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+// ============================================================
+// GUARDAR CARPETA
+// ============================================================
+
+async function guardarCarpeta(event) {
+
+    event.preventDefault();
+
+
+    if (!materiaAbierta) {
+        return;
+    }
+
+
+    const id =
+        document.getElementById(
+            "carpetaId"
+        ).value;
+
+
+    const nombre =
+        document.getElementById(
+            "nombreCarpeta"
+        ).value.trim();
+
+
+    const orden =
+        Number(
+            document.getElementById(
+                "ordenCarpeta"
+            ).value
+        ) || 0;
+
+
+    const activo =
+        document.getElementById(
+            "carpetaActiva"
+        ).checked;
+
+
+    const boton =
+        document.getElementById(
+            "btnGuardarCarpeta"
+        );
+
+
+    if (!nombre) {
+
+        mostrarMensajeAdmin(
+            "mensajeCarpeta",
+            "Escribe el nombre de la carpeta."
+        );
+
+        return;
+
+    }
+
+
+    boton.disabled = true;
+
+    boton.textContent =
+        "GUARDANDO...";
+
+
+    try {
+
+        let resultado;
+
+
+        if (id) {
+
+            resultado =
+                await supabaseClient
+                    .from(
+                        "secciones_material"
+                    )
+                    .update({
+                        nombre,
+                        orden,
+                        activo
+                    })
+                    .eq(
+                        "id",
+                        Number(id)
+                    );
+
+        }
+        else {
+
+            resultado =
+                await supabaseClient
+                    .from(
+                        "secciones_material"
+                    )
+                    .insert({
+                        materia_id:
+                            materiaAbierta.id,
+
+                        seccion_padre_id:
+                            seccionActual
+                                ? seccionActual.id
+                                : null,
+
+                        nombre,
+                        orden,
+                        activo: true
+                    });
+
+        }
+
+
+        if (resultado.error) {
+            throw resultado.error;
+        }
+
+
+        cerrarFormularioCarpeta();
+
+
+        await cargarSeccionesMateria();
+
+
+        // Si acabamos de editar la carpeta actual,
+        // refrescamos su referencia.
+        if (
+            id
+            &&
+            seccionActual
+            &&
+            seccionActual.id === Number(id)
+        ) {
+
+            seccionActual =
+                seccionesMateria.find(
+                    item =>
+                        item.id === Number(id)
+                ) || null;
+
+
+            if (seccionActual) {
+
+                construirRutaHastaSeccion(
+                    seccionActual
+                );
+
+            }
+
+        }
+
+
+        actualizarRutaMaterial();
+
+
+        await cargarContenidoActual();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+
+        mostrarMensajeAdmin(
+            "mensajeCarpeta",
+            obtenerMensajeError(error)
+        );
+
+    }
+    finally {
+
+        boton.disabled = false;
+
+        boton.textContent =
+            "GUARDAR";
+
+    }
+
+}
+
+
+// ============================================================
+// CERRAR FORMULARIO CARPETA
+// ============================================================
+
+function cerrarFormularioCarpeta() {
+
+    document.getElementById(
+        "formularioCarpeta"
+    )?.classList.add(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "formCarpeta"
+    )?.reset();
+
+
+    const id =
+        document.getElementById(
+            "carpetaId"
+        );
+
+
+    if (id) {
+        id.value = "";
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajeCarpeta",
+        ""
+    );
+
+}
+
+
+// ============================================================
+// NUEVO MATERIAL
+// ============================================================
+
+function prepararNuevoMaterialAcademico() {
+
+    if (!seccionActual) {
+
+        alert(
+            "Primero crea o abre una carpeta."
+        );
+
+        return;
+
+    }
+
+
+    cerrarFormularioCarpeta();
+
+
+    document.getElementById(
+        "formMaterialAcademico"
+    ).reset();
+
+
+    document.getElementById(
+        "materialId"
+    ).value = "";
+
+
+    document.getElementById(
+        "tipoMaterial"
+    ).value =
+        "drive";
+
+
+    document.getElementById(
+        "ordenMaterial"
+    ).value = 0;
+
+
+    document.getElementById(
+        "materialActivo"
+    ).checked = true;
+
+
+    document.getElementById(
+        "contenedorMaterialActivo"
+    ).classList.add(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "tituloFormularioMaterial"
+    ).textContent =
+        `Nuevo material — ${seccionActual.nombre}`;
+
+
+    mostrarMensajeAdmin(
+        "mensajeMaterialAcademico",
+        ""
+    );
+
+
+    document.getElementById(
+        "formularioMaterial"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "tituloMaterial"
+    ).focus();
+
+}
+
+
+// ============================================================
+// EDITAR MATERIAL
+// ============================================================
+
+function editarMaterialAcademico(id) {
+
+    const material =
+        materialesSeccionActual.find(
+            item => item.id === id
+        );
+
+
+    if (!material) {
+        return;
+    }
+
+
+    document.getElementById(
+        "materialId"
+    ).value =
+        material.id;
+
+
+    document.getElementById(
+        "tituloMaterial"
+    ).value =
+        material.titulo;
+
+
+    document.getElementById(
+        "tipoMaterial"
+    ).value =
+        material.tipo;
+
+
+    document.getElementById(
+        "urlMaterial"
+    ).value =
+        material.url;
+
+
+    document.getElementById(
+        "descripcionMaterial"
+    ).value =
+        material.descripcion || "";
+
+
+    document.getElementById(
+        "ordenMaterial"
+    ).value =
+        material.orden ?? 0;
+
+
+    document.getElementById(
+        "materialActivo"
+    ).checked =
+        material.activo;
+
+
+    document.getElementById(
+        "contenedorMaterialActivo"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "tituloFormularioMaterial"
+    ).textContent =
+        "Editar material";
+
+
+    mostrarMensajeAdmin(
+        "mensajeMaterialAcademico",
+        ""
+    );
+
+
+    document.getElementById(
+        "formularioMaterial"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "formularioMaterial"
+    ).scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+// ============================================================
+// GUARDAR MATERIAL
+// ============================================================
+
+async function guardarMaterialAcademico(
+    event
+) {
+
+    event.preventDefault();
+
+
+    if (!seccionActual) {
+        return;
+    }
+
+
+    const id =
+        document.getElementById(
+            "materialId"
+        ).value;
+
+
+    const titulo =
+        document.getElementById(
+            "tituloMaterial"
+        ).value.trim();
+
+
+    const tipo =
+        document.getElementById(
+            "tipoMaterial"
+        ).value;
+
+
+    const url =
+        document.getElementById(
+            "urlMaterial"
+        ).value.trim();
+
+
+    const descripcion =
+        document.getElementById(
+            "descripcionMaterial"
+        ).value.trim();
+
+
+    const orden =
+        Number(
+            document.getElementById(
+                "ordenMaterial"
+            ).value
+        ) || 0;
+
+
+    const activo =
+        document.getElementById(
+            "materialActivo"
+        ).checked;
+
+
+    const boton =
+        document.getElementById(
+            "btnGuardarMaterial"
+        );
+
+
+    if (!titulo || !url) {
+
+        mostrarMensajeAdmin(
+            "mensajeMaterialAcademico",
+            "Completa el título y el enlace."
+        );
+
+        return;
+
+    }
+
+
+    let urlValidada;
+
+
+    try {
+
+        urlValidada =
+            new URL(url);
+
+
+        if (
+            urlValidada.protocol !== "https:"
+            &&
+            urlValidada.protocol !== "http:"
+        ) {
+
+            throw new Error();
+
+        }
+
+    }
+    catch {
+
+        mostrarMensajeAdmin(
+            "mensajeMaterialAcademico",
+            "Introduce una dirección web válida."
+        );
+
+        return;
+
+    }
+
+
+    boton.disabled = true;
+
+    boton.textContent =
+        "GUARDANDO...";
+
+
+    try {
+
+        let resultado;
+
+
+        if (id) {
+
+            resultado =
+                await supabaseClient
+                    .from(
+                        "material_estudiantes"
+                    )
+                    .update({
+                        titulo,
+                        tipo,
+                        url,
+                        descripcion:
+                            descripcion || null,
+                        orden,
+                        activo
+                    })
+                    .eq(
+                        "id",
+                        Number(id)
+                    );
+
+        }
+        else {
+
+            resultado =
+                await supabaseClient
+                    .from(
+                        "material_estudiantes"
+                    )
+                    .insert({
+                        seccion_id:
+                            seccionActual.id,
+
+                        titulo,
+                        descripcion:
+                            descripcion || null,
+
+                        tipo,
+                        url,
+                        orden,
+                        activo: true
+                    });
+
+        }
+
+
+        if (resultado.error) {
+            throw resultado.error;
+        }
+
+
+        cerrarFormularioMaterial();
+
+
+        await cargarContenidoActual();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+
+        mostrarMensajeAdmin(
+            "mensajeMaterialAcademico",
+            obtenerMensajeError(error)
+        );
+
+    }
+    finally {
+
+        boton.disabled = false;
+
+        boton.textContent =
+            "GUARDAR";
+
+    }
+
+}
+
+
+// ============================================================
+// CERRAR FORMULARIO MATERIAL
+// ============================================================
+
+function cerrarFormularioMaterial() {
+
+    document.getElementById(
+        "formularioMaterial"
+    )?.classList.add(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "formMaterialAcademico"
+    )?.reset();
+
+
+    const id =
+        document.getElementById(
+            "materialId"
+        );
+
+
+    if (id) {
+        id.value = "";
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajeMaterialAcademico",
+        ""
+    );
 
 }
