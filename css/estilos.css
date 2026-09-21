@@ -2369,3 +2369,1223 @@ footer strong {
     }
 
 }
+/* =========================================================
+   PARTE 9B
+   PORTAL DEL ESTUDIANTE
+========================================================= */
+
+.body-estudiante {
+    min-height: 100vh;
+
+    margin: 0;
+
+    background: #f4f7fb;
+
+    color: var(--texto);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header-estudiante {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
+
+    border-bottom:
+        1px solid
+        #e2e8f0;
+
+    background:
+        rgba(255, 255, 255, 0.96);
+
+    backdrop-filter:
+        blur(10px);
+}
+
+
+.header-estudiante-contenido {
+    width: min(
+        1150px,
+        calc(100% - 30px)
+    );
+
+    min-height: 72px;
+
+    margin: auto;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.marca-estudiante {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+}
+
+
+.logo-estudiante {
+    width: 48px;
+
+    height: 48px;
+
+    object-fit: contain;
+}
+
+
+.marca-estudiante strong {
+    display: block;
+
+    color: var(--azul-oscuro);
+
+    font-size: 1.05rem;
+}
+
+
+.marca-estudiante span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--texto-secundario);
+
+    font-size: 0.78rem;
+}
+
+
+.btn-cerrar-estudiante {
+    padding:
+        9px
+        13px;
+
+    border:
+        1px solid
+        #cbd5e1;
+
+    border-radius: 9px;
+
+    background: white;
+
+    color: var(--azul-oscuro);
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.btn-cerrar-estudiante:hover {
+    background: #f1f5f9;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main-estudiante {
+    width: min(
+        1150px,
+        calc(100% - 30px)
+    );
+
+    min-height:
+        calc(100vh - 150px);
+
+    margin:
+        24px auto
+        50px;
+}
+
+
+.tarjeta-estudiante {
+    margin-bottom: 18px;
+
+    padding: 22px;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 16px;
+
+    background: white;
+
+    box-shadow:
+        0 4px 18px
+        rgba(15, 23, 42, 0.04);
+}
+
+
+.etiqueta-estudiante {
+    margin:
+        0 0
+        5px;
+
+    color: var(--azul);
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+.tarjeta-estudiante h2 {
+    margin:
+        0 0
+        6px;
+
+    color: var(--azul-oscuro);
+}
+
+
+/* =========================================================
+   CARGANDO
+========================================================= */
+
+.tarjeta-cargando {
+    min-height: 250px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+}
+
+
+.tarjeta-cargando p {
+    color: var(--texto-secundario);
+}
+
+
+.spinner-estudiante {
+    width: 36px;
+
+    height: 36px;
+
+    margin-bottom: 15px;
+
+    border:
+        4px solid
+        #e2e8f0;
+
+    border-top-color:
+        var(--azul);
+
+    border-radius: 50%;
+
+    animation:
+        giroEstudiante
+        0.8s linear
+        infinite;
+}
+
+
+@keyframes giroEstudiante {
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   BIENVENIDA
+========================================================= */
+
+.bienvenida-estudiante {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        minmax(420px, 0.8fr);
+
+    gap: 20px;
+
+    margin-bottom: 18px;
+
+    padding: 25px;
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--azul-oscuro),
+            var(--azul)
+        );
+
+    color: white;
+}
+
+
+.bienvenida-estudiante
+.etiqueta-estudiante {
+    color: #bfdbfe;
+}
+
+
+.bienvenida-estudiante h1 {
+    margin:
+        5px 0
+        7px;
+
+    font-size: 1.7rem;
+}
+
+
+.bienvenida-estudiante p {
+    margin: 0;
+
+    color: #dbeafe;
+}
+
+
+.datos-estudiante {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.18);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.datos-estudiante > div {
+    padding:
+        14px
+        12px;
+
+    border-right:
+        1px solid
+        rgba(255, 255, 255, 0.15);
+}
+
+
+.datos-estudiante > div:last-child {
+    border-right: none;
+}
+
+
+.datos-estudiante span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #bfdbfe;
+
+    font-size: 0.68rem;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+.datos-estudiante strong {
+    display: block;
+
+    font-size: 0.88rem;
+
+    line-height: 1.35;
+}
+
+
+/* =========================================================
+   SEMESTRES
+========================================================= */
+
+.selector-semestres-estudiante {
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, 1fr);
+
+    gap: 8px;
+
+    margin-top: 17px;
+}
+
+
+.btn-semestre-estudiante {
+    min-height: 44px;
+
+    border:
+        1px solid
+        #cbd5e1;
+
+    border-radius: 9px;
+
+    background: white;
+
+    color: var(--azul-oscuro);
+
+    font-size: 1rem;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.btn-semestre-estudiante.activo {
+    border-color: var(--azul);
+
+    background: var(--azul);
+
+    color: white;
+}
+
+
+/* =========================================================
+   MATERIAS
+========================================================= */
+
+.grid-materias-estudiante {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 11px;
+
+    margin-top: 17px;
+}
+
+
+.materia-estudiante-card {
+    display: grid;
+
+    grid-template-columns:
+        auto
+        1fr
+        auto;
+
+    align-items: center;
+
+    gap: 13px;
+
+    width: 100%;
+
+    min-height: 92px;
+
+    padding: 15px;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 13px;
+
+    background: white;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.materia-estudiante-card:hover {
+    transform:
+        translateY(-2px);
+
+    border-color: #93c5fd;
+
+    box-shadow:
+        0 8px 20px
+        rgba(15, 23, 42, 0.07);
+}
+
+
+.icono-materia-estudiante {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 12px;
+
+    background: #eff6ff;
+
+    font-size: 1.5rem;
+}
+
+
+.info-materia-estudiante strong {
+    display: block;
+
+    color: var(--azul-oscuro);
+
+    font-size: 0.98rem;
+}
+
+
+.info-materia-estudiante small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--texto-secundario);
+}
+
+
+.info-materia-estudiante > span {
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--texto-secundario);
+
+    font-size: 0.8rem;
+
+    line-height: 1.4;
+}
+
+
+.flecha-materia-estudiante {
+    color: var(--azul);
+
+    font-size: 1.3rem;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   MATERIA ABIERTA
+========================================================= */
+
+.cabecera-materia-estudiante {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding-bottom: 16px;
+
+    border-bottom:
+        1px solid
+        #e2e8f0;
+}
+
+
+.btn-volver-estudiante {
+    padding:
+        8px
+        11px;
+
+    border:
+        1px solid
+        #cbd5e1;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: var(--azul-oscuro);
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   RUTA
+========================================================= */
+
+.ruta-estudiante {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin:
+        16px 0;
+
+    padding:
+        10px
+        12px;
+
+    border-radius: 9px;
+
+    background: #f8fafc;
+}
+
+
+.ruta-estudiante button {
+    padding:
+        3px
+        5px;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--azul);
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.ruta-estudiante button:hover {
+    text-decoration: underline;
+}
+
+
+.ruta-estudiante span {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   CARPETAS
+========================================================= */
+
+.subtitulo-estudiante {
+    margin:
+        22px 0
+        9px;
+
+    color: var(--texto-secundario);
+
+    font-size: 0.72rem;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+}
+
+
+.grid-carpetas-estudiante {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+
+.carpeta-estudiante-card {
+    display: grid;
+
+    grid-template-columns:
+        auto
+        1fr
+        auto;
+
+    align-items: center;
+
+    gap: 11px;
+
+    min-height: 72px;
+
+    padding: 13px;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 11px;
+
+    background: white;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+
+.carpeta-estudiante-card:hover {
+    border-color: #93c5fd;
+
+    background: #f8fbff;
+}
+
+
+.carpeta-estudiante-card > span {
+    font-size: 1.5rem;
+}
+
+
+.carpeta-estudiante-card strong {
+    display: block;
+
+    color: var(--azul-oscuro);
+}
+
+
+.carpeta-estudiante-card small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--texto-secundario);
+}
+
+
+.carpeta-estudiante-card b {
+    color: var(--azul);
+}
+
+
+/* =========================================================
+   RECURSOS
+========================================================= */
+
+.lista-recursos-estudiante {
+    display: grid;
+
+    gap: 9px;
+}
+
+
+.recurso-estudiante-card {
+    display: grid;
+
+    grid-template-columns:
+        auto
+        1fr
+        auto;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 14px;
+
+    border:
+        1px solid
+        #e2e8f0;
+
+    border-radius: 11px;
+
+    background: white;
+}
+
+
+.icono-recurso-estudiante {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 45px;
+
+    height: 45px;
+
+    border-radius: 10px;
+
+    background: #f1f5f9;
+
+    font-size: 1.35rem;
+}
+
+
+.info-recurso-estudiante strong {
+    display: block;
+
+    color: var(--azul-oscuro);
+}
+
+
+.info-recurso-estudiante small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--texto-secundario);
+}
+
+
+.info-recurso-estudiante p {
+    margin:
+        6px 0
+        0;
+
+    color: var(--texto-secundario);
+
+    font-size: 0.84rem;
+
+    line-height: 1.45;
+}
+
+
+.btn-abrir-recurso-estudiante {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 39px;
+
+    padding:
+        8px
+        13px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: var(--azul);
+
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 0.82rem;
+
+    font-weight: 800;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+
+.btn-abrir-recurso-estudiante:hover {
+    opacity: 0.9;
+}
+
+
+/* =========================================================
+   VACÍO
+========================================================= */
+
+.vacio-estudiante {
+    grid-column:
+        1 / -1;
+
+    padding:
+        40px
+        20px;
+
+    text-align: center;
+}
+
+
+.vacio-estudiante > span {
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 2.5rem;
+}
+
+
+.vacio-estudiante strong {
+    display: block;
+
+    color: var(--azul-oscuro);
+}
+
+
+.vacio-estudiante p {
+    margin:
+        6px 0
+        0;
+
+    color: var(--texto-secundario);
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.error-sesion-estudiante {
+    max-width: 520px;
+
+    margin:
+        60px auto;
+
+    text-align: center;
+}
+
+
+.error-sesion-estudiante > span {
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 3rem;
+}
+
+
+.error-sesion-estudiante p {
+    color: var(--texto-secundario);
+}
+
+
+.btn-principal-estudiante {
+    display: inline-flex;
+
+    margin-top: 12px;
+
+    padding:
+        10px
+        16px;
+
+    border-radius: 9px;
+
+    background: var(--azul);
+
+    color: white;
+
+    font-weight: 800;
+
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   VIDEO MODAL
+========================================================= */
+
+.modal-video-estudiante {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+}
+
+
+.modal-video-estudiante.oculto {
+    display: none !important;
+}
+
+
+.fondo-modal-video {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(15, 23, 42, 0.85);
+}
+
+
+.contenedor-video-estudiante {
+    position: relative;
+
+    z-index: 2;
+
+    overflow: hidden;
+
+    width: min(
+        950px,
+        100%
+    );
+
+    border-radius: 14px;
+
+    background: #0f172a;
+
+    box-shadow:
+        0 25px 60px
+        rgba(0, 0, 0, 0.35);
+}
+
+
+.cabecera-video-estudiante {
+    min-height: 52px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding:
+        10px
+        14px;
+
+    background: white;
+}
+
+
+.cabecera-video-estudiante strong {
+    overflow: hidden;
+
+    color: var(--azul-oscuro);
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.cabecera-video-estudiante button {
+    width: 34px;
+
+    height: 34px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f1f5f9;
+
+    cursor: pointer;
+}
+
+
+.visor-video-estudiante {
+    position: relative;
+
+    width: 100%;
+
+    padding-top: 56.25%;
+
+    background: black;
+}
+
+
+.visor-video-estudiante iframe {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    border: none;
+}
+
+
+.sin-scroll {
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer-estudiante {
+    padding:
+        20px
+        15px
+        30px;
+
+    text-align: center;
+
+    color: var(--texto-secundario);
+
+    font-size: 0.78rem;
+}
+
+
+.footer-estudiante p {
+    margin:
+        0 0
+        3px;
+
+    color: var(--azul-oscuro);
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .bienvenida-estudiante {
+        grid-template-columns: 1fr;
+    }
+
+
+    .grid-carpetas-estudiante {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .header-estudiante-contenido {
+        width:
+            calc(100% - 20px);
+    }
+
+
+    .main-estudiante {
+        width:
+            calc(100% - 20px);
+
+        margin-top: 14px;
+    }
+
+
+    .logo-estudiante {
+        width: 42px;
+
+        height: 42px;
+    }
+
+
+    .marca-estudiante span {
+        display: none;
+    }
+
+
+    .btn-cerrar-estudiante {
+        padding:
+            8px
+            10px;
+
+        font-size: 0.78rem;
+    }
+
+
+    .bienvenida-estudiante {
+        padding: 19px;
+    }
+
+
+    .bienvenida-estudiante h1 {
+        font-size: 1.35rem;
+    }
+
+
+    .datos-estudiante {
+        grid-template-columns: 1fr;
+    }
+
+
+    .datos-estudiante > div {
+        border-right: none;
+
+        border-bottom:
+            1px solid
+            rgba(255, 255, 255, 0.15);
+    }
+
+
+    .datos-estudiante > div:last-child {
+        border-bottom: none;
+    }
+
+
+    .tarjeta-estudiante {
+        padding: 16px;
+
+        border-radius: 13px;
+    }
+
+
+    .selector-semestres-estudiante {
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+
+    .grid-materias-estudiante {
+        grid-template-columns: 1fr;
+    }
+
+
+    .grid-carpetas-estudiante {
+        grid-template-columns: 1fr;
+    }
+
+
+    .cabecera-materia-estudiante {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .recurso-estudiante-card {
+        grid-template-columns:
+            auto
+            1fr;
+    }
+
+
+    .accion-recurso-estudiante {
+        grid-column:
+            1 / -1;
+    }
+
+
+    .btn-abrir-recurso-estudiante {
+        width: 100%;
+    }
+
+
+    .contenedor-video-estudiante {
+        border-radius: 10px;
+    }
+
+}
