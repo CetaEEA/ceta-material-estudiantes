@@ -513,13 +513,33 @@
                     </div>
 
 
-                    <button
-                        id="btnNuevoEstudiante"
-                        type="button"
-                        class="btn-principal btn-auto"
-                    >
-                        + Estudiante
-                    </button>
+                   <div class="acciones-grupo">
+
+    <button
+        id="btnNuevoEstudiante"
+        type="button"
+        class="btn-principal btn-auto"
+    >
+        + Estudiante
+    </button>
+
+    <button
+        id="btnImportarExcel"
+        type="button"
+        class="btn-secundario"
+    >
+        📊 Importar Excel
+    </button>
+
+    <button
+        id="btnPromoverGrupo"
+        type="button"
+        class="btn-secundario"
+    >
+        ⬆ Promover grupo
+    </button>
+
+</div>
 
                 </div>
 
@@ -622,7 +642,183 @@
                     </form>
 
                 </div>
+<!-- =============================================
+     IMPORTAR EXCEL
+============================================== -->
 
+<div
+    id="panelImportarExcel"
+    class="formulario-desplegable oculto"
+>
+
+    <div class="titulo-importacion">
+
+        <div>
+            <h4>
+                Importar lista desde Excel
+            </h4>
+
+            <p>
+                La nueva lista reemplazará la lista actual
+                del grupo seleccionado.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="aviso-importante">
+
+        <strong>
+            Formato esperado
+        </strong>
+
+        <p>
+            El archivo debe contener una columna con el
+            nombre del estudiante y otra con su código CETA.
+        </p>
+
+        <div class="ejemplo-excel">
+
+            <span>NOMBRE</span>
+            <span>CODIGO_CETA</span>
+
+            <span>Armando Nogales</span>
+            <span>12345</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="campo">
+
+        <label for="archivoExcel">
+            Archivo Excel
+        </label>
+
+        <input
+            type="file"
+            id="archivoExcel"
+            accept=".xlsx,.xls"
+        >
+
+    </div>
+
+
+    <p
+        id="mensajeExcel"
+        class="mensaje"
+    ></p>
+
+
+    <div
+        id="resumenExcel"
+        class="resumen-excel oculto"
+    >
+
+        <div class="resumen-excel-cabecera">
+
+            <div>
+                <strong id="cantidadExcel">
+                    0 estudiantes
+                </strong>
+
+                <small>
+                    Previsualización del archivo
+                </small>
+            </div>
+
+        </div>
+
+
+        <div
+            id="vistaPreviaExcel"
+            class="tabla-responsive"
+        ></div>
+
+
+        <div class="aviso-reemplazo">
+
+            ⚠️ Al confirmar, esta lista se convertirá
+            en la lista oficial del grupo.
+
+            Los estudiantes que actualmente pertenecen
+            al grupo pero no aparezcan en el Excel serán
+            retirados del grupo y desactivados.
+
+        </div>
+
+
+        <div class="botones-formulario">
+
+            <button
+                id="btnConfirmarExcel"
+                type="button"
+                class="btn-principal btn-auto"
+            >
+                CONFIRMAR IMPORTACIÓN
+            </button>
+
+
+            <button
+                id="btnCancelarExcel"
+                type="button"
+                class="btn-secundario"
+            >
+                Cancelar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- INPUT OCULTO / DATOS PROMOCIÓN -->
+
+<div
+    id="panelPromocion"
+    class="formulario-desplegable oculto"
+>
+
+    <h4>
+        Promover grupo
+    </h4>
+
+
+    <div id="contenidoPromocion"></div>
+
+
+    <p
+        id="mensajePromocion"
+        class="mensaje"
+    ></p>
+
+
+    <div class="botones-formulario">
+
+        <button
+            id="btnConfirmarPromocion"
+            type="button"
+            class="btn-principal btn-auto"
+        >
+            CONFIRMAR PROMOCIÓN
+        </button>
+
+
+        <button
+            id="btnCancelarPromocion"
+            type="button"
+            class="btn-secundario"
+        >
+            Cancelar
+        </button>
+
+    </div>
+
+</div>
 
                 <!-- BUSCADOR -->
 
