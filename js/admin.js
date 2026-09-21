@@ -12,6 +12,9 @@ let estudiantesGrupo = [];
 
 let grupoSeleccionado = null;
 
+let estudiantesExcel = [];
+
+let grupoDestinoPromocion = null;
 
 // ============================================================
 // INICIO
@@ -272,7 +275,74 @@ function registrarEventos() {
             "input",
             renderizarEstudiantes
         );
+    document
+        .getElementById(
+            "btnImportarExcel"
+        )
+        ?.addEventListener(
+            "click",
+            abrirImportacionExcel
+        );
 
+
+    document
+        .getElementById(
+            "archivoExcel"
+        )
+        ?.addEventListener(
+            "change",
+            leerArchivoExcel
+        );
+
+
+    document
+        .getElementById(
+            "btnCancelarExcel"
+        )
+        ?.addEventListener(
+            "click",
+            cerrarImportacionExcel
+        );
+
+
+    document
+        .getElementById(
+            "btnConfirmarExcel"
+        )
+        ?.addEventListener(
+            "click",
+            confirmarImportacionExcel
+        );
+
+
+    document
+        .getElementById(
+            "btnPromoverGrupo"
+        )
+        ?.addEventListener(
+            "click",
+            prepararPromocionGrupo
+        );
+
+
+    document
+        .getElementById(
+            "btnCancelarPromocion"
+        )
+        ?.addEventListener(
+            "click",
+            cerrarPromocion
+        );
+
+
+    document
+        .getElementById(
+            "btnConfirmarPromocion"
+        )
+        ?.addEventListener(
+            "click",
+            confirmarPromocionGrupo
+        );
 }
 
 
@@ -1676,5 +1746,1247 @@ function escaparHTML(valor) {
         "'",
         "&#039;"
     );
+
+}
+// ============================================================
+// PARTE 8B
+// IMPORTACIÓN DE EXCEL
+// ============================================================
+
+
+function abrirImportacionExcel() {
+
+    if (!grupoSeleccionado) {
+        return;
+    }
+
+
+    cerrarPromocion();
+
+
+    estudiantesExcel = [];
+
+
+    document.getElementById(
+        "archivoExcel"
+    ).value = "";
+
+
+    document.getElementById(
+        "vistaPreviaExcel"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "resumenExcel"
+    ).classList.add(
+        "oculto"
+    );
+
+
+    mostrarMensajeAdmin(
+        "mensajeExcel",
+        ""
+    );
+
+
+    document.getElementById(
+        "panelImportarExcel"
+    ).classList.remove(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "panelImportarExcel"
+    ).scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+// ============================================================
+// CERRAR EXCEL
+// ============================================================
+
+function cerrarImportacionExcel() {
+
+    estudiantesExcel = [];
+
+
+    const input =
+        document.getElementById(
+            "archivoExcel"
+        );
+
+
+    if (input) {
+        input.value = "";
+    }
+
+
+    document.getElementById(
+        "panelImportarExcel"
+    ).classList.add(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "resumenExcel"
+    ).classList.add(
+        "oculto"
+    );
+
+
+    document.getElementById(
+        "vistaPreviaExcel"
+    ).innerHTML = "";
+
+
+    mostrarMensajeAdmin(
+        "mensajeExcel",
+        ""
+    );
+
+}
+
+
+// ============================================================
+// NORMALIZAR ENCABEZADO
+// ============================================================
+
+function normalizarEncabezado(texto) {
+
+    return String(texto ?? "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .replace(
+            /[^a-z0-9]/g,
+            ""
+        );
+
+}
+
+
+// ============================================================
+// DETECTAR COLUMNAS
+// ============================================================
+
+function detectarColumnasExcel(fila) {
+
+    const columnas =
+        Object.keys(fila);
+
+
+    let columnaNombre = null;
+
+    let columnaCodigo = null;
+
+
+    for (const columna of columnas) {
+
+        const normalizada =
+            normalizarEncabezado(
+                columna
+            );
+
+
+        if (
+            !columnaNombre
+            &&
+            (
+                normalizada === "nombre"
+                ||
+                normalizada === "nombres"
+                ||
+                normalizada === "nombrecompleto"
+                ||
+                normalizada === "estudiante"
+                ||
+                normalizada === "alumno"
+                ||
+                normalizada === "alumnos"
+            )
+        ) {
+
+            columnaNombre =
+                columna;
+
+        }
+
+
+        if (
+            !columnaCodigo
+            &&
+            (
+                normalizada === "codigo"
+                ||
+                normalizada === "codigoceta"
+                ||
+                normalizada === "codceta"
+                ||
+                normalizada === "codigoestudiante"
+                ||
+                normalizada === "cod"
+            )
+        ) {
+
+            columnaCodigo =
+                columna;
+
+        }
+
+    }
+
+
+    return {
+        columnaNombre,
+        columnaCodigo
+    };
+
+}
+
+
+// ============================================================
+// LEER EXCEL
+// ============================================================
+
+async function leerArchivoExcel(event) {
+
+    mostrarMensajeAdmin(
+        "mensajeExcel",
+        ""
+    );
+
+
+    estudiantesExcel = [];
+
+
+    document.getElementById(
+        "resumenExcel"
+    ).classList.add(
+        "oculto"
+    );
+
+
+    const archivo =
+        event.target.files?.[0];
+
+
+    if (!archivo) {
+        return;
+    }
+
+
+    const extension =
+        archivo.name
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+
+    if (
+        extension !== "xlsx"
+        &&
+        extension !== "xls"
+    ) {
+
+        mostrarMensajeAdmin(
+            "mensajeExcel",
+            "Selecciona un archivo Excel .xlsx o .xls."
+        );
+
+        event.target.value = "";
+
+        return;
+
+    }
+
+
+    try {
+
+        const buffer =
+            await archivo.arrayBuffer();
+
+
+        const libro =
+            XLSX.read(
+                buffer,
+                {
+                    type: "array"
+                }
+            );
+
+
+        if (
+            !libro.SheetNames
+            ||
+            libro.SheetNames.length === 0
+        ) {
+
+            throw new Error(
+                "El archivo no contiene hojas."
+            );
+
+        }
+
+
+        const primeraHoja =
+            libro.Sheets[
+                libro.SheetNames[0]
+            ];
+
+
+        const filas =
+            XLSX.utils.sheet_to_json(
+                primeraHoja,
+                {
+                    defval: "",
+                    raw: false
+                }
+            );
+
+
+        if (!filas.length) {
+
+            throw new Error(
+                "El archivo Excel está vacío."
+            );
+
+        }
+
+
+        const {
+            columnaNombre,
+            columnaCodigo
+        } =
+            detectarColumnasExcel(
+                filas[0]
+            );
+
+
+        if (
+            !columnaNombre
+            ||
+            !columnaCodigo
+        ) {
+
+            throw new Error(
+                "No se encontraron las columnas de NOMBRE y CÓDIGO CETA."
+            );
+
+        }
+
+
+        const procesados = [];
+
+        const codigos =
+            new Set();
+
+
+        for (let i = 0; i < filas.length; i++) {
+
+            const fila =
+                filas[i];
+
+
+            const nombre =
+                String(
+                    fila[columnaNombre] ?? ""
+                )
+                .trim();
+
+
+            const codigo =
+                String(
+                    fila[columnaCodigo] ?? ""
+                )
+                .trim();
+
+
+            // Ignoramos filas completamente vacías.
+            if (
+                !nombre
+                &&
+                !codigo
+            ) {
+
+                continue;
+
+            }
+
+
+            if (!nombre) {
+
+                throw new Error(
+                    `Fila ${i + 2}: falta el nombre del estudiante.`
+                );
+
+            }
+
+
+            if (!codigo) {
+
+                throw new Error(
+                    `Fila ${i + 2}: falta el código CETA.`
+                );
+
+            }
+
+
+            const codigoNormalizado =
+                codigo.toLowerCase();
+
+
+            if (
+                codigos.has(
+                    codigoNormalizado
+                )
+            ) {
+
+                throw new Error(
+                    `El código CETA ${codigo} está repetido en el Excel.`
+                );
+
+            }
+
+
+            codigos.add(
+                codigoNormalizado
+            );
+
+
+            procesados.push({
+                codigo_ceta: codigo,
+                nombre: nombre
+            });
+
+        }
+
+
+        if (!procesados.length) {
+
+            throw new Error(
+                "No se encontraron estudiantes válidos."
+            );
+
+        }
+
+
+        estudiantesExcel =
+            procesados;
+
+
+        mostrarVistaPreviaExcel();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Error leyendo Excel:",
+            error
+        );
+
+
+        estudiantesExcel = [];
+
+
+        mostrarMensajeAdmin(
+            "mensajeExcel",
+            error.message ||
+            "No se pudo leer el archivo Excel."
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// PREVISUALIZACIÓN
+// ============================================================
+
+function mostrarVistaPreviaExcel() {
+
+    document.getElementById(
+        "cantidadExcel"
+    ).textContent =
+        `${estudiantesExcel.length} estudiante${
+            estudiantesExcel.length === 1
+                ? ""
+                : "s"
+        }`;
+
+
+    const primeros =
+        estudiantesExcel.slice(
+            0,
+            20
+        );
+
+
+    document.getElementById(
+        "vistaPreviaExcel"
+    ).innerHTML = `
+
+        <table class="tabla-admin">
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Código CETA</th>
+                    <th>Estudiante</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                ${
+                    primeros
+                        .map(
+                            (estudiante, indice) => `
+                                <tr>
+
+                                    <td>
+                                        ${indice + 1}
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            ${escaparHTML(estudiante.codigo_ceta)}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        ${escaparHTML(estudiante.nombre)}
+                                    </td>
+
+                                </tr>
+                            `
+                        )
+                        .join("")
+                }
+
+            </tbody>
+
+        </table>
+
+        ${
+            estudiantesExcel.length > 20
+                ? `
+                    <p class="nota-vista-previa">
+                        Mostrando los primeros 20 de
+                        ${estudiantesExcel.length} estudiantes.
+                    </p>
+                `
+                : ""
+        }
+    `;
+
+
+    document.getElementById(
+        "resumenExcel"
+    ).classList.remove(
+        "oculto"
+    );
+
+}
+
+
+// ============================================================
+// CONFIRMAR IMPORTACIÓN
+// ============================================================
+
+async function confirmarImportacionExcel() {
+
+    if (
+        !grupoSeleccionado
+        ||
+        !estudiantesExcel.length
+    ) {
+
+        return;
+
+    }
+
+
+    const confirmado =
+        window.confirm(
+            `¿Reemplazar la lista del grupo ${grupoSeleccionado.codigo_grupo} con ${estudiantesExcel.length} estudiantes?\n\n` +
+            `Los estudiantes que no aparezcan en el nuevo Excel serán retirados del grupo y desactivados.`
+        );
+
+
+    if (!confirmado) {
+        return;
+    }
+
+
+    const boton =
+        document.getElementById(
+            "btnConfirmarExcel"
+        );
+
+
+    boton.disabled = true;
+
+    boton.textContent =
+        "IMPORTANDO...";
+
+
+    mostrarMensajeAdmin(
+        "mensajeExcel",
+        ""
+    );
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.rpc(
+                "reemplazar_lista_grupo_estudiantes",
+                {
+                    p_grupo_id:
+                        grupoSeleccionado.id,
+
+                    p_estudiantes:
+                        estudiantesExcel
+                }
+            );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        const resultado =
+            Array.isArray(data)
+                ? data[0]
+                : data;
+
+
+        const procesados =
+            resultado?.procesados ?? 0;
+
+        const nuevos =
+            resultado?.nuevos ?? 0;
+
+        const actualizados =
+            resultado?.actualizados ?? 0;
+
+        const retirados =
+            resultado?.retirados ?? 0;
+
+
+        alert(
+            `Lista importada correctamente.\n\n` +
+            `Procesados: ${procesados}\n` +
+            `Nuevos: ${nuevos}\n` +
+            `Actualizados: ${actualizados}\n` +
+            `Retirados: ${retirados}`
+        );
+
+
+        cerrarImportacionExcel();
+
+
+        await Promise.all([
+            cargarEstudiantesGrupo(),
+            cargarEstadisticas()
+        ]);
+
+    }
+    catch (error) {
+
+        console.error(
+            "Error importando lista:",
+            error
+        );
+
+
+        mostrarMensajeAdmin(
+            "mensajeExcel",
+            obtenerMensajeError(error)
+        );
+
+    }
+    finally {
+
+        boton.disabled = false;
+
+        boton.textContent =
+            "CONFIRMAR IMPORTACIÓN";
+
+    }
+
+}
+
+
+// ============================================================
+// PROMOCIÓN DE GRUPOS
+// ============================================================
+
+function prepararPromocionGrupo() {
+
+    if (!grupoSeleccionado) {
+        return;
+    }
+
+
+    cerrarImportacionExcel();
+
+
+    grupoDestinoPromocion =
+        null;
+
+
+    const panel =
+        document.getElementById(
+            "panelPromocion"
+        );
+
+
+    const contenido =
+        document.getElementById(
+            "contenidoPromocion"
+        );
+
+
+    mostrarMensajeAdmin(
+        "mensajePromocion",
+        ""
+    );
+
+
+    // ========================================================
+    // SEXTO SEMESTRE -> EGRESADOS
+    // ========================================================
+
+    if (
+        grupoSeleccionado.semestre === 6
+    ) {
+
+        contenido.innerHTML = `
+
+            <div class="promocion-resumen">
+
+                <div>
+                    <small>
+                        GRUPO ACTUAL
+                    </small>
+
+                    <strong>
+                        ${escaparHTML(grupoSeleccionado.codigo_grupo)}
+                    </strong>
+
+                    <span>
+                        6° semestre
+                    </span>
+                </div>
+
+
+                <div class="flecha-promocion">
+                    →
+                </div>
+
+
+                <div>
+                    <small>
+                        DESTINO
+                    </small>
+
+                    <strong>
+                        🎓 EGRESADOS
+                    </strong>
+
+                    <span>
+                        Acceso completo 1°–6°
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="aviso-importante">
+
+                Los estudiantes activos de
+                <strong>
+                    ${escaparHTML(grupoSeleccionado.codigo_grupo)}
+                </strong>
+                pasarán a estado
+                <strong>egresado</strong> y dejarán de
+                pertenecer al grupo.
+
+            </div>
+        `;
+
+
+        panel.classList.remove(
+            "oculto"
+        );
+
+
+        panel.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // BUSCAR GRUPOS DEL SIGUIENTE SEMESTRE
+    // ========================================================
+
+    const siguienteSemestre =
+        grupoSeleccionado.semestre + 1;
+
+
+    const destinos =
+        grupos.filter(
+            grupo =>
+                grupo.activo
+                &&
+                grupo.semestre === siguienteSemestre
+                &&
+                grupo.id !== grupoSeleccionado.id
+        );
+
+
+    if (!destinos.length) {
+
+        contenido.innerHTML = `
+
+            <div class="aviso-importante">
+
+                No existe ningún grupo activo de
+                <strong>
+                    ${siguienteSemestre}° semestre
+                </strong>.
+
+                <br><br>
+
+                Primero crea el grupo de destino y luego
+                vuelve a realizar la promoción.
+
+            </div>
+        `;
+
+
+        document.getElementById(
+            "btnConfirmarPromocion"
+        ).classList.add(
+            "oculto"
+        );
+
+    }
+    else {
+
+        document.getElementById(
+            "btnConfirmarPromocion"
+        ).classList.remove(
+            "oculto"
+        );
+
+
+        contenido.innerHTML = `
+
+            <div class="promocion-resumen">
+
+                <div>
+
+                    <small>
+                        ORIGEN
+                    </small>
+
+                    <strong>
+                        ${escaparHTML(grupoSeleccionado.codigo_grupo)}
+                    </strong>
+
+                    <span>
+                        ${grupoSeleccionado.semestre}° semestre
+                    </span>
+
+                </div>
+
+
+                <div class="flecha-promocion">
+                    →
+                </div>
+
+
+                <div>
+
+                    <small>
+                        DESTINO
+                    </small>
+
+                    <select
+                        id="selectGrupoDestino"
+                        class="select-promocion"
+                    >
+
+                        <option value="">
+                            Seleccionar grupo
+                        </option>
+
+                        ${
+                            destinos
+                                .map(
+                                    grupo => `
+                                        <option value="${grupo.id}">
+                                            ${escaparHTML(grupo.codigo_grupo)}
+                                            — ${grupo.semestre}° semestre
+                                        </option>
+                                    `
+                                )
+                                .join("")
+                        }
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="aviso-importante">
+
+                Todos los estudiantes
+                <strong>activos</strong>
+                del grupo serán trasladados al grupo
+                seleccionado.
+
+            </div>
+        `;
+
+    }
+
+
+    panel.classList.remove(
+        "oculto"
+    );
+
+
+    panel.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+// ============================================================
+// CERRAR PROMOCIÓN
+// ============================================================
+
+function cerrarPromocion() {
+
+    grupoDestinoPromocion =
+        null;
+
+
+    const panel =
+        document.getElementById(
+            "panelPromocion"
+        );
+
+
+    if (panel) {
+
+        panel.classList.add(
+            "oculto"
+        );
+
+    }
+
+
+    const boton =
+        document.getElementById(
+            "btnConfirmarPromocion"
+        );
+
+
+    if (boton) {
+
+        boton.classList.remove(
+            "oculto"
+        );
+
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajePromocion",
+        ""
+    );
+
+}
+
+
+// ============================================================
+// CONFIRMAR PROMOCIÓN
+// ============================================================
+
+async function confirmarPromocionGrupo() {
+
+    if (!grupoSeleccionado) {
+        return;
+    }
+
+
+    const boton =
+        document.getElementById(
+            "btnConfirmarPromocion"
+        );
+
+
+    // ========================================================
+    // SEXTO -> EGRESADOS
+    // ========================================================
+
+    if (
+        grupoSeleccionado.semestre === 6
+    ) {
+
+        const confirmado =
+            window.confirm(
+                `¿Promover a EGRESADOS a todos los estudiantes activos de ${grupoSeleccionado.codigo_grupo}?\n\n` +
+                `Los egresados tendrán acceso al material de los seis semestres.`
+            );
+
+
+        if (!confirmado) {
+            return;
+        }
+
+
+        boton.disabled = true;
+
+        boton.textContent =
+            "PROCESANDO...";
+
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.rpc(
+                    "promover_grupo_a_egresados",
+                    {
+                        p_grupo_id:
+                            grupoSeleccionado.id
+                    }
+                );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            const cantidad =
+                data ?? 0;
+
+
+            alert(
+                `${cantidad} estudiante${
+                    Number(cantidad) === 1
+                        ? ""
+                        : "s"
+                } promovido${
+                    Number(cantidad) === 1
+                        ? ""
+                        : "s"
+                } a egresados.`
+            );
+
+
+            cerrarPromocion();
+
+
+            await Promise.all([
+                cargarEstudiantesGrupo(),
+                cargarEstadisticas()
+            ]);
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+
+            mostrarMensajeAdmin(
+                "mensajePromocion",
+                obtenerMensajeError(error)
+            );
+
+        }
+        finally {
+
+            boton.disabled = false;
+
+            boton.textContent =
+                "CONFIRMAR PROMOCIÓN";
+
+        }
+
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // PROMOCIÓN ENTRE SEMESTRES
+    // ========================================================
+
+    const select =
+        document.getElementById(
+            "selectGrupoDestino"
+        );
+
+
+    const destinoId =
+        Number(
+            select?.value
+        );
+
+
+    if (!destinoId) {
+
+        mostrarMensajeAdmin(
+            "mensajePromocion",
+            "Selecciona el grupo de destino."
+        );
+
+        return;
+
+    }
+
+
+    const destino =
+        grupos.find(
+            grupo =>
+                grupo.id === destinoId
+        );
+
+
+    if (!destino) {
+
+        mostrarMensajeAdmin(
+            "mensajePromocion",
+            "El grupo de destino no es válido."
+        );
+
+        return;
+
+    }
+
+
+    const confirmado =
+        window.confirm(
+            `¿Promover los estudiantes de ${grupoSeleccionado.codigo_grupo} a ${destino.codigo_grupo}?`
+        );
+
+
+    if (!confirmado) {
+        return;
+    }
+
+
+    boton.disabled = true;
+
+    boton.textContent =
+        "PROMOVIENDO...";
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.rpc(
+                "promover_grupo_estudiantes",
+                {
+                    p_grupo_origen_id:
+                        grupoSeleccionado.id,
+
+                    p_grupo_destino_id:
+                        destino.id
+                }
+            );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        const cantidad =
+            data ?? 0;
+
+
+        alert(
+            `${cantidad} estudiante${
+                Number(cantidad) === 1
+                    ? ""
+                    : "s"
+            } promovido${
+                Number(cantidad) === 1
+                    ? ""
+                    : "s"
+            } de ${grupoSeleccionado.codigo_grupo} a ${destino.codigo_grupo}.`
+        );
+
+
+        cerrarPromocion();
+
+
+        await Promise.all([
+            cargarEstudiantesGrupo(),
+            cargarEstadisticas()
+        ]);
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+
+        mostrarMensajeAdmin(
+            "mensajePromocion",
+            obtenerMensajeError(error)
+        );
+
+    }
+    finally {
+
+        boton.disabled = false;
+
+        boton.textContent =
+            "CONFIRMAR PROMOCIÓN";
+
+    }
 
 }
