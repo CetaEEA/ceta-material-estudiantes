@@ -32,6 +32,11 @@ let seccionActual = null;
 let rutaSecciones = [];
 
 let materialesSeccionActual = [];
+
+let observacionesAdmin = [];
+
+let filtroObservacionesAdmin =
+    "todas";
 // ============================================================
 // INICIO
 // ============================================================
@@ -486,6 +491,54 @@ function registrarEventos() {
             "submit",
             guardarMaterialAcademico
         );
+document
+    .getElementById(
+        "btnActualizarObservaciones"
+    )
+    ?.addEventListener(
+        "click",
+        cargarObservacionesAdmin
+    );
+
+
+document
+    .querySelectorAll(
+        ".filtro-observacion"
+    )
+    .forEach(
+        boton => {
+
+            boton.addEventListener(
+                "click",
+                () => {
+
+                    filtroObservacionesAdmin =
+                        boton.dataset.filtro;
+
+
+                    document
+                        .querySelectorAll(
+                            ".filtro-observacion"
+                        )
+                        .forEach(
+                            item => {
+
+                                item.classList.toggle(
+                                    "activo",
+                                    item === boton
+                                );
+
+                            }
+                        );
+
+
+                    renderizarObservacionesAdmin();
+
+                }
+            );
+
+        }
+    );    
 }
 
 
