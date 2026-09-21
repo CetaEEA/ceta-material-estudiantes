@@ -1,8 +1,13 @@
 // ============================================================
 // CETA - MATERIAL ACADÉMICO
 // PANEL ADMINISTRADOR
+// VERSIÓN CORREGIDA SEGÚN ADMIN.HTML REAL
 // ============================================================
 
+
+// ============================================================
+// VARIABLES GENERALES
+// ============================================================
 
 let perfilAdministrador = null;
 
@@ -35,10 +40,14 @@ let rutaSecciones = [];
 
 let materialesSeccionActual = [];
 
+
+// ============================================================
+// OBSERVACIONES
+// ============================================================
+
 let observacionesAdmin = [];
 
-let filtroObservacionesAdmin =
-    "todas";
+let filtroObservacionesAdmin = "todas";
 
 
 // ============================================================
@@ -53,19 +62,27 @@ document.addEventListener(
 
 async function iniciarPanelAdministrador() {
 
+    // Instala el modo claro/oscuro.
     instalarTemaCeta();
 
+
+    // Registra todos los botones y formularios.
     registrarEventos();
 
+
+    // Verifica que el usuario sea administrador.
     const autorizado =
         await protegerPanelAdministrador();
 
 
     if (!autorizado) {
+
         return;
+
     }
 
 
+    // Carga la información inicial.
     await Promise.all([
         cargarEstadisticas(),
         cargarGrupos(),
@@ -76,7 +93,7 @@ async function iniciarPanelAdministrador() {
 
 
 // ============================================================
-// PROTECCIÓN DEL PANEL
+// PROTEGER PANEL ADMINISTRADOR
 // ============================================================
 
 async function protegerPanelAdministrador() {
@@ -90,7 +107,11 @@ async function protegerPanelAdministrador() {
             await supabaseClient.auth.getSession();
 
 
-        if (error || !data?.session?.user) {
+        if (
+            error
+            ||
+            !data?.session?.user
+        ) {
 
             window.location.replace(
                 "index.html"
@@ -110,7 +131,9 @@ async function protegerPanelAdministrador() {
             error: errorPerfil
         } =
             await supabaseClient
-                .from("perfiles")
+                .from(
+                    "perfiles"
+                )
                 .select(
                     "id, usuario, nombre, rol, activo"
                 )
@@ -133,9 +156,11 @@ async function protegerPanelAdministrador() {
 
             await supabaseClient.auth.signOut();
 
+
             window.location.replace(
                 "index.html"
             );
+
 
             return false;
 
@@ -146,12 +171,22 @@ async function protegerPanelAdministrador() {
             perfil;
 
 
-        document.getElementById(
-            "nombreAdministrador"
-        ).textContent =
-            perfil.nombre ||
-            perfil.usuario ||
-            "Administrador";
+        const nombreAdministrador =
+            document.getElementById(
+                "nombreAdministrador"
+            );
+
+
+        if (nombreAdministrador) {
+
+            nombreAdministrador.textContent =
+                perfil.nombre
+                ||
+                perfil.usuario
+                ||
+                "Administrador";
+
+        }
 
 
         return true;
@@ -178,13 +213,19 @@ async function protegerPanelAdministrador() {
 
 
 // ============================================================
-// EVENTOS
+// REGISTRAR EVENTOS
 // ============================================================
 
 function registrarEventos() {
 
+    // ========================================================
+    // CERRAR SESIÓN
+    // ========================================================
+
     document
-        .getElementById("btnCerrarSesion")
+        .getElementById(
+            "btnCerrarSesion"
+        )
         ?.addEventListener(
             "click",
             cerrarSesion
@@ -216,6 +257,10 @@ function registrarEventos() {
             }
         );
 
+
+    // ========================================================
+    // BOTONES DEL INICIO
+    // ========================================================
 
     document
         .querySelectorAll(
@@ -362,7 +407,7 @@ function registrarEventos() {
 
 
     // ========================================================
-    // PROMOCIÓN DE GRUPOS
+    // PROMOCIÓN
     // ========================================================
 
     document
@@ -396,7 +441,7 @@ function registrarEventos() {
 
 
     // ========================================================
-    // MATERIAL ACADÉMICO
+    // SEMESTRES DEL MATERIAL
     // ========================================================
 
     document
@@ -614,7 +659,7 @@ async function cerrarSesion() {
 
 
 // ============================================================
-// NAVEGACIÓN
+// CAMBIAR SECCIÓN DEL ADMINISTRADOR
 // ============================================================
 
 function mostrarSeccion(nombre) {
@@ -665,10 +710,13 @@ function mostrarSeccion(nombre) {
     }
 
 
-    // Cuando se abre Observaciones,
-    // se actualiza automáticamente la lista.
+    // Al abrir Observaciones,
+    // actualizamos automáticamente los mensajes.
 
-    if (nombre === "observaciones") {
+    if (
+        nombre ===
+        "observaciones"
+    ) {
 
         cargarObservacionesAdmin();
 
@@ -705,12 +753,12 @@ async function cargarEstadisticas() {
                         }
                     )
                     .eq(
-                        "activo",
-                        true
-                    )
-                    .eq(
                         "estado",
                         "estudiante"
+                    )
+                    .eq(
+                        "activo",
+                        true
                     ),
 
 
@@ -743,12 +791,12 @@ async function cargarEstadisticas() {
                         }
                     )
                     .eq(
-                        "activo",
-                        true
-                    )
-                    .eq(
                         "estado",
                         "egresado"
+                    )
+                    .eq(
+                        "activo",
+                        true
                     ),
 
 
@@ -763,82 +811,98 @@ async function cargarEstadisticas() {
                             head: true
                         }
                     )
-                    .eq(
-                        "activo",
-                        true
-                    )
 
             ]);
 
 
+        if (estudiantes.error) {
+
+            console.error(
+                estudiantes.error
+            );
+
+        }
+
+
+        if (gruposResultado.error) {
+
+            console.error(
+                gruposResultado.error
+            );
+
+        }
+
+
+        if (egresados.error) {
+
+            console.error(
+                egresados.error
+            );
+
+        }
+
+
+        if (materias.error) {
+
+            console.error(
+                materias.error
+            );
+
+        }
+
+
         const totalEstudiantes =
-            estudiantes.count || 0;
-
-
-        const totalGrupos =
-            gruposResultado.count || 0;
-
-
-        const totalEgresados =
-            egresados.count || 0;
-
-
-        const totalMaterias =
-            materias.count || 0;
-
-
-        const elementoEstudiantes =
             document.getElementById(
                 "totalEstudiantes"
             );
 
 
-        const elementoGrupos =
+        const totalGrupos =
             document.getElementById(
                 "totalGrupos"
             );
 
 
-        const elementoEgresados =
+        const totalEgresados =
             document.getElementById(
                 "totalEgresados"
             );
 
 
-        const elementoMaterias =
+        const totalMaterias =
             document.getElementById(
                 "totalMaterias"
             );
 
 
-        if (elementoEstudiantes) {
+        if (totalEstudiantes) {
 
-            elementoEstudiantes.textContent =
-                totalEstudiantes;
-
-        }
-
-
-        if (elementoGrupos) {
-
-            elementoGrupos.textContent =
-                totalGrupos;
+            totalEstudiantes.textContent =
+                estudiantes.count ?? 0;
 
         }
 
 
-        if (elementoEgresados) {
+        if (totalGrupos) {
 
-            elementoEgresados.textContent =
-                totalEgresados;
+            totalGrupos.textContent =
+                gruposResultado.count ?? 0;
 
         }
 
 
-        if (elementoMaterias) {
+        if (totalEgresados) {
 
-            elementoMaterias.textContent =
-                totalMaterias;
+            totalEgresados.textContent =
+                egresados.count ?? 0;
+
+        }
+
+
+        if (totalMaterias) {
+
+            totalMaterias.textContent =
+                materias.count ?? 0;
 
         }
 
@@ -856,7 +920,7 @@ async function cargarEstadisticas() {
 
 
 // ============================================================
-// GRUPOS
+// CARGAR GRUPOS
 // ============================================================
 
 async function cargarGrupos() {
@@ -868,14 +932,18 @@ async function cargarGrupos() {
 
 
     if (!contenedor) {
+
         return;
+
     }
 
 
     contenedor.innerHTML = `
-        <div class="vacio">
+
+        <p class="estado-carga">
             Cargando grupos...
-        </div>
+        </p>
+
     `;
 
 
@@ -929,9 +997,11 @@ async function cargarGrupos() {
 
 
         contenedor.innerHTML = `
-            <div class="vacio">
-                Error al cargar los grupos.
-            </div>
+
+            <p class="mensaje error">
+                No se pudieron cargar los grupos.
+            </p>
+
         `;
 
     }
@@ -952,25 +1022,34 @@ function renderizarGrupos() {
 
 
     if (!contenedor) {
+
         return;
+
     }
 
 
     if (!grupos.length) {
 
         contenedor.innerHTML = `
+
             <div class="vacio">
 
+                <span>
+                    👥
+                </span>
+
                 <strong>
-                    No existen grupos.
+                    Todavía no existen grupos
                 </strong>
 
                 <p>
-                    Cree el primer grupo de estudiantes.
+                    Crea el primer grupo para comenzar.
                 </p>
 
             </div>
+
         `;
+
 
         return;
 
@@ -982,58 +1061,61 @@ function renderizarGrupos() {
             .map(
                 grupo => {
 
-                    const seleccionado =
-                        grupoSeleccionado
-                        &&
-                        Number(
-                            grupoSeleccionado.id
-                        )
-                        ===
-                        Number(
-                            grupo.id
-                        );
+                    const estado =
+                        grupo.activo
+                            ? "Activo"
+                            : "Inactivo";
 
 
                     return `
 
                         <article
                             class="grupo-card ${
-                                seleccionado
+                                grupoSeleccionado?.id === grupo.id
                                     ? "seleccionado"
                                     : ""
                             }"
                         >
 
-                            <div
-                                class="grupo-card-info"
+                            <button
+                                type="button"
+                                class="grupo-principal"
                                 onclick="seleccionarGrupo(${grupo.id})"
                             >
 
-                                <strong>
-                                    ${escaparHTML(
-                                        grupo.codigo_grupo
-                                    )}
-                                </strong>
+                                <div>
 
-                                <span>
-                                    ${grupo.semestre}° semestre
-                                </span>
+                                    <strong>
+
+                                        ${escaparHTML(
+                                            grupo.codigo_grupo
+                                        )}
+
+                                    </strong>
+
+
+                                    <small>
+
+                                        ${grupo.semestre}° semestre
+
+                                    </small>
+
+                                </div>
+
 
                                 <span
-                                    class="${
+                                    class="estado-badge ${
                                         grupo.activo
-                                            ? "badge-activo"
-                                            : "badge-inactivo"
+                                            ? "activo"
+                                            : "inactivo"
                                     }"
                                 >
-                                    ${
-                                        grupo.activo
-                                            ? "Activo"
-                                            : "Inactivo"
-                                    }
+
+                                    ${estado}
+
                                 </span>
 
-                            </div>
+                            </button>
 
 
                             <button
@@ -1042,7 +1124,9 @@ function renderizarGrupos() {
                                 title="Editar grupo"
                                 onclick="editarGrupo(${grupo.id})"
                             >
+
                                 ✏️
+
                             </button>
 
                         </article>
@@ -1062,54 +1146,92 @@ function renderizarGrupos() {
 
 function prepararNuevoGrupo() {
 
-    document.getElementById(
-        "grupoId"
-    ).value =
-        "";
+    const form =
+        document.getElementById(
+            "formGrupo"
+        );
 
 
-    document.getElementById(
-        "grupoCodigo"
-    ).value =
-        "";
+    form?.reset();
 
 
-    document.getElementById(
-        "grupoSemestre"
-    ).value =
-        "1";
+    const grupoId =
+        document.getElementById(
+            "grupoId"
+        );
 
 
-    document.getElementById(
-        "grupoActivo"
-    ).checked =
-        true;
+    const grupoActivo =
+        document.getElementById(
+            "grupoActivo"
+        );
 
 
-    document.getElementById(
-        "grupoActivoWrap"
-    )?.classList.add(
+    const contenedorActivo =
+        document.getElementById(
+            "contenedorGrupoActivo"
+        );
+
+
+    const titulo =
+        document.getElementById(
+            "tituloFormularioGrupo"
+        );
+
+
+    const formulario =
+        document.getElementById(
+            "formularioGrupoContenedor"
+        );
+
+
+    const codigo =
+        document.getElementById(
+            "codigoGrupo"
+        );
+
+
+    if (grupoId) {
+
+        grupoId.value =
+            "";
+
+    }
+
+
+    if (grupoActivo) {
+
+        grupoActivo.checked =
+            true;
+
+    }
+
+
+    contenedorActivo?.classList.add(
         "oculto"
     );
 
 
-    document.getElementById(
-        "tituloFormGrupo"
-    ).textContent =
-        "Nuevo grupo";
+    if (titulo) {
+
+        titulo.textContent =
+            "Crear grupo";
+
+    }
 
 
-    document.getElementById(
-        "mensajeGrupo"
-    ).textContent =
-        "";
+    mostrarMensajeAdmin(
+        "mensajeGrupo",
+        ""
+    );
 
 
-    document.getElementById(
-        "formGrupoWrap"
-    ).classList.remove(
+    formulario?.classList.remove(
         "oculto"
     );
+
+
+    codigo?.focus();
 
 }
 
@@ -1130,84 +1252,118 @@ function editarGrupo(id) {
 
 
     if (!grupo) {
+
         return;
+
     }
 
 
-    document.getElementById(
-        "grupoId"
-    ).value =
-        grupo.id;
+    const grupoId =
+        document.getElementById(
+            "grupoId"
+        );
 
 
-    document.getElementById(
-        "grupoCodigo"
-    ).value =
-        grupo.codigo_grupo;
+    const codigo =
+        document.getElementById(
+            "codigoGrupo"
+        );
 
 
-    document.getElementById(
-        "grupoSemestre"
-    ).value =
-        grupo.semestre;
+    const semestre =
+        document.getElementById(
+            "semestreGrupo"
+        );
 
 
-    document.getElementById(
-        "grupoActivo"
-    ).checked =
-        grupo.activo;
+    const activo =
+        document.getElementById(
+            "grupoActivo"
+        );
 
 
-    document.getElementById(
-        "grupoActivoWrap"
-    )?.classList.remove(
+    const contenedorActivo =
+        document.getElementById(
+            "contenedorGrupoActivo"
+        );
+
+
+    const titulo =
+        document.getElementById(
+            "tituloFormularioGrupo"
+        );
+
+
+    const formulario =
+        document.getElementById(
+            "formularioGrupoContenedor"
+        );
+
+
+    if (grupoId) {
+
+        grupoId.value =
+            grupo.id;
+
+    }
+
+
+    if (codigo) {
+
+        codigo.value =
+            grupo.codigo_grupo || "";
+
+    }
+
+
+    if (semestre) {
+
+        semestre.value =
+            String(
+                grupo.semestre
+            );
+
+    }
+
+
+    if (activo) {
+
+        activo.checked =
+            Boolean(
+                grupo.activo
+            );
+
+    }
+
+
+    contenedorActivo?.classList.remove(
         "oculto"
     );
 
 
-    document.getElementById(
-        "tituloFormGrupo"
-    ).textContent =
-        "Editar grupo";
+    if (titulo) {
+
+        titulo.textContent =
+            "Editar grupo";
+
+    }
 
 
-    document.getElementById(
-        "mensajeGrupo"
-    ).textContent =
-        "";
-
-
-    document.getElementById(
-        "formGrupoWrap"
-    ).classList.remove(
-        "oculto"
+    mostrarMensajeAdmin(
+        "mensajeGrupo",
+        ""
     );
 
-}
 
-
-// ============================================================
-// CERRAR FORMULARIO GRUPO
-// ============================================================
-
-function cerrarFormularioGrupo() {
-
-    document.getElementById(
-        "formGrupoWrap"
-    )?.classList.add(
+    formulario?.classList.remove(
         "oculto"
     );
 
 
-    document.getElementById(
-        "formGrupo"
-    )?.reset();
-
-
-    document.getElementById(
-        "mensajeGrupo"
-    ).textContent =
-        "";
+    formulario?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
 
 }
 
@@ -1224,55 +1380,72 @@ async function guardarGrupo(event) {
     const id =
         document.getElementById(
             "grupoId"
-        ).value;
+        )?.value || "";
 
 
     const codigo =
         document.getElementById(
-            "grupoCodigo"
-        ).value
-            .trim()
-            .toUpperCase();
+            "codigoGrupo"
+        )?.value
+            ?.trim()
+            .toUpperCase()
+        || "";
 
 
     const semestre =
         Number(
             document.getElementById(
-                "grupoSemestre"
-            ).value
+                "semestreGrupo"
+            )?.value
+            || 0
         );
 
 
     const activo =
         document.getElementById(
             "grupoActivo"
-        ).checked;
+        )?.checked ?? true;
 
 
-    const mensaje =
+    const boton =
         document.getElementById(
-            "mensajeGrupo"
+            "btnGuardarGrupo"
         );
 
 
-    if (!codigo) {
+    mostrarMensajeAdmin(
+        "mensajeGrupo",
+        ""
+    );
 
-        mensaje.textContent =
-            "Ingrese el código del grupo.";
 
-        mensaje.className =
-            "mensaje error";
+    if (
+        !codigo
+        ||
+        !semestre
+    ) {
+
+        mostrarMensajeAdmin(
+            "mensajeGrupo",
+            "Completa los datos del grupo."
+        );
+
 
         return;
 
     }
 
 
-    mensaje.textContent =
-        "Guardando...";
+    if (boton) {
 
-    mensaje.className =
-        "mensaje";
+        boton.disabled =
+            true;
+
+
+        boton.textContent =
+            "GUARDANDO...";
+
+    }
 
 
     try {
@@ -1325,25 +1498,13 @@ async function guardarGrupo(event) {
         }
 
 
-        mensaje.textContent =
-            id
-                ? "Grupo actualizado correctamente."
-                : "Grupo creado correctamente.";
+        cerrarFormularioGrupo();
 
 
-        mensaje.className =
-            "mensaje exito";
-
-
-        await cargarGrupos();
-
-        await cargarEstadisticas();
-
-
-        setTimeout(
-            cerrarFormularioGrupo,
-            700
-        );
+        await Promise.all([
+            cargarGrupos(),
+            cargarEstadisticas()
+        ]);
 
     }
     catch (error) {
@@ -1354,15 +1515,72 @@ async function guardarGrupo(event) {
         );
 
 
-        mensaje.textContent =
-            error?.message ||
-            "No fue posible guardar el grupo.";
-
-
-        mensaje.className =
-            "mensaje error";
+        mostrarMensajeAdmin(
+            "mensajeGrupo",
+            obtenerMensajeError(
+                error
+            )
+        );
 
     }
+    finally {
+
+        if (boton) {
+
+            boton.disabled =
+                false;
+
+
+            boton.textContent =
+                "GUARDAR";
+
+        }
+
+    }
+
+}
+
+
+// ============================================================
+// CERRAR FORMULARIO GRUPO
+// ============================================================
+
+function cerrarFormularioGrupo() {
+
+    document
+        .getElementById(
+            "formularioGrupoContenedor"
+        )
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    document
+        .getElementById(
+            "formGrupo"
+        )
+        ?.reset();
+
+
+    const grupoId =
+        document.getElementById(
+            "grupoId"
+        );
+
+
+    if (grupoId) {
+
+        grupoId.value =
+            "";
+
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajeGrupo",
+        ""
+    );
 
 }
 // ============================================================
@@ -1374,9 +1592,7 @@ async function seleccionarGrupo(id) {
     const grupo =
         grupos.find(
             item =>
-                Number(item.id)
-                ===
-                Number(id)
+                Number(item.id) === Number(id)
         );
 
 
@@ -1385,30 +1601,38 @@ async function seleccionarGrupo(id) {
     }
 
 
-    grupoSeleccionado =
-        grupo;
-
+    grupoSeleccionado = grupo;
 
     renderizarGrupos();
 
 
-    document.getElementById(
-        "grupoSeleccionadoPanel"
-    )?.classList.remove(
-        "oculto"
-    );
+    document
+        .getElementById("panelEstudiantesGrupo")
+        ?.classList.remove("oculto");
 
 
-    document.getElementById(
-        "grupoSeleccionadoTitulo"
-    ).textContent =
-        grupo.codigo_grupo;
+    const titulo =
+        document.getElementById(
+            "tituloGrupoSeleccionado"
+        );
 
 
-    document.getElementById(
-        "grupoSeleccionadoSemestre"
-    ).textContent =
-        `${grupo.semestre}° semestre`;
+    const semestre =
+        document.getElementById(
+            "semestreGrupoSeleccionado"
+        );
+
+
+    if (titulo) {
+        titulo.textContent =
+            grupo.codigo_grupo;
+    }
+
+
+    if (semestre) {
+        semestre.textContent =
+            `${grupo.semestre}° semestre`;
+    }
 
 
     cerrarFormularioEstudiante();
@@ -1420,11 +1644,19 @@ async function seleccionarGrupo(id) {
 
     await cargarEstudiantesGrupo();
 
+
+    document
+        .getElementById("panelEstudiantesGrupo")
+        ?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
 }
 
 
 // ============================================================
-// CARGAR ESTUDIANTES DEL GRUPO
+// CARGAR ESTUDIANTES
 // ============================================================
 
 async function cargarEstudiantesGrupo() {
@@ -1434,27 +1666,24 @@ async function cargarEstudiantesGrupo() {
     }
 
 
-    const cuerpo =
+    const contenedor =
         document.getElementById(
-            "tablaEstudiantesBody"
+            "listaEstudiantes"
         );
 
 
-    if (cuerpo) {
-
-        cuerpo.innerHTML = `
-
-            <tr>
-
-                <td colspan="4">
-                    Cargando estudiantes...
-                </td>
-
-            </tr>
-
-        `;
-
+    if (!contenedor) {
+        return;
     }
+
+
+    contenedor.innerHTML = `
+
+        <p class="estado-carga">
+            Cargando estudiantes...
+        </p>
+
+    `;
 
 
     try {
@@ -1464,11 +1693,9 @@ async function cargarEstudiantesGrupo() {
             error
         } =
             await supabaseClient
-                .from(
-                    "estudiantes_ceta"
-                )
+                .from("estudiantes_ceta")
                 .select(
-                    "id, codigo_ceta, nombre, grupo_id, estado, activo, created_at"
+                    "id, codigo_ceta, nombre, grupo_id, estado, activo"
                 )
                 .eq(
                     "grupo_id",
@@ -1506,21 +1733,13 @@ async function cargarEstudiantesGrupo() {
         );
 
 
-        if (cuerpo) {
+        contenedor.innerHTML = `
 
-            cuerpo.innerHTML = `
+            <p class="mensaje error">
+                No se pudieron cargar los estudiantes.
+            </p>
 
-                <tr>
-
-                    <td colspan="4">
-                        No fue posible cargar los estudiantes.
-                    </td>
-
-                </tr>
-
-            `;
-
-        }
+        `;
 
     }
 
@@ -1528,235 +1747,279 @@ async function cargarEstudiantesGrupo() {
 
 
 // ============================================================
-// RENDERIZAR ESTUDIANTES
+// MOSTRAR ESTUDIANTES
 // ============================================================
 
 function renderizarEstudiantes() {
 
-    const cuerpo =
+    const contenedor =
         document.getElementById(
-            "tablaEstudiantesBody"
+            "listaEstudiantes"
         );
 
 
-    if (!cuerpo) {
+    if (!contenedor) {
         return;
     }
 
 
-    const busqueda =
+    const buscador =
         document.getElementById(
             "buscarEstudiante"
-        )?.value
-            .trim()
+        );
+
+
+    const busqueda =
+        buscador?.value
+            ?.trim()
             .toLowerCase()
         || "";
 
 
-    let lista =
-        [...estudiantesGrupo];
+    const lista =
+        estudiantesGrupo.filter(
+            estudiante => {
+
+                const nombre =
+                    String(
+                        estudiante.nombre || ""
+                    ).toLowerCase();
 
 
-    if (busqueda) {
-
-        lista =
-            lista.filter(
-                estudiante => {
-
-                    const codigo =
-                        String(
-                            estudiante.codigo_ceta || ""
-                        ).toLowerCase();
+                const codigo =
+                    String(
+                        estudiante.codigo_ceta || ""
+                    ).toLowerCase();
 
 
-                    const nombre =
-                        String(
-                            estudiante.nombre || ""
-                        ).toLowerCase();
+                return (
+                    nombre.includes(busqueda)
+                    ||
+                    codigo.includes(busqueda)
+                );
+
+            }
+        );
 
 
-                    return (
-                        codigo.includes(
-                            busqueda
-                        )
-                        ||
-                        nombre.includes(
-                            busqueda
-                        )
-                    );
+    contenedor.innerHTML = `
 
-                }
-            );
+        <div class="tabla-responsive">
 
-    }
+            <table class="tabla-admin">
 
-
-    if (!lista.length) {
-
-        cuerpo.innerHTML = `
-
-            <tr>
-
-                <td colspan="4">
-
-                    ${
-                        busqueda
-                            ? "No se encontraron estudiantes."
-                            : "Este grupo todavía no tiene estudiantes."
-                    }
-
-                </td>
-
-            </tr>
-
-        `;
-
-
-        return;
-
-    }
-
-
-    cuerpo.innerHTML =
-        lista
-            .map(
-                estudiante => `
+                <thead>
 
                     <tr>
 
-                        <td>
+                        <th>
+                            Código CETA
+                        </th>
 
-                            <strong>
-                                ${escaparHTML(
-                                    estudiante.codigo_ceta
-                                )}
-                            </strong>
+                        <th>
+                            Nombre
+                        </th>
 
-                        </td>
+                        <th>
+                            Estado
+                        </th>
 
-
-                        <td>
-
-                            ${escaparHTML(
-                                estudiante.nombre
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            <span
-                                class="${
-                                    estudiante.activo
-                                        ? "badge-activo"
-                                        : "badge-inactivo"
-                                }"
-                            >
-
-                                ${
-                                    estudiante.activo
-                                        ? "Activo"
-                                        : "Inactivo"
-                                }
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            <button
-                                type="button"
-                                class="btn-icono"
-                                title="Editar estudiante"
-                                onclick="editarEstudiante(${estudiante.id})"
-                            >
-                                ✏️
-                            </button>
-
-                        </td>
+                        <th>
+                            Acciones
+                        </th>
 
                     </tr>
 
-                `
-            )
-            .join("");
+                </thead>
+
+
+                <tbody>
+
+                    ${
+                        lista.length === 0
+
+                            ? `
+
+                                <tr>
+
+                                    <td
+                                        colspan="4"
+                                        class="tabla-vacia"
+                                    >
+
+                                        ${
+                                            busqueda
+                                                ? "No se encontraron estudiantes."
+                                                : "Este grupo no tiene estudiantes registrados."
+                                        }
+
+                                    </td>
+
+                                </tr>
+
+                            `
+
+                            :
+
+                            lista
+                                .map(
+                                    estudiante => `
+
+                                        <tr>
+
+                                            <td>
+
+                                                <strong>
+
+                                                    ${escaparHTML(
+                                                        estudiante.codigo_ceta
+                                                    )}
+
+                                                </strong>
+
+                                            </td>
+
+
+                                            <td>
+
+                                                ${escaparHTML(
+                                                    estudiante.nombre
+                                                )}
+
+                                            </td>
+
+
+                                            <td>
+
+                                                <span
+                                                    class="estado-badge ${
+                                                        estudiante.activo
+                                                            ? "activo"
+                                                            : "inactivo"
+                                                    }"
+                                                >
+
+                                                    ${
+                                                        estudiante.activo
+                                                            ? "Activo"
+                                                            : "Inactivo"
+                                                    }
+
+                                                </span>
+
+                                            </td>
+
+
+                                            <td class="acciones-tabla">
+
+                                                <button
+                                                    type="button"
+                                                    class="btn-icono"
+                                                    title="Editar estudiante"
+                                                    onclick="editarEstudiante(${estudiante.id})"
+                                                >
+
+                                                    ✏️
+
+                                                </button>
+
+                                            </td>
+
+                                        </tr>
+
+                                    `
+                                )
+                                .join("")
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
 
 }
 
 
 // ============================================================
-// PREPARAR NUEVO ESTUDIANTE
+// NUEVO ESTUDIANTE
 // ============================================================
 
 function prepararNuevoEstudiante() {
 
     if (!grupoSeleccionado) {
+        return;
+    }
 
-        alert(
-            "Primero selecciona un grupo."
+
+    document
+        .getElementById("formEstudianteAdmin")
+        ?.reset();
+
+
+    const estudianteId =
+        document.getElementById(
+            "estudianteId"
         );
 
-        return;
+
+    if (estudianteId) {
+        estudianteId.value = "";
+    }
+
+
+    const activo =
+        document.getElementById(
+            "estudianteActivo"
+        );
+
+
+    if (activo) {
+        activo.checked = true;
+    }
+
+
+    document
+        .getElementById(
+            "contenedorEstudianteActivo"
+        )
+        ?.classList.add("oculto");
+
+
+    const titulo =
+        document.getElementById(
+            "tituloFormularioEstudiante"
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            `Agregar estudiante a ${grupoSeleccionado.codigo_grupo}`;
 
     }
 
 
-    document.getElementById(
-        "estudianteId"
-    ).value =
-        "";
-
-
-    document.getElementById(
-        "estudianteCodigo"
-    ).value =
-        "";
-
-
-    document.getElementById(
-        "estudianteNombre"
-    ).value =
-        "";
-
-
-    document.getElementById(
-        "estudianteActivo"
-    ).checked =
-        true;
-
-
-    document.getElementById(
-        "estudianteActivoWrap"
-    )?.classList.add(
-        "oculto"
+    mostrarMensajeAdmin(
+        "mensajeEstudianteAdmin",
+        ""
     );
 
 
-    document.getElementById(
-        "tituloFormEstudiante"
-    ).textContent =
-        "Nuevo estudiante";
+    document
+        .getElementById(
+            "formularioEstudianteContenedor"
+        )
+        ?.classList.remove("oculto");
 
 
-    document.getElementById(
-        "mensajeEstudiante"
-    ).textContent =
-        "";
-
-
-    document.getElementById(
-        "formEstudianteWrap"
-    ).classList.remove(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "estudianteCodigo"
-    )?.focus();
+    document
+        .getElementById(
+            "codigoCetaAdmin"
+        )
+        ?.focus();
 
 }
 
@@ -1770,9 +2033,7 @@ function editarEstudiante(id) {
     const estudiante =
         estudiantesGrupo.find(
             item =>
-                Number(item.id)
-                ===
-                Number(id)
+                Number(item.id) === Number(id)
         );
 
 
@@ -1781,88 +2042,94 @@ function editarEstudiante(id) {
     }
 
 
-    document.getElementById(
-        "estudianteId"
-    ).value =
-        estudiante.id;
-
-
-    document.getElementById(
-        "estudianteCodigo"
-    ).value =
-        estudiante.codigo_ceta;
-
-
-    document.getElementById(
-        "estudianteNombre"
-    ).value =
-        estudiante.nombre;
-
-
-    document.getElementById(
-        "estudianteActivo"
-    ).checked =
-        estudiante.activo;
-
-
-    document.getElementById(
-        "estudianteActivoWrap"
-    )?.classList.remove(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "tituloFormEstudiante"
-    ).textContent =
-        "Editar estudiante";
-
-
-    document.getElementById(
-        "mensajeEstudiante"
-    ).textContent =
-        "";
-
-
-    document.getElementById(
-        "formEstudianteWrap"
-    ).classList.remove(
-        "oculto"
-    );
-
-}
-
-
-// ============================================================
-// CERRAR FORMULARIO ESTUDIANTE
-// ============================================================
-
-function cerrarFormularioEstudiante() {
-
-    document.getElementById(
-        "formEstudianteWrap"
-    )?.classList.add(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "formEstudianteAdmin"
-    )?.reset();
-
-
-    const mensaje =
+    const estudianteId =
         document.getElementById(
-            "mensajeEstudiante"
+            "estudianteId"
         );
 
 
-    if (mensaje) {
+    const codigo =
+        document.getElementById(
+            "codigoCetaAdmin"
+        );
 
-        mensaje.textContent =
-            "";
 
+    const nombre =
+        document.getElementById(
+            "nombreEstudiante"
+        );
+
+
+    const activo =
+        document.getElementById(
+            "estudianteActivo"
+        );
+
+
+    if (estudianteId) {
+        estudianteId.value =
+            estudiante.id;
     }
+
+
+    if (codigo) {
+        codigo.value =
+            estudiante.codigo_ceta || "";
+    }
+
+
+    if (nombre) {
+        nombre.value =
+            estudiante.nombre || "";
+    }
+
+
+    if (activo) {
+        activo.checked =
+            Boolean(estudiante.activo);
+    }
+
+
+    document
+        .getElementById(
+            "contenedorEstudianteActivo"
+        )
+        ?.classList.remove("oculto");
+
+
+    const titulo =
+        document.getElementById(
+            "tituloFormularioEstudiante"
+        );
+
+
+    if (titulo) {
+        titulo.textContent =
+            "Editar estudiante";
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajeEstudianteAdmin",
+        ""
+    );
+
+
+    const formulario =
+        document.getElementById(
+            "formularioEstudianteContenedor"
+        );
+
+
+    formulario?.classList.remove(
+        "oculto"
+    );
+
+
+    formulario?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
 
 }
 
@@ -1877,67 +2144,70 @@ async function guardarEstudiante(event) {
 
 
     if (!grupoSeleccionado) {
-
-        alert(
-            "No existe un grupo seleccionado."
-        );
-
         return;
-
     }
 
 
     const id =
         document.getElementById(
             "estudianteId"
-        ).value;
+        )?.value || "";
 
 
     const codigo =
         document.getElementById(
-            "estudianteCodigo"
-        ).value.trim();
+            "codigoCetaAdmin"
+        )?.value
+            ?.trim()
+        || "";
 
 
     const nombre =
         document.getElementById(
-            "estudianteNombre"
-        ).value.trim();
+            "nombreEstudiante"
+        )?.value
+            ?.trim()
+        || "";
 
 
     const activo =
         document.getElementById(
             "estudianteActivo"
-        ).checked;
+        )?.checked ?? true;
 
 
-    const mensaje =
+    const boton =
         document.getElementById(
-            "mensajeEstudiante"
+            "btnGuardarEstudiante"
         );
+
+
+    mostrarMensajeAdmin(
+        "mensajeEstudianteAdmin",
+        ""
+    );
 
 
     if (!codigo || !nombre) {
 
-        mensaje.textContent =
-            "Completa el código CETA y el nombre.";
-
-
-        mensaje.className =
-            "mensaje error";
-
+        mostrarMensajeAdmin(
+            "mensajeEstudianteAdmin",
+            "Completa código CETA y nombre."
+        );
 
         return;
 
     }
 
 
-    mensaje.textContent =
-        "Guardando...";
+    if (boton) {
 
+        boton.disabled = true;
 
-    mensaje.className =
-        "mensaje";
+        boton.textContent =
+            "GUARDANDO...";
+
+    }
 
 
     try {
@@ -1961,9 +2231,7 @@ async function guardarEstudiante(event) {
                             nombre,
 
                         p_grupo_id:
-                            Number(
-                                grupoSeleccionado.id
-                            ),
+                            grupoSeleccionado.id,
 
                         p_activo:
                             activo
@@ -1984,9 +2252,7 @@ async function guardarEstudiante(event) {
                             nombre,
 
                         p_grupo_id:
-                            Number(
-                                grupoSeleccionado.id
-                            )
+                            grupoSeleccionado.id
                     }
                 );
 
@@ -1994,31 +2260,17 @@ async function guardarEstudiante(event) {
 
 
         if (resultado.error) {
-
             throw resultado.error;
-
         }
 
 
-        mensaje.textContent =
-            id
-                ? "Estudiante actualizado correctamente."
-                : "Estudiante creado correctamente.";
+        cerrarFormularioEstudiante();
 
 
-        mensaje.className =
-            "mensaje exito";
-
-
-        await cargarEstudiantesGrupo();
-
-        await cargarEstadisticas();
-
-
-        setTimeout(
-            cerrarFormularioEstudiante,
-            700
-        );
+        await Promise.all([
+            cargarEstudiantesGrupo(),
+            cargarEstadisticas()
+        ]);
 
     }
     catch (error) {
@@ -2029,13 +2281,22 @@ async function guardarEstudiante(event) {
         );
 
 
-        mensaje.textContent =
-            error?.message ||
-            "No fue posible guardar el estudiante.";
+        mostrarMensajeAdmin(
+            "mensajeEstudianteAdmin",
+            obtenerMensajeError(error)
+        );
 
+    }
+    finally {
 
-        mensaje.className =
-            "mensaje error";
+        if (boton) {
+
+            boton.disabled = false;
+
+            boton.textContent =
+                "GUARDAR";
+
+        }
 
     }
 
@@ -2043,24 +2304,59 @@ async function guardarEstudiante(event) {
 
 
 // ============================================================
-// IMPORTACIÓN DE EXCEL
+// CERRAR FORMULARIO ESTUDIANTE
+// ============================================================
+
+function cerrarFormularioEstudiante() {
+
+    document
+        .getElementById(
+            "formularioEstudianteContenedor"
+        )
+        ?.classList.add("oculto");
+
+
+    document
+        .getElementById(
+            "formEstudianteAdmin"
+        )
+        ?.reset();
+
+
+    const estudianteId =
+        document.getElementById(
+            "estudianteId"
+        );
+
+
+    if (estudianteId) {
+        estudianteId.value = "";
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajeEstudianteAdmin",
+        ""
+    );
+
+}
+
+
+// ============================================================
+// ABRIR IMPORTACIÓN EXCEL
 // ============================================================
 
 function abrirImportacionExcel() {
 
     if (!grupoSeleccionado) {
-
-        alert(
-            "Primero selecciona un grupo."
-        );
-
         return;
-
     }
 
 
-    estudiantesExcel =
-        [];
+    cerrarPromocion();
+
+
+    estudiantesExcel = [];
 
 
     const archivo =
@@ -2070,86 +2366,57 @@ function abrirImportacionExcel() {
 
 
     if (archivo) {
-
-        archivo.value =
-            "";
-
+        archivo.value = "";
     }
 
 
-    const vistaPrevia =
+    const vista =
         document.getElementById(
             "vistaPreviaExcel"
         );
 
 
-    if (vistaPrevia) {
-
-        vistaPrevia.innerHTML = `
-
-            <div class="vacio">
-
-                Selecciona un archivo Excel.
-
-            </div>
-
-        `;
-
+    if (vista) {
+        vista.innerHTML = "";
     }
 
 
-    const contador =
-        document.getElementById(
-            "cantidadExcel"
-        );
+    document
+        .getElementById(
+            "resumenExcel"
+        )
+        ?.classList.add("oculto");
 
 
-    if (contador) {
-
-        contador.textContent =
-            "0";
-
-    }
-
-
-    const mensaje =
-        document.getElementById(
-            "mensajeExcel"
-        );
-
-
-    if (mensaje) {
-
-        mensaje.textContent =
-            "";
-
-    }
-
-
-    document.getElementById(
-        "panelImportarExcel"
-    )?.classList.remove(
-        "oculto"
+    mostrarMensajeAdmin(
+        "mensajeExcel",
+        ""
     );
+
+
+    document
+        .getElementById(
+            "panelImportarExcel"
+        )
+        ?.classList.remove("oculto");
 
 }
 
 
 // ============================================================
-// CERRAR IMPORTACIÓN
+// CERRAR IMPORTACIÓN EXCEL
 // ============================================================
 
 function cerrarImportacionExcel() {
 
-    estudiantesExcel =
-        [];
+    estudiantesExcel = [];
 
 
-    document.getElementById(
-        "panelImportarExcel"
-    )?.classList.add(
-        "oculto"
-    );
+    document
+        .getElementById(
+            "panelImportarExcel"
+        )
+        ?.classList.add("oculto");
 
 
     const archivo =
@@ -2159,152 +2426,23 @@ function cerrarImportacionExcel() {
 
 
     if (archivo) {
-
-        archivo.value =
-            "";
-
+        archivo.value = "";
     }
 
-}
 
-
-// ============================================================
-// NORMALIZAR ENCABEZADO EXCEL
-// ============================================================
-
-function normalizarEncabezado(texto) {
-
-    return String(
-        texto ?? ""
-    )
-        .normalize("NFD")
-        .replace(
-            /[\u0300-\u036f]/g,
-            ""
+    document
+        .getElementById(
+            "resumenExcel"
         )
-        .toLowerCase()
-        .replace(
-            /[^a-z0-9]/g,
-            ""
-        );
-
-}
+        ?.classList.add("oculto");
 
 
-// ============================================================
-// DETECTAR COLUMNAS DEL EXCEL
-// ============================================================
-
-function detectarColumnasExcel(fila) {
-
-    if (
-        !fila
-        ||
-        typeof fila !== "object"
-    ) {
-
-        return null;
-
-    }
-
-
-    const columnas =
-        Object.keys(
-            fila
-        );
-
-
-    const aliasNombre =
-        [
-            "nombre",
-            "nombres",
-            "nombrecompleto",
-            "estudiante",
-            "alumno",
-            "alumnos"
-        ];
-
-
-    const aliasCodigo =
-        [
-            "codigo",
-            "codigoceta",
-            "codceta",
-            "codigoestudiante",
-            "cod"
-        ];
-
-
-    let columnaNombre =
-        null;
-
-
-    let columnaCodigo =
-        null;
-
-
-    columnas.forEach(
-        columna => {
-
-            const normalizada =
-                normalizarEncabezado(
-                    columna
-                );
-
-
-            if (
-                !columnaNombre
-                &&
-                aliasNombre.includes(
-                    normalizada
-                )
-            ) {
-
-                columnaNombre =
-                    columna;
-
-            }
-
-
-            if (
-                !columnaCodigo
-                &&
-                aliasCodigo.includes(
-                    normalizada
-                )
-            ) {
-
-                columnaCodigo =
-                    columna;
-
-            }
-
-        }
+    mostrarMensajeAdmin(
+        "mensajeExcel",
+        ""
     );
 
-
-    if (
-        !columnaNombre
-        ||
-        !columnaCodigo
-    ) {
-
-        return null;
-
-    }
-
-
-    return {
-        nombre:
-            columnaNombre,
-
-        codigo:
-            columnaCodigo
-    };
-
 }
-
-
 // ============================================================
 // LEER ARCHIVO EXCEL
 // ============================================================
@@ -2315,71 +2453,24 @@ async function leerArchivoExcel(event) {
         event.target.files?.[0];
 
 
-    estudiantesExcel =
-        [];
+    estudiantesExcel = [];
 
 
-    const mensaje =
-        document.getElementById(
-            "mensajeExcel"
-        );
+    document
+        .getElementById(
+            "resumenExcel"
+        )
+        ?.classList.add("oculto");
 
 
-    const vistaPrevia =
-        document.getElementById(
-            "vistaPreviaExcel"
-        );
-
-
-    const contador =
-        document.getElementById(
-            "cantidadExcel"
-        );
+    mostrarMensajeAdmin(
+        "mensajeExcel",
+        ""
+    );
 
 
     if (!archivo) {
-
-        if (contador) {
-
-            contador.textContent =
-                "0";
-
-        }
-
-
         return;
-
-    }
-
-
-    const nombreArchivo =
-        archivo.name.toLowerCase();
-
-
-    if (
-        !nombreArchivo.endsWith(
-            ".xlsx"
-        )
-        &&
-        !nombreArchivo.endsWith(
-            ".xls"
-        )
-    ) {
-
-        mensaje.textContent =
-            "Selecciona un archivo .xlsx o .xls.";
-
-
-        mensaje.className =
-            "mensaje error";
-
-
-        event.target.value =
-            "";
-
-
-        return;
-
     }
 
 
@@ -2388,25 +2479,14 @@ async function leerArchivoExcel(event) {
         "undefined"
     ) {
 
-        mensaje.textContent =
-            "No se pudo cargar el lector de archivos Excel.";
-
-
-        mensaje.className =
-            "mensaje error";
-
+        mostrarMensajeAdmin(
+            "mensajeExcel",
+            "No se pudo cargar la librería para leer archivos Excel."
+        );
 
         return;
 
     }
-
-
-    mensaje.textContent =
-        "Leyendo archivo...";
-
-
-    mensaje.className =
-        "mensaje";
 
 
     try {
@@ -2424,30 +2504,31 @@ async function leerArchivoExcel(event) {
             );
 
 
-        const nombreHoja =
-            libro.SheetNames[0];
-
-
-        if (!nombreHoja) {
+        if (
+            !libro.SheetNames
+            ||
+            libro.SheetNames.length === 0
+        ) {
 
             throw new Error(
-                "El archivo no contiene hojas."
+                "El archivo Excel no contiene hojas."
             );
 
         }
 
 
-        const hoja =
+        const primeraHoja =
             libro.Sheets[
-                nombreHoja
+                libro.SheetNames[0]
             ];
 
 
         const filas =
             XLSX.utils.sheet_to_json(
-                hoja,
+                primeraHoja,
                 {
-                    defval: ""
+                    defval: "",
+                    raw: false
                 }
             );
 
@@ -2455,150 +2536,35 @@ async function leerArchivoExcel(event) {
         if (!filas.length) {
 
             throw new Error(
-                "La hoja de Excel está vacía."
-            );
-
-        }
-
-
-        const columnas =
-            detectarColumnasExcel(
-                filas[0]
-            );
-
-
-        if (!columnas) {
-
-            throw new Error(
-                "No se encontraron las columnas de nombre y código CETA."
-            );
-
-        }
-
-
-        const procesados =
-            [];
-
-
-        const codigos =
-            new Set();
-
-
-        for (
-            let i = 0;
-            i < filas.length;
-            i++
-        ) {
-
-            const fila =
-                filas[i];
-
-
-            const codigo =
-                String(
-                    fila[
-                        columnas.codigo
-                    ] ?? ""
-                ).trim();
-
-
-            const nombre =
-                String(
-                    fila[
-                        columnas.nombre
-                    ] ?? ""
-                ).trim();
-
-
-            if (
-                !codigo
-                &&
-                !nombre
-            ) {
-
-                continue;
-
-            }
-
-
-            if (
-                !codigo
-                ||
-                !nombre
-            ) {
-
-                throw new Error(
-                    `La fila ${i + 2} tiene nombre o código CETA vacío.`
-                );
-
-            }
-
-
-            const codigoNormalizado =
-                codigo.toLowerCase();
-
-
-            if (
-                codigos.has(
-                    codigoNormalizado
-                )
-            ) {
-
-                throw new Error(
-                    `El código ${codigo} está repetido en el archivo.`
-                );
-
-            }
-
-
-            codigos.add(
-                codigoNormalizado
-            );
-
-
-            procesados.push({
-                codigo_ceta:
-                    codigo,
-
-                nombre:
-                    nombre
-            });
-
-        }
-
-
-        if (!procesados.length) {
-
-            throw new Error(
-                "No se encontraron estudiantes válidos."
+                "El archivo Excel está vacío."
             );
 
         }
 
 
         estudiantesExcel =
-            procesados;
+            normalizarEstudiantesExcel(
+                filas
+            );
 
 
-        if (contador) {
+        if (!estudiantesExcel.length) {
 
-            contador.textContent =
-                String(
-                    estudiantesExcel.length
-                );
+            throw new Error(
+                "No se encontraron estudiantes válidos. Verifica que el archivo tenga columnas de nombre y código CETA."
+            );
 
         }
 
 
-        mostrarVistaPreviaExcel();
+        renderizarVistaPreviaExcel();
 
 
-        mensaje.textContent =
-            "Archivo leído correctamente.";
-
-
-        mensaje.className =
-            "mensaje exito";
+        mostrarMensajeAdmin(
+            "mensajeExcel",
+            `Archivo leído correctamente: ${estudiantesExcel.length} estudiantes.`,
+            "exito"
+        );
 
     }
     catch (error) {
@@ -2609,43 +2575,234 @@ async function leerArchivoExcel(event) {
         );
 
 
-        estudiantesExcel =
-            [];
+        estudiantesExcel = [];
 
 
-        if (contador) {
-
-            contador.textContent =
-                "0";
-
-        }
-
-
-        if (vistaPrevia) {
-
-            vistaPrevia.innerHTML = `
-
-                <div class="vacio">
-
-                    No se pudo generar
-                    la vista previa.
-
-                </div>
-
-            `;
-
-        }
-
-
-        mensaje.textContent =
-            error?.message ||
-            "No fue posible leer el archivo.";
-
-
-        mensaje.className =
-            "mensaje error";
+        mostrarMensajeAdmin(
+            "mensajeExcel",
+            obtenerMensajeError(error)
+        );
 
     }
+
+}
+
+
+// ============================================================
+// NORMALIZAR COLUMNAS DEL EXCEL
+// ============================================================
+
+function normalizarEstudiantesExcel(filas) {
+
+    const resultado = [];
+
+    const codigosUsados =
+        new Set();
+
+
+    for (const fila of filas) {
+
+        const claves =
+            Object.keys(fila);
+
+
+        let claveNombre =
+            claves.find(
+                clave => {
+
+                    const normalizada =
+                        normalizarTextoExcel(
+                            clave
+                        );
+
+
+                    return (
+                        normalizada === "nombre"
+                        ||
+                        normalizada === "nombres"
+                        ||
+                        normalizada === "nombre completo"
+                        ||
+                        normalizada === "estudiante"
+                        ||
+                        normalizada === "alumno"
+                    );
+
+                }
+            );
+
+
+        let claveCodigo =
+            claves.find(
+                clave => {
+
+                    const normalizada =
+                        normalizarTextoExcel(
+                            clave
+                        );
+
+
+                    return (
+                        normalizada === "codigo"
+                        ||
+                        normalizada === "codigo ceta"
+                        ||
+                        normalizada === "codigoceta"
+                        ||
+                        normalizada === "codigo_ceta"
+                        ||
+                        normalizada === "cod ceta"
+                    );
+
+                }
+            );
+
+
+        // ----------------------------------------------------
+        // Si los títulos no coinciden exactamente,
+        // buscamos parcialmente.
+        // ----------------------------------------------------
+
+        if (!claveNombre) {
+
+            claveNombre =
+                claves.find(
+                    clave =>
+                        normalizarTextoExcel(
+                            clave
+                        ).includes(
+                            "nombre"
+                        )
+                );
+
+        }
+
+
+        if (!claveCodigo) {
+
+            claveCodigo =
+                claves.find(
+                    clave => {
+
+                        const texto =
+                            normalizarTextoExcel(
+                                clave
+                            );
+
+
+                        return (
+                            texto.includes(
+                                "codigo"
+                            )
+                            ||
+                            texto.includes(
+                                "ceta"
+                            )
+                        );
+
+                    }
+                );
+
+        }
+
+
+        if (
+            !claveNombre
+            ||
+            !claveCodigo
+        ) {
+
+            continue;
+
+        }
+
+
+        const nombre =
+            String(
+                fila[claveNombre] ?? ""
+            )
+            .trim();
+
+
+        const codigo =
+            String(
+                fila[claveCodigo] ?? ""
+            )
+            .trim()
+            .toUpperCase();
+
+
+        if (
+            !nombre
+            ||
+            !codigo
+        ) {
+
+            continue;
+
+        }
+
+
+        // Evitar códigos duplicados dentro del mismo Excel.
+
+        if (
+            codigosUsados.has(
+                codigo
+            )
+        ) {
+
+            continue;
+
+        }
+
+
+        codigosUsados.add(
+            codigo
+        );
+
+
+        resultado.push({
+
+            nombre:
+                nombre,
+
+            codigo_ceta:
+                codigo
+
+        });
+
+    }
+
+
+    return resultado;
+
+}
+
+
+// ============================================================
+// NORMALIZAR TEXTO DE CABECERAS EXCEL
+// ============================================================
+
+function normalizarTextoExcel(texto) {
+
+    return String(
+        texto ?? ""
+    )
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(
+        /[\u0300-\u036f]/g,
+        ""
+    )
+    .replace(
+        /[_-]+/g,
+        " "
+    )
+    .replace(
+        /\s+/g,
+        " "
+    );
 
 }
 
@@ -2654,46 +2811,43 @@ async function leerArchivoExcel(event) {
 // VISTA PREVIA DEL EXCEL
 // ============================================================
 
-function mostrarVistaPreviaExcel() {
+function renderizarVistaPreviaExcel() {
 
-    const contenedor =
+    const resumen =
+        document.getElementById(
+            "resumenExcel"
+        );
+
+
+    const cantidad =
+        document.getElementById(
+            "cantidadExcel"
+        );
+
+
+    const vista =
         document.getElementById(
             "vistaPreviaExcel"
         );
 
 
-    if (!contenedor) {
-        return;
-    }
+    if (cantidad) {
 
-
-    if (!estudiantesExcel.length) {
-
-        contenedor.innerHTML = `
-
-            <div class="vacio">
-                No hay datos para mostrar.
-            </div>
-
-        `;
-
-        return;
+        cantidad.textContent =
+            `${estudiantesExcel.length} ${
+                estudiantesExcel.length === 1
+                    ? "estudiante"
+                    : "estudiantes"
+            }`;
 
     }
 
 
-    const primeros =
-        estudiantesExcel.slice(
-            0,
-            20
-        );
+    if (vista) {
 
+        vista.innerHTML = `
 
-    let html = `
-
-        <div class="tabla-responsive">
-
-            <table>
+            <table class="tabla-admin">
 
                 <thead>
 
@@ -2704,11 +2858,11 @@ function mostrarVistaPreviaExcel() {
                         </th>
 
                         <th>
-                            Código CETA
+                            Nombre
                         </th>
 
                         <th>
-                            Nombre
+                            Código CETA
                         </th>
 
                     </tr>
@@ -2718,95 +2872,76 @@ function mostrarVistaPreviaExcel() {
 
                 <tbody>
 
-    `;
+                    ${
+                        estudiantesExcel
+                            .map(
+                                (
+                                    estudiante,
+                                    indice
+                                ) => `
+
+                                    <tr>
+
+                                        <td>
+                                            ${indice + 1}
+                                        </td>
 
 
-    html +=
-        primeros
-            .map(
-                (
-                    estudiante,
-                    indice
-                ) => `
+                                        <td>
 
-                    <tr>
+                                            ${escaparHTML(
+                                                estudiante.nombre
+                                            )}
 
-                        <td>
-                            ${indice + 1}
-                        </td>
-
-                        <td>
-
-                            <strong>
-                                ${escaparHTML(
-                                    estudiante.codigo_ceta
-                                )}
-                            </strong>
-
-                        </td>
-
-                        <td>
-
-                            ${escaparHTML(
-                                estudiante.nombre
-                            )}
-
-                        </td>
-
-                    </tr>
-
-                `
-            )
-            .join("");
+                                        </td>
 
 
-    html += `
+                                        <td>
+
+                                            <strong>
+
+                                                ${escaparHTML(
+                                                    estudiante.codigo_ceta
+                                                )}
+
+                                            </strong>
+
+                                        </td>
+
+                                    </tr>
+
+                                `
+                            )
+                            .join("")
+                    }
 
                 </tbody>
 
             </table>
-
-        </div>
-
-    `;
-
-
-    if (
-        estudiantesExcel.length >
-        primeros.length
-    ) {
-
-        html += `
-
-            <p class="texto-secundario">
-
-                Se muestran los primeros
-                ${primeros.length}
-                de
-                ${estudiantesExcel.length}
-                estudiantes.
-
-            </p>
 
         `;
 
     }
 
 
-    contenedor.innerHTML =
-        html;
+    resumen?.classList.remove(
+        "oculto"
+    );
 
 }
+
+
 // ============================================================
-// CONFIRMAR IMPORTACIÓN EXCEL
+// CONFIRMAR IMPORTACIÓN DEL EXCEL
 // ============================================================
 
 async function confirmarImportacionExcel() {
 
     if (!grupoSeleccionado) {
 
-        alert(
-            "Primero selecciona un grupo."
+        mostrarMensajeAdmin(
+            "mensajeExcel",
+            "No hay un grupo seleccionado."
         );
 
         return;
@@ -2816,8 +2951,9 @@ async function confirmarImportacionExcel() {
 
     if (!estudiantesExcel.length) {
 
-        alert(
-            "Primero selecciona y revisa un archivo Excel."
+        mostrarMensajeAdmin(
+            "mensajeExcel",
+            "Primero selecciona un archivo Excel válido."
         );
 
         return;
@@ -2827,7 +2963,9 @@ async function confirmarImportacionExcel() {
 
     const confirmar =
         window.confirm(
-            `Se reemplazará la lista actual del grupo ${grupoSeleccionado.codigo_grupo} con ${estudiantesExcel.length} estudiantes.\n\nLos estudiantes que actualmente pertenecen al grupo y no aparezcan en el nuevo Excel quedarán inactivos y fuera del grupo.\n\n¿Deseas continuar?`
+
+            `Se reemplazará la lista actual del grupo ${grupoSeleccionado.codigo_grupo} por ${estudiantesExcel.length} estudiantes.\n\n¿Deseas continuar?`
+
         );
 
 
@@ -2842,16 +2980,9 @@ async function confirmarImportacionExcel() {
         );
 
 
-    const mensaje =
-        document.getElementById(
-            "mensajeExcel"
-        );
-
-
     if (boton) {
 
-        boton.disabled =
-            true;
+        boton.disabled = true;
 
         boton.textContent =
             "IMPORTANDO...";
@@ -2859,33 +2990,43 @@ async function confirmarImportacionExcel() {
     }
 
 
-    if (mensaje) {
-
-        mensaje.textContent =
-            "Actualizando lista de estudiantes...";
-
-        mensaje.className =
-            "mensaje";
-
-    }
+    mostrarMensajeAdmin(
+        "mensajeExcel",
+        ""
+    );
 
 
     try {
 
+        // ----------------------------------------------------
+        // El RPC espera un JSON con los estudiantes.
+        // ----------------------------------------------------
+
+        const listaJson =
+            estudiantesExcel.map(
+                estudiante => ({
+
+                    codigo_ceta:
+                        estudiante.codigo_ceta,
+
+                    nombre:
+                        estudiante.nombre
+
+                })
+            );
+
+
         const {
-            data,
             error
         } =
             await supabaseClient.rpc(
                 "reemplazar_lista_grupo_estudiantes",
                 {
                     p_grupo_id:
-                        Number(
-                            grupoSeleccionado.id
-                        ),
+                        grupoSeleccionado.id,
 
                     p_estudiantes:
-                        estudiantesExcel
+                        listaJson
                 }
             );
 
@@ -2895,90 +3036,72 @@ async function confirmarImportacionExcel() {
         }
 
 
-        const resultado =
-            Array.isArray(data)
-                ? data[0]
-                : data;
-
-
-        const procesados =
-            resultado?.procesados ??
-            resultado?.total_procesados ??
-            estudiantesExcel.length;
-
-
-        const nuevos =
-            resultado?.nuevos ??
-            resultado?.total_nuevos ??
-            0;
-
-
-        const actualizados =
-            resultado?.actualizados ??
-            resultado?.total_actualizados ??
-            0;
-
-
-        const retirados =
-            resultado?.retirados ??
-            resultado?.total_retirados ??
-            0;
-
-
-        if (mensaje) {
-
-            mensaje.textContent =
-                "Lista actualizada correctamente.";
-
-            mensaje.className =
-                "mensaje exito";
-
-        }
-
-
-        alert(
-            "Importación completada.\n\n" +
-            `Procesados: ${procesados}\n` +
-            `Nuevos: ${nuevos}\n` +
-            `Actualizados: ${actualizados}\n` +
-            `Retirados de la lista anterior: ${retirados}`
+        mostrarMensajeAdmin(
+            "mensajeExcel",
+            "Lista importada correctamente.",
+            "exito"
         );
 
 
-        await cargarEstudiantesGrupo();
-
-        await cargarEstadisticas();
+        estudiantesExcel = [];
 
 
-        cerrarImportacionExcel();
+        const archivo =
+            document.getElementById(
+                "archivoExcel"
+            );
+
+
+        if (archivo) {
+            archivo.value = "";
+        }
+
+
+        document
+            .getElementById(
+                "resumenExcel"
+            )
+            ?.classList.add("oculto");
+
+
+        await Promise.all([
+
+            cargarEstudiantesGrupo(),
+
+            cargarEstadisticas()
+
+        ]);
+
+
+        setTimeout(
+            () => {
+
+                cerrarImportacionExcel();
+
+            },
+            800
+        );
 
     }
     catch (error) {
 
         console.error(
-            "Error importando estudiantes:",
+            "Error importando lista:",
             error
         );
 
 
-        if (mensaje) {
-
-            mensaje.textContent =
-                error?.message ||
-                "No fue posible importar la lista.";
-
-            mensaje.className =
-                "mensaje error";
-
-        }
+        mostrarMensajeAdmin(
+            "mensajeExcel",
+            obtenerMensajeError(error)
+        );
 
     }
     finally {
 
         if (boton) {
 
-            boton.disabled =
-                false;
+            boton.disabled = false;
 
             boton.textContent =
                 "CONFIRMAR IMPORTACIÓN";
@@ -2991,20 +3114,17 @@ async function confirmarImportacionExcel() {
 
 
 // ============================================================
-// PREPARAR PROMOCIÓN DE GRUPO
+// PROMOCIÓN DE GRUPOS
 // ============================================================
 
 function prepararPromocionGrupo() {
 
     if (!grupoSeleccionado) {
-
-        alert(
-            "Primero selecciona un grupo."
-        );
-
         return;
-
     }
+
+
+    cerrarImportacionExcel();
 
 
     grupoDestinoPromocion =
@@ -3013,35 +3133,46 @@ function prepararPromocionGrupo() {
 
     const panel =
         document.getElementById(
-            "panelPromocionGrupo"
+            "panelPromocion"
         );
 
 
-    const texto =
+    const contenido =
         document.getElementById(
-            "textoPromocionGrupo"
+            "contenidoPromocion"
         );
 
 
-    const select =
+    const botonConfirmar =
         document.getElementById(
-            "grupoDestinoPromocion"
+            "btnConfirmarPromocion"
         );
 
 
-    const mensaje =
-        document.getElementById(
-            "mensajePromocion"
+    if (
+        !panel
+        ||
+        !contenido
+    ) {
+
+        console.error(
+            "No se encontró el panel de promoción."
         );
 
-
-    if (mensaje) {
-
-        mensaje.textContent =
-            "";
+        return;
 
     }
 
+
+    mostrarMensajeAdmin(
+        "mensajePromocion",
+        ""
+    );
+
+
+    // ========================================================
+    // SEXTO SEMESTRE -> EGRESADOS
+    // ========================================================
 
     if (
         Number(
@@ -3049,147 +3180,276 @@ function prepararPromocionGrupo() {
         ) === 6
     ) {
 
-        if (texto) {
+        if (botonConfirmar) {
 
-            texto.innerHTML = `
+            botonConfirmar.classList.remove(
+                "oculto"
+            );
+
+        }
+
+
+        contenido.innerHTML = `
+
+            <div class="promocion-resumen">
+
+                <div>
+
+                    <small>
+                        GRUPO ACTUAL
+                    </small>
+
+                    <strong>
+
+                        ${escaparHTML(
+                            grupoSeleccionado.codigo_grupo
+                        )}
+
+                    </strong>
+
+                    <span>
+                        6° semestre
+                    </span>
+
+                </div>
+
+
+                <div class="flecha-promocion">
+                    →
+                </div>
+
+
+                <div>
+
+                    <small>
+                        DESTINO
+                    </small>
+
+                    <strong>
+                        🎓 EGRESADOS
+                    </strong>
+
+                    <span>
+                        Acceso completo 1°–6°
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="aviso-importante">
 
                 Los estudiantes activos de
+
                 <strong>
+
                     ${escaparHTML(
                         grupoSeleccionado.codigo_grupo
                     )}
+
                 </strong>
-                serán promovidos a
+
+                pasarán a estado
+
                 <strong>
-                    Egresados
+                    egresado
+                </strong>
+
+                y dejarán de pertenecer al grupo.
+
+            </div>
+
+        `;
+
+
+        panel.classList.remove(
+            "oculto"
+        );
+
+
+        panel.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+
+        return;
+
+    }
+
+
+    // ========================================================
+    // SEMESTRES 1 A 5
+    // ========================================================
+
+    const siguienteSemestre =
+        Number(
+            grupoSeleccionado.semestre
+        ) + 1;
+
+
+    const destinos =
+        grupos.filter(
+            grupo =>
+                Boolean(
+                    grupo.activo
+                )
+                &&
+                Number(
+                    grupo.semestre
+                ) === siguienteSemestre
+                &&
+                Number(
+                    grupo.id
+                ) !==
+                Number(
+                    grupoSeleccionado.id
+                )
+        );
+
+
+    if (!destinos.length) {
+
+        contenido.innerHTML = `
+
+            <div class="aviso-importante">
+
+                No existe ningún grupo activo de
+
+                <strong>
+                    ${siguienteSemestre}° semestre
                 </strong>.
 
                 <br><br>
 
-                Los egresados conservarán acceso
-                a todo el material académico de
-                1° a 6° semestre.
+                Primero crea el grupo de destino
+                y luego vuelve a realizar la promoción.
 
-            `;
+            </div>
 
-        }
-
-
-        if (select) {
-
-            select.innerHTML = `
-
-                <option value="">
-                    Egresados
-                </option>
-
-            `;
+        `;
 
 
-            select.disabled =
-                true;
-
-        }
+        botonConfirmar
+            ?.classList.add(
+                "oculto"
+            );
 
     }
     else {
 
-        const siguienteSemestre =
-            Number(
-                grupoSeleccionado.semestre
-            ) + 1;
-
-
-        const destinos =
-            grupos.filter(
-                grupo =>
-                    grupo.activo
-                    &&
-                    Number(
-                        grupo.semestre
-                    )
-                    ===
-                    siguienteSemestre
+        botonConfirmar
+            ?.classList.remove(
+                "oculto"
             );
 
 
-        if (texto) {
+        contenido.innerHTML = `
 
-            texto.innerHTML = `
+            <div class="promocion-resumen">
 
-                Selecciona el grupo de
+                <div>
+
+                    <small>
+                        ORIGEN
+                    </small>
+
+                    <strong>
+
+                        ${escaparHTML(
+                            grupoSeleccionado.codigo_grupo
+                        )}
+
+                    </strong>
+
+                    <span>
+
+                        ${grupoSeleccionado.semestre}° semestre
+
+                    </span>
+
+                </div>
+
+
+                <div class="flecha-promocion">
+                    →
+                </div>
+
+
+                <div>
+
+                    <small>
+                        DESTINO
+                    </small>
+
+
+                    <select
+                        id="selectGrupoDestino"
+                        class="select-promocion"
+                    >
+
+                        <option value="">
+                            Seleccionar grupo
+                        </option>
+
+
+                        ${
+                            destinos
+                                .map(
+                                    grupo => `
+
+                                        <option
+                                            value="${grupo.id}"
+                                        >
+
+                                            ${escaparHTML(
+                                                grupo.codigo_grupo
+                                            )}
+
+                                            — ${grupo.semestre}° semestre
+
+                                        </option>
+
+                                    `
+                                )
+                                .join("")
+                        }
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="aviso-importante">
+
+                Todos los estudiantes
+
                 <strong>
-                    ${siguienteSemestre}° semestre
+                    activos
                 </strong>
-                al que serán trasladados los
-                estudiantes activos de
 
-                <strong>
-                    ${escaparHTML(
-                        grupoSeleccionado.codigo_grupo
-                    )}
-                </strong>.
+                del grupo serán trasladados
+                al grupo seleccionado.
 
-            `;
+            </div>
 
-        }
-
-
-        if (select) {
-
-            select.disabled =
-                false;
-
-
-            select.innerHTML = `
-
-                <option value="">
-                    Seleccione grupo destino
-                </option>
-
-                ${
-                    destinos
-                        .map(
-                            grupo => `
-
-                                <option
-                                    value="${grupo.id}"
-                                >
-                                    ${escaparHTML(
-                                        grupo.codigo_grupo
-                                    )}
-                                </option>
-
-                            `
-                        )
-                        .join("")
-                }
-
-            `;
-
-        }
-
-
-        if (!destinos.length) {
-
-            if (mensaje) {
-
-                mensaje.textContent =
-                    `No existe un grupo activo de ${siguienteSemestre}° semestre. Primero crea el grupo destino.`;
-
-                mensaje.className =
-                    "mensaje error";
-
-            }
-
-        }
+        `;
 
     }
 
 
-    panel?.classList.remove(
+    panel.classList.remove(
         "oculto"
     );
+
+
+    panel.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
 
 }
 
@@ -3204,39 +3464,41 @@ function cerrarPromocion() {
         null;
 
 
-    document.getElementById(
-        "panelPromocionGrupo"
-    )?.classList.add(
-        "oculto"
+    document
+        .getElementById(
+            "panelPromocion"
+        )
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    const contenido =
+        document.getElementById(
+            "contenidoPromocion"
+        );
+
+
+    if (contenido) {
+
+        contenido.innerHTML = "";
+
+    }
+
+
+    document
+        .getElementById(
+            "btnConfirmarPromocion"
+        )
+        ?.classList.remove(
+            "oculto"
+        );
+
+
+    mostrarMensajeAdmin(
+        "mensajePromocion",
+        ""
     );
-
-
-    const select =
-        document.getElementById(
-            "grupoDestinoPromocion"
-        );
-
-
-    if (select) {
-
-        select.value =
-            "";
-
-    }
-
-
-    const mensaje =
-        document.getElementById(
-            "mensajePromocion"
-        );
-
-
-    if (mensaje) {
-
-        mensaje.textContent =
-            "";
-
-    }
 
 }
 
@@ -3248,22 +3510,8 @@ function cerrarPromocion() {
 async function confirmarPromocionGrupo() {
 
     if (!grupoSeleccionado) {
-
         return;
-
     }
-
-
-    const semestre =
-        Number(
-            grupoSeleccionado.semestre
-        );
-
-
-    const mensaje =
-        document.getElementById(
-            "mensajePromocion"
-        );
 
 
     const boton =
@@ -3272,91 +3520,192 @@ async function confirmarPromocionGrupo() {
         );
 
 
-    let grupoDestinoId =
-        null;
+    mostrarMensajeAdmin(
+        "mensajePromocion",
+        ""
+    );
 
 
-    if (semestre < 6) {
-
-        grupoDestinoId =
-            Number(
-                document.getElementById(
-                    "grupoDestinoPromocion"
-                )?.value
-            );
-
-
-        if (!grupoDestinoId) {
-
-            mensaje.textContent =
-                "Selecciona el grupo destino.";
-
-            mensaje.className =
-                "mensaje error";
-
-            return;
-
-        }
-
-
-        grupoDestinoPromocion =
-            grupos.find(
-                grupo =>
-                    Number(
-                        grupo.id
-                    )
-                    ===
-                    grupoDestinoId
-            );
-
-
-        if (!grupoDestinoPromocion) {
-
-            mensaje.textContent =
-                "El grupo destino no es válido.";
-
-            mensaje.className =
-                "mensaje error";
-
-            return;
-
-        }
-
-    }
-
-
-    let textoConfirmacion;
-
-
-    if (semestre === 6) {
-
-        textoConfirmacion =
-            `¿Promover a Egresados a todos los estudiantes activos del grupo ${grupoSeleccionado.codigo_grupo}?`;
-
-    }
-    else {
-
-        textoConfirmacion =
-            `¿Promover los estudiantes activos de ${grupoSeleccionado.codigo_grupo} a ${grupoDestinoPromocion.codigo_grupo}?`;
-
-    }
-
+    // ========================================================
+    // SEXTO SEMESTRE -> EGRESADOS
+    // ========================================================
 
     if (
-        !window.confirm(
-            textoConfirmacion
-        )
+        Number(
+            grupoSeleccionado.semestre
+        ) === 6
     ) {
+
+        const confirmar =
+            window.confirm(
+
+                `Los estudiantes activos de ${grupoSeleccionado.codigo_grupo} pasarán a EGRESADOS.\n\n¿Deseas continuar?`
+
+            );
+
+
+        if (!confirmar) {
+            return;
+        }
+
+
+        if (boton) {
+
+            boton.disabled = true;
+
+            boton.textContent =
+                "PROCESANDO...";
+
+        }
+
+
+        try {
+
+            const {
+                error
+            } =
+                await supabaseClient.rpc(
+                    "promover_grupo_a_egresados",
+                    {
+                        p_grupo_id:
+                            grupoSeleccionado.id
+                    }
+                );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            mostrarMensajeAdmin(
+                "mensajePromocion",
+                "Los estudiantes fueron promovidos a egresados correctamente.",
+                "exito"
+            );
+
+
+            await Promise.all([
+
+                cargarEstudiantesGrupo(),
+
+                cargarEstadisticas()
+
+            ]);
+
+
+            setTimeout(
+                () => {
+
+                    cerrarPromocion();
+
+                },
+                900
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Error promoviendo a egresados:",
+                error
+            );
+
+
+            mostrarMensajeAdmin(
+                "mensajePromocion",
+                obtenerMensajeError(error)
+            );
+
+        }
+        finally {
+
+            if (boton) {
+
+                boton.disabled = false;
+
+                boton.textContent =
+                    "CONFIRMAR PROMOCIÓN";
+
+            }
+
+        }
+
 
         return;
 
     }
 
 
+    // ========================================================
+    // GRUPO -> SIGUIENTE SEMESTRE
+    // ========================================================
+
+    const selectDestino =
+        document.getElementById(
+            "selectGrupoDestino"
+        );
+
+
+    const destinoId =
+        Number(
+            selectDestino?.value || 0
+        );
+
+
+    if (!destinoId) {
+
+        mostrarMensajeAdmin(
+            "mensajePromocion",
+            "Selecciona el grupo de destino."
+        );
+
+        return;
+
+    }
+
+
+    const grupoDestino =
+        grupos.find(
+            grupo =>
+                Number(
+                    grupo.id
+                ) === destinoId
+        );
+
+
+    if (!grupoDestino) {
+
+        mostrarMensajeAdmin(
+            "mensajePromocion",
+            "El grupo de destino no es válido."
+        );
+
+        return;
+
+    }
+
+
+    grupoDestinoPromocion =
+        grupoDestino;
+
+
+    const confirmar =
+        window.confirm(
+
+            `Los estudiantes activos de ${grupoSeleccionado.codigo_grupo} serán trasladados a ${grupoDestino.codigo_grupo}.\n\n¿Deseas continuar?`
+
+        );
+
+
+    if (!confirmar) {
+        return;
+    }
+
+
     if (boton) {
 
-        boton.disabled =
-            true;
+        boton.disabled = true;
 
         boton.textContent =
             "PROCESANDO...";
@@ -3364,78 +3713,57 @@ async function confirmarPromocionGrupo() {
     }
 
 
-    mensaje.textContent =
-        "Realizando promoción...";
-
-    mensaje.className =
-        "mensaje";
-
-
     try {
 
-        let resultado;
+        const grupoOrigenId =
+            grupoSeleccionado.id;
 
 
-        if (semestre === 6) {
+        const {
+            error
+        } =
+            await supabaseClient.rpc(
+                "promover_grupo_estudiantes",
+                {
+                    p_grupo_origen_id:
+                        grupoOrigenId,
 
-            resultado =
-                await supabaseClient.rpc(
-                    "promover_grupo_a_egresados",
-                    {
-                        p_grupo_id:
-                            Number(
-                                grupoSeleccionado.id
-                            )
-                    }
-                );
+                    p_grupo_destino_id:
+                        grupoDestino.id
+                }
+            );
 
-        }
-        else {
 
-            resultado =
-                await supabaseClient.rpc(
-                    "promover_grupo_estudiantes",
-                    {
-                        p_grupo_origen_id:
-                            Number(
-                                grupoSeleccionado.id
-                            ),
-
-                        p_grupo_destino_id:
-                            grupoDestinoId
-                    }
-                );
-
+        if (error) {
+            throw error;
         }
 
 
-        if (resultado.error) {
-
-            throw resultado.error;
-
-        }
-
-
-        mensaje.textContent =
-            semestre === 6
-                ? "Grupo promovido a egresados correctamente."
-                : "Grupo promovido correctamente.";
+        mostrarMensajeAdmin(
+            "mensajePromocion",
+            `Grupo promovido correctamente a ${grupoDestino.codigo_grupo}.`,
+            "exito"
+        );
 
 
-        mensaje.className =
-            "mensaje exito";
+        await Promise.all([
 
+            cargarEstudiantesGrupo(),
 
-        await cargarGrupos();
+            cargarGrupos(),
 
-        await cargarEstudiantesGrupo();
+            cargarEstadisticas()
 
-        await cargarEstadisticas();
+        ]);
 
 
         setTimeout(
-            cerrarPromocion,
-            800
+            () => {
+
+                cerrarPromocion();
+
+            },
+            900
         );
 
     }
@@ -3447,21 +3775,17 @@ async function confirmarPromocionGrupo() {
         );
 
 
-        mensaje.textContent =
-            error?.message ||
-            "No fue posible promover el grupo.";
-
-
-        mensaje.className =
-            "mensaje error";
+        mostrarMensajeAdmin(
+            "mensajePromocion",
+            obtenerMensajeError(error)
+        );
 
     }
     finally {
 
         if (boton) {
 
-            boton.disabled =
-                false;
+            boton.disabled = false;
 
             boton.textContent =
                 "CONFIRMAR PROMOCIÓN";
@@ -3471,42 +3795,32 @@ async function confirmarPromocionGrupo() {
     }
 
 }
-
-
 // ============================================================
-// MATERIAL ACADÉMICO
-// SELECCIONAR SEMESTRE
+// SELECCIONAR SEMESTRE DE MATERIAL
 // ============================================================
 
-async function seleccionarSemestreMaterial(
-    semestre
-) {
+async function seleccionarSemestreMaterial(semestre) {
+
+    semestre =
+        Number(semestre);
+
+
+    if (
+        semestre < 1
+        ||
+        semestre > 6
+    ) {
+        return;
+    }
+
 
     semestreMaterialActual =
-        Number(
-            semestre
-        );
+        semestre;
 
 
-    materiaAbierta =
-        null;
-
-
-    seccionesMateria =
-        [];
-
-
-    seccionActual =
-        null;
-
-
-    rutaSecciones =
-        [];
-
-
-    materialesSeccionActual =
-        [];
-
+    // --------------------------------------------------------
+    // ACTUALIZAR BOTONES DE SEMESTRE
+    // --------------------------------------------------------
 
     document
         .querySelectorAll(
@@ -3519,16 +3833,74 @@ async function seleccionarSemestreMaterial(
                     "activo",
                     Number(
                         boton.dataset.semestre
-                    )
-                    ===
-                    semestreMaterialActual
+                    ) === semestre
                 );
 
             }
         );
 
 
-    volverAListaMaterias();
+    // --------------------------------------------------------
+    // ACTUALIZAR TÍTULO
+    // --------------------------------------------------------
+
+    const titulo =
+        document.getElementById(
+            "tituloSemestreMaterial"
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            `${semestre}° semestre`;
+
+    }
+
+
+    // --------------------------------------------------------
+    // CERRAR MATERIA ABIERTA
+    // --------------------------------------------------------
+
+    materiaAbierta =
+        null;
+
+
+    seccionActual =
+        null;
+
+
+    rutaSecciones =
+        [];
+
+
+    seccionesMateria =
+        [];
+
+
+    materialesSeccionActual =
+        [];
+
+
+    document
+        .getElementById(
+            "panelMateriaAbierta"
+        )
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    document
+        .getElementById(
+            "panelListaMaterias"
+        )
+        ?.classList.remove(
+            "oculto"
+        );
+
+
+    cerrarFormularioMateria();
 
 
     await cargarMaterias();
@@ -3544,26 +3916,36 @@ async function cargarMaterias() {
 
     const contenedor =
         document.getElementById(
-            "listaMateriasAdmin"
+            "listaMaterias"
         );
 
 
     if (!contenedor) {
-
         return;
-
     }
 
 
     contenedor.innerHTML = `
 
-        <div class="vacio">
-
+        <p class="estado-carga">
             Cargando materias...
-
-        </div>
+        </p>
 
     `;
+
+
+    const titulo =
+        document.getElementById(
+            "tituloSemestreMaterial"
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            `${semestreMaterialActual}° semestre`;
+
+    }
 
 
     try {
@@ -3598,9 +3980,7 @@ async function cargarMaterias() {
 
 
         if (error) {
-
             throw error;
-
         }
 
 
@@ -3621,12 +4001,9 @@ async function cargarMaterias() {
 
         contenedor.innerHTML = `
 
-            <div class="vacio">
-
-                No fue posible cargar
-                las materias.
-
-            </div>
+            <p class="mensaje error">
+                No se pudieron cargar las materias.
+            </p>
 
         `;
 
@@ -3636,21 +4013,19 @@ async function cargarMaterias() {
 
 
 // ============================================================
-// RENDERIZAR MATERIAS
+// MOSTRAR MATERIAS
 // ============================================================
 
 function renderizarMaterias() {
 
     const contenedor =
         document.getElementById(
-            "listaMateriasAdmin"
+            "listaMaterias"
         );
 
 
     if (!contenedor) {
-
         return;
-
     }
 
 
@@ -3660,14 +4035,17 @@ function renderizarMaterias() {
 
             <div class="vacio">
 
+                <span>
+                    📚
+                </span>
+
                 <strong>
                     No existen materias
-                    para ${semestreMaterialActual}° semestre.
                 </strong>
 
                 <p>
-                    Utiliza el botón Nueva materia
-                    para registrar la primera.
+                    Todavía no se registraron materias
+                    para ${semestreMaterialActual}° semestre.
                 </p>
 
             </div>
@@ -3685,25 +4063,20 @@ function renderizarMaterias() {
             .map(
                 materia => `
 
-                    <article
-                        class="materia-card ${
-                            materia.activo
-                                ? ""
-                                : "materia-inactiva"
-                        }"
-                    >
+                    <article class="materia-card">
 
-                        <div
-                            class="materia-card-contenido"
+                        <button
+                            type="button"
+                            class="materia-card-principal"
                             onclick="abrirMateria(${materia.id})"
                         >
 
-                            <div class="materia-icono">
+                            <div class="materia-card-icono">
                                 📘
                             </div>
 
 
-                            <div class="materia-info">
+                            <div class="materia-card-info">
 
                                 <strong>
 
@@ -3714,62 +4087,57 @@ function renderizarMaterias() {
                                 </strong>
 
 
-                                <span>
+                                ${
+                                    materia.descripcion
 
-                                    ${
-                                        materia.descripcion
-                                            ? escaparHTML(
-                                                materia.descripcion
-                                            )
-                                            : `${materia.semestre}° semestre`
-                                    }
+                                        ? `
 
-                                </span>
+                                            <p>
 
+                                                ${escaparHTML(
+                                                    materia.descripcion
+                                                )}
 
-                                <div class="materia-meta">
+                                            </p>
 
-                                    <span>
-                                        Orden:
-                                        ${Number(
-                                            materia.orden || 0
-                                        )}
-                                    </span>
+                                        `
+
+                                        : ""
+                                }
 
 
-                                    <span
-                                        class="${
-                                            materia.activo
-                                                ? "badge-activo"
-                                                : "badge-inactivo"
-                                        }"
-                                    >
+                                <small>
 
-                                        ${
-                                            materia.activo
-                                                ? "Activa"
-                                                : "Inactiva"
-                                        }
+                                    Orden:
+                                    ${Number(
+                                        materia.orden || 0
+                                    )}
 
-                                    </span>
-
-                                </div>
+                                </small>
 
                             </div>
 
-                        </div>
 
-
-                        <div class="materia-card-acciones">
-
-                            <button
-                                type="button"
-                                class="btn-secundario"
-                                onclick="abrirMateria(${materia.id})"
+                            <span
+                                class="estado-badge ${
+                                    materia.activo
+                                        ? "activo"
+                                        : "inactivo"
+                                }"
                             >
-                                Abrir
-                            </button>
 
+                                ${
+                                    materia.activo
+                                        ? "Activa"
+                                        : "Inactiva"
+                                }
+
+                            </span>
+
+                        </button>
+
+
+                        <div class="acciones-card">
 
                             <button
                                 type="button"
@@ -3797,65 +4165,140 @@ function renderizarMaterias() {
 
 function prepararNuevaMateria() {
 
-    document.getElementById(
-        "materiaId"
-    ).value =
-        "";
+    // --------------------------------------------------------
+    // REINICIAR FORMULARIO
+    // --------------------------------------------------------
+
+    document
+        .getElementById(
+            "formMateria"
+        )
+        ?.reset();
 
 
-    document.getElementById(
-        "materiaNombre"
-    ).value =
-        "";
+    const materiaId =
+        document.getElementById(
+            "materiaId"
+        );
 
 
-    document.getElementById(
-        "materiaDescripcion"
-    ).value =
-        "";
+    const nombre =
+        document.getElementById(
+            "nombreMateria"
+        );
 
 
-    document.getElementById(
-        "materiaOrden"
-    ).value =
-        "0";
+    const descripcion =
+        document.getElementById(
+            "descripcionMateria"
+        );
 
 
-    document.getElementById(
-        "materiaActiva"
-    ).checked =
-        true;
+    const orden =
+        document.getElementById(
+            "ordenMateria"
+        );
 
 
-    document.getElementById(
-        "materiaActivaWrap"
-    )?.classList.add(
-        "oculto"
+    const activa =
+        document.getElementById(
+            "materiaActiva"
+        );
+
+
+    const contenedorActiva =
+        document.getElementById(
+            "contenedorMateriaActiva"
+        );
+
+
+    const titulo =
+        document.getElementById(
+            "tituloFormularioMateria"
+        );
+
+
+    const formulario =
+        document.getElementById(
+            "formularioMateria"
+        );
+
+
+    // --------------------------------------------------------
+    // VALORES NUEVA MATERIA
+    // --------------------------------------------------------
+
+    if (materiaId) {
+
+        materiaId.value = "";
+
+    }
+
+
+    if (nombre) {
+
+        nombre.value = "";
+
+    }
+
+
+    if (descripcion) {
+
+        descripcion.value = "";
+
+    }
+
+
+    if (orden) {
+
+        orden.value = "0";
+
+    }
+
+
+    if (activa) {
+
+        activa.checked = true;
+
+    }
+
+
+    // Al crear no necesitamos mostrar "Materia activa".
+
+    contenedorActiva
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            `Nueva materia — ${semestreMaterialActual}° semestre`;
+
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajeMateria",
+        ""
     );
 
 
-    document.getElementById(
-        "tituloFormMateria"
-    ).textContent =
-        `Nueva materia - ${semestreMaterialActual}° semestre`;
+    formulario
+        ?.classList.remove(
+            "oculto"
+        );
 
 
-    document.getElementById(
-        "mensajeMateria"
-    ).textContent =
-        "";
+    formulario
+        ?.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
 
 
-    document.getElementById(
-        "formMateriaWrap"
-    ).classList.remove(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "materiaNombre"
-    )?.focus();
+    nombre?.focus();
 
 }
 
@@ -3876,104 +4319,140 @@ function editarMateria(id) {
 
 
     if (!materia) {
-
         return;
-
     }
 
 
-    document.getElementById(
-        "materiaId"
-    ).value =
-        materia.id;
-
-
-    document.getElementById(
-        "materiaNombre"
-    ).value =
-        materia.nombre || "";
-
-
-    document.getElementById(
-        "materiaDescripcion"
-    ).value =
-        materia.descripcion || "";
-
-
-    document.getElementById(
-        "materiaOrden"
-    ).value =
-        Number(
-            materia.orden || 0
-        );
-
-
-    document.getElementById(
-        "materiaActiva"
-    ).checked =
-        Boolean(
-            materia.activo
-        );
-
-
-    document.getElementById(
-        "materiaActivaWrap"
-    )?.classList.remove(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "tituloFormMateria"
-    ).textContent =
-        "Editar materia";
-
-
-    document.getElementById(
-        "mensajeMateria"
-    ).textContent =
-        "";
-
-
-    document.getElementById(
-        "formMateriaWrap"
-    ).classList.remove(
-        "oculto"
-    );
-
-}
-
-
-// ============================================================
-// CERRAR FORMULARIO MATERIA
-// ============================================================
-
-function cerrarFormularioMateria() {
-
-    document.getElementById(
-        "formMateriaWrap"
-    )?.classList.add(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "formMateria"
-    )?.reset();
-
-
-    const mensaje =
+    const materiaId =
         document.getElementById(
-            "mensajeMateria"
+            "materiaId"
         );
 
 
-    if (mensaje) {
+    const nombre =
+        document.getElementById(
+            "nombreMateria"
+        );
 
-        mensaje.textContent =
-            "";
+
+    const descripcion =
+        document.getElementById(
+            "descripcionMateria"
+        );
+
+
+    const orden =
+        document.getElementById(
+            "ordenMateria"
+        );
+
+
+    const activa =
+        document.getElementById(
+            "materiaActiva"
+        );
+
+
+    const contenedorActiva =
+        document.getElementById(
+            "contenedorMateriaActiva"
+        );
+
+
+    const titulo =
+        document.getElementById(
+            "tituloFormularioMateria"
+        );
+
+
+    const formulario =
+        document.getElementById(
+            "formularioMateria"
+        );
+
+
+    // --------------------------------------------------------
+    // CARGAR DATOS
+    // --------------------------------------------------------
+
+    if (materiaId) {
+
+        materiaId.value =
+            materia.id;
 
     }
+
+
+    if (nombre) {
+
+        nombre.value =
+            materia.nombre || "";
+
+    }
+
+
+    if (descripcion) {
+
+        descripcion.value =
+            materia.descripcion || "";
+
+    }
+
+
+    if (orden) {
+
+        orden.value =
+            Number(
+                materia.orden || 0
+            );
+
+    }
+
+
+    if (activa) {
+
+        activa.checked =
+            Boolean(
+                materia.activo
+            );
+
+    }
+
+
+    contenedorActiva
+        ?.classList.remove(
+            "oculto"
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            "Editar materia";
+
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajeMateria",
+        ""
+    );
+
+
+    formulario
+        ?.classList.remove(
+            "oculto"
+        );
+
+
+    formulario
+        ?.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+
+    nombre?.focus();
 
 }
 
@@ -3990,26 +4469,30 @@ async function guardarMateria(event) {
     const id =
         document.getElementById(
             "materiaId"
-        ).value;
+        )?.value || "";
 
 
     const nombre =
         document.getElementById(
-            "materiaNombre"
-        ).value.trim();
+            "nombreMateria"
+        )?.value
+            ?.trim()
+        || "";
 
 
     const descripcion =
         document.getElementById(
-            "materiaDescripcion"
-        ).value.trim();
+            "descripcionMateria"
+        )?.value
+            ?.trim()
+        || "";
 
 
     const orden =
         Number(
             document.getElementById(
-                "materiaOrden"
-            ).value
+                "ordenMateria"
+            )?.value
             || 0
         );
 
@@ -4017,51 +4500,78 @@ async function guardarMateria(event) {
     const activa =
         document.getElementById(
             "materiaActiva"
-        ).checked;
+        )?.checked ?? true;
 
 
-    const mensaje =
+    const boton =
         document.getElementById(
-            "mensajeMateria"
+            "btnGuardarMateria"
         );
+
+
+    mostrarMensajeAdmin(
+        "mensajeMateria",
+        ""
+    );
 
 
     if (!nombre) {
 
-        mensaje.textContent =
-            "Ingrese el nombre de la materia.";
-
-
-        mensaje.className =
-            "mensaje error";
-
+        mostrarMensajeAdmin(
+            "mensajeMateria",
+            "Escribe el nombre de la materia."
+        );
 
         return;
 
     }
 
 
-    mensaje.textContent =
-        "Guardando...";
+    if (
+        semestreMaterialActual < 1
+        ||
+        semestreMaterialActual > 6
+    ) {
+
+        mostrarMensajeAdmin(
+            "mensajeMateria",
+            "El semestre seleccionado no es válido."
+        );
+
+        return;
+
+    }
 
 
-    mensaje.className =
-        "mensaje";
+    if (boton) {
+
+        boton.disabled =
+            true;
+
+
+        boton.textContent =
+            "GUARDANDO...";
+
+    }
 
 
     try {
 
-        let resultado;
-
+        // ----------------------------------------------------
+        // EDITAR
+        // ----------------------------------------------------
 
         if (id) {
 
-            resultado =
+            const {
+                error
+            } =
                 await supabaseClient
                     .from(
                         "materias_estudiantes"
                     )
                     .update({
+
                         nombre:
                             nombre,
 
@@ -4073,21 +4583,35 @@ async function guardarMateria(event) {
 
                         activo:
                             activa
+
                     })
                     .eq(
                         "id",
                         Number(id)
                     );
 
+
+            if (error) {
+                throw error;
+            }
+
         }
+
+        // ----------------------------------------------------
+        // CREAR
+        // ----------------------------------------------------
+
         else {
 
-            resultado =
+            const {
+                error
+            } =
                 await supabaseClient
                     .from(
                         "materias_estudiantes"
                     )
                     .insert({
+
                         nombre:
                             nombre,
 
@@ -4102,37 +4626,27 @@ async function guardarMateria(event) {
 
                         activo:
                             true
+
                     });
 
-        }
 
-
-        if (resultado.error) {
-
-            throw resultado.error;
+            if (error) {
+                throw error;
+            }
 
         }
 
 
-        mensaje.textContent =
-            id
-                ? "Materia actualizada correctamente."
-                : "Materia creada correctamente.";
+        cerrarFormularioMateria();
 
 
-        mensaje.className =
-            "mensaje exito";
+        await Promise.all([
 
+            cargarMaterias(),
 
-        await cargarMaterias();
+            cargarEstadisticas()
 
-        await cargarEstadisticas();
-
-
-        setTimeout(
-            cerrarFormularioMateria,
-            700
-        );
+        ]);
 
     }
     catch (error) {
@@ -4143,15 +4657,91 @@ async function guardarMateria(event) {
         );
 
 
-        mensaje.textContent =
-            error?.message ||
-            "No fue posible guardar la materia.";
-
-
-        mensaje.className =
-            "mensaje error";
+        mostrarMensajeAdmin(
+            "mensajeMateria",
+            obtenerMensajeError(error)
+        );
 
     }
+    finally {
+
+        if (boton) {
+
+            boton.disabled =
+                false;
+
+
+            boton.textContent =
+                "GUARDAR";
+
+        }
+
+    }
+
+}
+
+
+// ============================================================
+// CERRAR FORMULARIO MATERIA
+// ============================================================
+
+function cerrarFormularioMateria() {
+
+    document
+        .getElementById(
+            "formularioMateria"
+        )
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    document
+        .getElementById(
+            "formMateria"
+        )
+        ?.reset();
+
+
+    const materiaId =
+        document.getElementById(
+            "materiaId"
+        );
+
+
+    if (materiaId) {
+
+        materiaId.value = "";
+
+    }
+
+
+    const orden =
+        document.getElementById(
+            "ordenMateria"
+        );
+
+
+    if (orden) {
+
+        orden.value = "0";
+
+    }
+
+
+    document
+        .getElementById(
+            "contenedorMateriaActiva"
+        )
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    mostrarMensajeAdmin(
+        "mensajeMateria",
+        ""
+    );
 
 }
 
@@ -4172,9 +4762,7 @@ async function abrirMateria(id) {
 
 
     if (!materia) {
-
         return;
-
     }
 
 
@@ -4190,46 +4778,83 @@ async function abrirMateria(id) {
         [];
 
 
+    seccionesMateria =
+        [];
+
+
     materialesSeccionActual =
         [];
 
 
-    document.getElementById(
-        "panelListaMaterias"
-    )?.classList.add(
-        "oculto"
-    );
+    cerrarFormularioMateria();
 
 
-    document.getElementById(
-        "panelMateriaAbierta"
-    )?.classList.remove(
-        "oculto"
-    );
+    document
+        .getElementById(
+            "panelListaMaterias"
+        )
+        ?.classList.add(
+            "oculto"
+        );
 
 
-    document.getElementById(
-        "materiaAbiertaNombre"
-    ).textContent =
-        materia.nombre;
+    document
+        .getElementById(
+            "panelMateriaAbierta"
+        )
+        ?.classList.remove(
+            "oculto"
+        );
 
 
-    document.getElementById(
-        "materiaAbiertaSemestre"
-    ).textContent =
-        `${materia.semestre}° semestre`;
+    const semestre =
+        document.getElementById(
+            "semestreMateriaAbierta"
+        );
 
 
-    await cargarSeccionesMateria();
+    const nombre =
+        document.getElementById(
+            "nombreMateriaAbierta"
+        );
 
 
-    actualizarBreadcrumbMaterial();
+    if (semestre) {
 
-    actualizarBotonesContenidoMaterial();
+        semestre.textContent =
+            `${materia.semestre}° semestre`;
 
-    await cargarContenidoSeccionActual();
+    }
+
+
+    if (nombre) {
+
+        nombre.textContent =
+            materia.nombre;
+
+    }
+
+
+    cerrarFormularioCarpeta();
+
+    cerrarFormularioMaterial();
+
+
+    await cargarContenidoMateria();
+
+
+    document
+        .getElementById(
+            "panelMateriaAbierta"
+        )
+        ?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
 
 }
+
+
 // ============================================================
 // VOLVER A LISTA DE MATERIAS
 // ============================================================
@@ -4239,61 +4864,89 @@ function volverAListaMaterias() {
     materiaAbierta =
         null;
 
-    seccionesMateria =
-        [];
 
     seccionActual =
         null;
 
+
     rutaSecciones =
         [];
 
-    materialesSeccionActual =
+
+    seccionesMateria =
         [];
 
 
-    document.getElementById(
-        "panelMateriaAbierta"
-    )?.classList.add(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "panelListaMaterias"
-    )?.classList.remove(
-        "oculto"
-    );
+    materialesSeccionActual =
+        [];
 
 
     cerrarFormularioCarpeta();
 
     cerrarFormularioMaterial();
 
+
+    document
+        .getElementById(
+            "panelMateriaAbierta"
+        )
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    document
+        .getElementById(
+            "panelListaMaterias"
+        )
+        ?.classList.remove(
+            "oculto"
+        );
+
+
+    renderizarMaterias();
+
 }
-
-
 // ============================================================
-// CARGAR TODAS LAS SECCIONES DE LA MATERIA
+// CARGAR CONTENIDO DE LA MATERIA
 // ============================================================
 
-async function cargarSeccionesMateria() {
+async function cargarContenidoMateria() {
 
     if (!materiaAbierta) {
-
-        seccionesMateria =
-            [];
-
         return;
-
     }
+
+
+    const contenedor =
+        document.getElementById(
+            "contenidoMateria"
+        );
+
+
+    if (!contenedor) {
+        return;
+    }
+
+
+    contenedor.innerHTML = `
+
+        <p class="estado-carga">
+            Cargando contenido...
+        </p>
+
+    `;
 
 
     try {
 
+        // ----------------------------------------------------
+        // CARGAR TODAS LAS CARPETAS DE LA MATERIA
+        // ----------------------------------------------------
+
         const {
-            data,
-            error
+            data: secciones,
+            error: errorSecciones
         } =
             await supabaseClient
                 .from(
@@ -4304,9 +4957,7 @@ async function cargarSeccionesMateria() {
                 )
                 .eq(
                     "materia_id",
-                    Number(
-                        materiaAbierta.id
-                    )
+                    materiaAbierta.id
                 )
                 .order(
                     "orden",
@@ -4322,121 +4973,26 @@ async function cargarSeccionesMateria() {
                 );
 
 
-        if (error) {
-
-            throw error;
-
+        if (errorSecciones) {
+            throw errorSecciones;
         }
 
 
         seccionesMateria =
-            data || [];
-
-    }
-    catch (error) {
-
-        console.error(
-            "Error cargando secciones:",
-            error
-        );
-
-
-        seccionesMateria =
-            [];
-
-
-        alert(
-            error?.message ||
-            "No fue posible cargar las carpetas de la materia."
-        );
-
-    }
-
-}
-
-
-// ============================================================
-// CARGAR CONTENIDO DE LA SECCIÓN ACTUAL
-// ============================================================
-
-async function cargarContenidoSeccionActual() {
-
-    if (!materiaAbierta) {
-
-        return;
-
-    }
-
-
-    const contenedor =
-        document.getElementById(
-            "contenidoMateriaAdmin"
-        );
-
-
-    if (!contenedor) {
-
-        return;
-
-    }
-
-
-    contenedor.innerHTML = `
-
-        <div class="vacio">
-
-            Cargando contenido...
-
-        </div>
-
-    `;
-
-
-    try {
-
-        // ----------------------------------------------------
-        // Si estamos en la raíz de la materia,
-        // solamente mostramos carpetas principales.
-        // ----------------------------------------------------
-
-        if (!seccionActual) {
-
-            materialesSeccionActual =
-                [];
-
-
-            renderizarContenidoMateria();
-
-            actualizarBreadcrumbMaterial();
-
-            actualizarBotonesContenidoMaterial();
-
-            return;
-
-        }
+            secciones || [];
 
 
         // ----------------------------------------------------
-        // Si estamos dentro de una carpeta,
-        // cargamos sus materiales.
+        // CARGAR MATERIAL
         // ----------------------------------------------------
 
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
+        let consultaMaterial =
+            supabaseClient
                 .from(
                     "material_estudiantes"
                 )
                 .select(
                     "id, seccion_id, titulo, descripcion, tipo, url, orden, activo, created_at"
-                )
-                .eq(
-                    "seccion_id",
-                    Number(
-                        seccionActual.id
-                    )
                 )
                 .order(
                     "orden",
@@ -4452,48 +5008,73 @@ async function cargarContenidoSeccionActual() {
                 );
 
 
-        if (error) {
+        // ----------------------------------------------------
+        // MATERIAL DE LA CARPETA ACTUAL
+        // ----------------------------------------------------
 
-            throw error;
+        if (seccionActual) {
+
+            consultaMaterial =
+                consultaMaterial.eq(
+                    "seccion_id",
+                    seccionActual.id
+                );
+
+        }
+        else {
+
+            /*
+             * Los recursos están asociados a una sección.
+             * En la raíz normalmente mostraremos carpetas.
+             *
+             * Si posteriormente decides permitir material
+             * directamente en la raíz de una materia,
+             * podremos adaptar la base de datos.
+             */
+
+            materialesSeccionActual = [];
 
         }
 
 
-        materialesSeccionActual =
-            data || [];
+        if (seccionActual) {
 
+            const {
+                data: materiales,
+                error: errorMateriales
+            } =
+                await consultaMaterial;
+
+
+            if (errorMateriales) {
+                throw errorMateriales;
+            }
+
+
+            materialesSeccionActual =
+                materiales || [];
+
+        }
+
+
+        actualizarRutaMaterial();
 
         renderizarContenidoMateria();
-
-        actualizarBreadcrumbMaterial();
-
-        actualizarBotonesContenidoMaterial();
 
     }
     catch (error) {
 
         console.error(
-            "Error cargando contenido:",
+            "Error cargando contenido de materia:",
             error
         );
 
 
         contenedor.innerHTML = `
 
-            <div class="vacio">
-
-                <strong>
-                    No fue posible cargar
-                    el contenido.
-                </strong>
-
-                <p>
-                    ${escaparHTML(
-                        error?.message || ""
-                    )}
-                </p>
-
-            </div>
+            <p class="mensaje error">
+                No se pudo cargar el contenido de la materia.
+            </p>
 
         `;
 
@@ -4503,37 +5084,20 @@ async function cargarContenidoSeccionActual() {
 
 
 // ============================================================
-// OBTENER SUBCARPETAS DE LA UBICACIÓN ACTUAL
+// OBTENER CARPETAS DE LA UBICACIÓN ACTUAL
 // ============================================================
 
-function obtenerSubcarpetasActuales() {
-
-    if (!materiaAbierta) {
-
-        return [];
-
-    }
-
-
-    // --------------------------------------------------------
-    // RAÍZ DE LA MATERIA
-    // --------------------------------------------------------
+function obtenerCarpetasActuales() {
 
     if (!seccionActual) {
 
         return seccionesMateria.filter(
             seccion =>
                 seccion.seccion_padre_id === null
-                ||
-                seccion.seccion_padre_id === undefined
         );
 
     }
 
-
-    // --------------------------------------------------------
-    // DENTRO DE UNA CARPETA
-    // --------------------------------------------------------
 
     return seccionesMateria.filter(
         seccion =>
@@ -4550,56 +5114,47 @@ function obtenerSubcarpetasActuales() {
 
 
 // ============================================================
-// RENDERIZAR CONTENIDO DE LA MATERIA
+// RENDERIZAR CONTENIDO DE MATERIA
 // ============================================================
 
 function renderizarContenidoMateria() {
 
     const contenedor =
         document.getElementById(
-            "contenidoMateriaAdmin"
+            "contenidoMateria"
         );
 
 
     if (!contenedor) {
-
         return;
-
     }
 
 
     const carpetas =
-        obtenerSubcarpetasActuales();
-
-
-    const materiales =
-        seccionActual
-            ? materialesSeccionActual
-            : [];
+        obtenerCarpetasActuales();
 
 
     if (
         !carpetas.length
         &&
-        !materiales.length
+        !materialesSeccionActual.length
     ) {
 
         contenedor.innerHTML = `
 
             <div class="vacio">
 
+                <span>
+                    📂
+                </span>
+
                 <strong>
-                    Esta ubicación está vacía.
+                    Esta ubicación está vacía
                 </strong>
 
                 <p>
-
-                    ${
-                        seccionActual
-                            ? "Puedes crear una subcarpeta o añadir material académico."
-                            : "Crea la primera carpeta para comenzar a organizar esta materia."
-                    }
-
+                    Puedes crear una carpeta
+                    o agregar material académico.
                 </p>
 
             </div>
@@ -4612,8 +5167,7 @@ function renderizarContenidoMateria() {
     }
 
 
-    let html =
-        "";
+    let html = "";
 
 
     // ========================================================
@@ -4624,99 +5178,79 @@ function renderizarContenidoMateria() {
 
         html += `
 
-            <div class="bloque-contenido-material">
+            <div class="lista-carpetas-material">
 
-                <h4>
-                    Carpetas
-                </h4>
+                ${
+                    carpetas
+                        .map(
+                            carpeta => `
 
-
-                <div class="lista-carpetas-material">
-
-        `;
-
-
-        html +=
-            carpetas
-                .map(
-                    carpeta => `
-
-                        <article
-                            class="carpeta-material-card ${
-                                carpeta.activo
-                                    ? ""
-                                    : "elemento-inactivo"
-                            }"
-                        >
-
-                            <div
-                                class="carpeta-material-info"
-                                onclick="abrirSeccionMaterial(${carpeta.id})"
-                            >
-
-                                <span class="carpeta-material-icono">
-                                    📁
-                                </span>
-
-
-                                <div>
-
-                                    <strong>
-
-                                        ${escaparHTML(
-                                            carpeta.nombre
-                                        )}
-
-                                    </strong>
-
-
-                                    <span>
-
-                                        ${
-                                            carpeta.activo
-                                                ? "Carpeta activa"
-                                                : "Carpeta inactiva"
-                                        }
-
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="carpeta-material-acciones">
-
-                                <button
-                                    type="button"
-                                    class="btn-secundario"
-                                    onclick="abrirSeccionMaterial(${carpeta.id})"
+                                <article
+                                    class="carpeta-material-card"
                                 >
-                                    Abrir
-                                </button>
+
+                                    <button
+                                        type="button"
+                                        class="carpeta-material-principal"
+                                        onclick="abrirCarpeta(${carpeta.id})"
+                                    >
+
+                                        <span
+                                            class="carpeta-material-icono"
+                                        >
+                                            📁
+                                        </span>
 
 
-                                <button
-                                    type="button"
-                                    class="btn-icono"
-                                    title="Editar carpeta"
-                                    onclick="editarCarpeta(${carpeta.id})"
-                                >
-                                    ✏️
-                                </button>
+                                        <div
+                                            class="carpeta-material-info"
+                                        >
 
-                            </div>
+                                            <strong>
 
-                        </article>
+                                                ${escaparHTML(
+                                                    carpeta.nombre
+                                                )}
 
-                    `
-                )
-                .join("");
+                                            </strong>
 
 
-        html += `
+                                            <small>
 
-                </div>
+                                                ${
+                                                    carpeta.activo
+                                                        ? "Carpeta activa"
+                                                        : "Carpeta inactiva"
+                                                }
+
+                                            </small>
+
+                                        </div>
+
+                                    </button>
+
+
+                                    <div
+                                        class="acciones-card"
+                                    >
+
+                                        <button
+                                            type="button"
+                                            class="btn-icono"
+                                            title="Editar carpeta"
+                                            onclick="editarCarpeta(${carpeta.id})"
+                                        >
+                                            ✏️
+                                        </button>
+
+                                    </div>
+
+                                </article>
+
+                            `
+                        )
+                        .join("")
+                }
 
             </div>
 
@@ -4726,140 +5260,147 @@ function renderizarContenidoMateria() {
 
 
     // ========================================================
-    // MATERIALES
+    // RECURSOS
     // ========================================================
 
-    if (materiales.length) {
+    if (materialesSeccionActual.length) {
 
         html += `
 
-            <div class="bloque-contenido-material">
+            <div class="lista-recursos-material">
 
-                <h4>
-                    Material
-                </h4>
+                ${
+                    materialesSeccionActual
+                        .map(
+                            material => {
 
-
-                <div class="lista-recursos-material">
-
-        `;
+                                let icono = "🔗";
 
 
-        html +=
-            materiales
-                .map(
-                    material => {
+                                if (
+                                    material.tipo ===
+                                    "drive"
+                                ) {
 
-                        const icono =
-                            obtenerIconoMaterial(
-                                material.tipo
-                            );
+                                    icono = "📄";
 
-
-                        const tipo =
-                            obtenerNombreTipoMaterial(
-                                material.tipo
-                            );
+                                }
 
 
-                        return `
+                                if (
+                                    material.tipo ===
+                                    "video"
+                                ) {
 
-                            <article
-                                class="recurso-material-card ${
-                                    material.activo
-                                        ? ""
-                                        : "elemento-inactivo"
-                                }"
-                            >
+                                    icono = "▶️";
 
-                                <div class="recurso-material-icono">
-
-                                    ${icono}
-
-                                </div>
+                                }
 
 
-                                <div class="recurso-material-info">
+                                return `
 
-                                    <strong>
-
-                                        ${escaparHTML(
-                                            material.titulo
-                                        )}
-
-                                    </strong>
-
-
-                                    <span>
-
-                                        ${escaparHTML(
-                                            tipo
-                                        )}
-
-                                        ·
-
-                                        ${
-                                            material.activo
-                                                ? "Activo"
-                                                : "Inactivo"
-                                        }
-
-                                    </span>
-
-
-                                    ${
-                                        material.descripcion
-                                            ? `
-
-                                                <p>
-
-                                                    ${escaparHTML(
-                                                        material.descripcion
-                                                    )}
-
-                                                </p>
-
-                                            `
-                                            : ""
-                                    }
-
-                                </div>
-
-
-                                <div class="recurso-material-acciones">
-
-                                    <button
-                                        type="button"
-                                        class="btn-secundario"
-                                        onclick="abrirEnlaceMaterialAdmin(${material.id})"
+                                    <article
+                                        class="recurso-material-card"
                                     >
-                                        Abrir
-                                    </button>
+
+                                        <div
+                                            class="recurso-material-icono"
+                                        >
+
+                                            ${icono}
+
+                                        </div>
 
 
-                                    <button
-                                        type="button"
-                                        class="btn-icono"
-                                        title="Editar material"
-                                        onclick="editarMaterialAcademico(${material.id})"
-                                    >
-                                        ✏️
-                                    </button>
+                                        <div
+                                            class="recurso-material-info"
+                                        >
 
-                                </div>
+                                            <strong>
 
-                            </article>
+                                                ${escaparHTML(
+                                                    material.titulo
+                                                )}
 
-                        `;
-
-                    }
-                )
-                .join("");
+                                            </strong>
 
 
-        html += `
+                                            ${
+                                                material.descripcion
 
-                </div>
+                                                    ? `
+
+                                                        <p>
+
+                                                            ${escaparHTML(
+                                                                material.descripcion
+                                                            )}
+
+                                                        </p>
+
+                                                    `
+
+                                                    : ""
+                                            }
+
+
+                                            <small>
+
+                                                ${
+                                                    nombreTipoMaterial(
+                                                        material.tipo
+                                                    )
+                                                }
+
+                                                ·
+
+                                                ${
+                                                    material.activo
+                                                        ? "Activo"
+                                                        : "Inactivo"
+                                                }
+
+                                            </small>
+
+                                        </div>
+
+
+                                        <div
+                                            class="acciones-card"
+                                        >
+
+                                            <a
+                                                href="${escaparAtributo(
+                                                    material.url
+                                                )}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="btn-icono"
+                                                title="Abrir material"
+                                            >
+                                                ↗
+                                            </a>
+
+
+                                            <button
+                                                type="button"
+                                                class="btn-icono"
+                                                title="Editar material"
+                                                onclick="editarMaterialAcademico(${material.id})"
+                                            >
+                                                ✏️
+                                            </button>
+
+                                        </div>
+
+                                    </article>
+
+                                `;
+
+                            }
+                        )
+                        .join("")
+                }
 
             </div>
 
@@ -4875,117 +5416,10 @@ function renderizarContenidoMateria() {
 
 
 // ============================================================
-// ACTUALIZAR BOTONES SEGÚN UBICACIÓN
+// ABRIR CARPETA
 // ============================================================
 
-function actualizarBotonesContenidoMaterial() {
-
-    const botonMaterial =
-        document.getElementById(
-            "btnNuevoMaterial"
-        );
-
-
-    if (botonMaterial) {
-
-        // El material solamente puede añadirse
-        // dentro de una carpeta.
-
-        botonMaterial.disabled =
-            !seccionActual;
-
-
-        botonMaterial.title =
-            seccionActual
-                ? "Añadir material a esta carpeta"
-                : "Primero abre o crea una carpeta";
-
-    }
-
-}
-
-
-// ============================================================
-// PREPARAR NUEVA CARPETA
-// ============================================================
-
-function prepararNuevaCarpeta() {
-
-    if (!materiaAbierta) {
-
-        alert(
-            "Primero abre una materia."
-        );
-
-        return;
-
-    }
-
-
-    document.getElementById(
-        "carpetaId"
-    ).value =
-        "";
-
-
-    document.getElementById(
-        "carpetaNombre"
-    ).value =
-        "";
-
-
-    document.getElementById(
-        "carpetaOrden"
-    ).value =
-        "0";
-
-
-    document.getElementById(
-        "carpetaActiva"
-    ).checked =
-        true;
-
-
-    document.getElementById(
-        "carpetaActivaWrap"
-    )?.classList.add(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "tituloFormCarpeta"
-    ).textContent =
-        seccionActual
-            ? `Nueva subcarpeta en ${seccionActual.nombre}`
-            : `Nueva carpeta en ${materiaAbierta.nombre}`;
-
-
-    document.getElementById(
-        "mensajeCarpeta"
-    ).textContent =
-        "";
-
-
-    document.getElementById(
-        "formCarpetaWrap"
-    )?.classList.remove(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "carpetaNombre"
-    )?.focus();
-
-}
-
-
-// ============================================================
-// EDITAR CARPETA
-// ============================================================
-
-function editarCarpeta(id) {
+async function abrirCarpeta(id) {
 
     const carpeta =
         seccionesMateria.find(
@@ -4997,344 +5431,7 @@ function editarCarpeta(id) {
 
 
     if (!carpeta) {
-
         return;
-
-    }
-
-
-    document.getElementById(
-        "carpetaId"
-    ).value =
-        carpeta.id;
-
-
-    document.getElementById(
-        "carpetaNombre"
-    ).value =
-        carpeta.nombre || "";
-
-
-    document.getElementById(
-        "carpetaOrden"
-    ).value =
-        Number(
-            carpeta.orden || 0
-        );
-
-
-    document.getElementById(
-        "carpetaActiva"
-    ).checked =
-        Boolean(
-            carpeta.activo
-        );
-
-
-    document.getElementById(
-        "carpetaActivaWrap"
-    )?.classList.remove(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "tituloFormCarpeta"
-    ).textContent =
-        "Editar carpeta";
-
-
-    document.getElementById(
-        "mensajeCarpeta"
-    ).textContent =
-        "";
-
-
-    document.getElementById(
-        "formCarpetaWrap"
-    )?.classList.remove(
-        "oculto"
-    );
-
-}
-
-
-// ============================================================
-// CERRAR FORMULARIO CARPETA
-// ============================================================
-
-function cerrarFormularioCarpeta() {
-
-    document.getElementById(
-        "formCarpetaWrap"
-    )?.classList.add(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "formCarpeta"
-    )?.reset();
-
-
-    const mensaje =
-        document.getElementById(
-            "mensajeCarpeta"
-        );
-
-
-    if (mensaje) {
-
-        mensaje.textContent =
-            "";
-
-    }
-
-}
-
-
-// ============================================================
-// GUARDAR CARPETA
-// ============================================================
-
-async function guardarCarpeta(event) {
-
-    event.preventDefault();
-
-
-    if (!materiaAbierta) {
-
-        return;
-
-    }
-
-
-    const id =
-        document.getElementById(
-            "carpetaId"
-        ).value;
-
-
-    const nombre =
-        document.getElementById(
-            "carpetaNombre"
-        ).value.trim();
-
-
-    const orden =
-        Number(
-            document.getElementById(
-                "carpetaOrden"
-            ).value
-            || 0
-        );
-
-
-    const activa =
-        document.getElementById(
-            "carpetaActiva"
-        ).checked;
-
-
-    const mensaje =
-        document.getElementById(
-            "mensajeCarpeta"
-        );
-
-
-    if (!nombre) {
-
-        mensaje.textContent =
-            "Ingrese el nombre de la carpeta.";
-
-
-        mensaje.className =
-            "mensaje error";
-
-
-        return;
-
-    }
-
-
-    mensaje.textContent =
-        "Guardando...";
-
-
-    mensaje.className =
-        "mensaje";
-
-
-    try {
-
-        let resultado;
-
-
-        if (id) {
-
-            resultado =
-                await supabaseClient
-                    .from(
-                        "secciones_material"
-                    )
-                    .update({
-                        nombre:
-                            nombre,
-
-                        orden:
-                            orden,
-
-                        activo:
-                            activa
-                    })
-                    .eq(
-                        "id",
-                        Number(id)
-                    );
-
-        }
-        else {
-
-            resultado =
-                await supabaseClient
-                    .from(
-                        "secciones_material"
-                    )
-                    .insert({
-                        materia_id:
-                            Number(
-                                materiaAbierta.id
-                            ),
-
-                        seccion_padre_id:
-                            seccionActual
-                                ? Number(
-                                    seccionActual.id
-                                )
-                                : null,
-
-                        nombre:
-                            nombre,
-
-                        orden:
-                            orden,
-
-                        activo:
-                            true
-                    });
-
-        }
-
-
-        if (resultado.error) {
-
-            throw resultado.error;
-
-        }
-
-
-        mensaje.textContent =
-            id
-                ? "Carpeta actualizada correctamente."
-                : "Carpeta creada correctamente.";
-
-
-        mensaje.className =
-            "mensaje exito";
-
-
-        await cargarSeccionesMateria();
-
-
-        // Si se editó la carpeta actualmente abierta,
-        // actualizamos la referencia local.
-
-        if (
-            id
-            &&
-            seccionActual
-            &&
-            Number(
-                seccionActual.id
-            )
-            ===
-            Number(id)
-        ) {
-
-            const actualizada =
-                seccionesMateria.find(
-                    item =>
-                        Number(item.id)
-                        ===
-                        Number(id)
-                );
-
-
-            if (actualizada) {
-
-                seccionActual =
-                    actualizada;
-
-
-                rutaSecciones =
-                    construirRutaSeccion(
-                        actualizada.id
-                    );
-
-            }
-
-        }
-
-
-        await cargarContenidoSeccionActual();
-
-
-        setTimeout(
-            cerrarFormularioCarpeta,
-            700
-        );
-
-    }
-    catch (error) {
-
-        console.error(
-            "Error guardando carpeta:",
-            error
-        );
-
-
-        mensaje.textContent =
-            error?.message ||
-            "No fue posible guardar la carpeta.";
-
-
-        mensaje.className =
-            "mensaje error";
-
-    }
-
-}
-
-
-// ============================================================
-// ABRIR CARPETA / SECCIÓN
-// ============================================================
-
-async function abrirSeccionMaterial(id) {
-
-    const carpeta =
-        seccionesMateria.find(
-            item =>
-                Number(item.id)
-                ===
-                Number(id)
-        );
-
-
-    if (!carpeta) {
-
-        return;
-
     }
 
 
@@ -5342,37 +5439,57 @@ async function abrirSeccionMaterial(id) {
         carpeta;
 
 
-    rutaSecciones =
-        construirRutaSeccion(
-            carpeta.id
-        );
+    cerrarFormularioCarpeta();
 
+    cerrarFormularioMaterial();
+
+
+    await cargarContenidoMateria();
+
+}
+
+
+// ============================================================
+// VOLVER A UNA CARPETA DESDE LA RUTA
+// ============================================================
+
+async function navegarRutaMaterial(id) {
 
     cerrarFormularioCarpeta();
 
     cerrarFormularioMaterial();
 
 
-    await cargarContenidoSeccionActual();
+    // --------------------------------------------------------
+    // RAÍZ DE LA MATERIA
+    // --------------------------------------------------------
 
-}
+    if (
+        id === null
+        ||
+        id === undefined
+        ||
+        id === ""
+        ||
+        id === "raiz"
+    ) {
+
+        seccionActual =
+            null;
 
 
-// ============================================================
-// CONSTRUIR RUTA DE UNA SECCIÓN
-// ============================================================
-
-function construirRutaSeccion(id) {
-
-    const ruta =
-        [];
+        materialesSeccionActual =
+            [];
 
 
-    const visitados =
-        new Set();
+        await cargarContenidoMateria();
+
+        return;
+
+    }
 
 
-    let actual =
+    const carpeta =
         seccionesMateria.find(
             item =>
                 Number(item.id)
@@ -5381,18 +5498,55 @@ function construirRutaSeccion(id) {
         );
 
 
+    if (!carpeta) {
+        return;
+    }
+
+
+    seccionActual =
+        carpeta;
+
+
+    await cargarContenidoMateria();
+
+}
+
+
+// ============================================================
+// CONSTRUIR RUTA DE CARPETAS
+// ============================================================
+
+function construirRutaSecciones() {
+
+    rutaSecciones =
+        [];
+
+
+    if (!seccionActual) {
+        return;
+    }
+
+
+    let actual =
+        seccionActual;
+
+
+    const idsVisitados =
+        new Set();
+
+
     while (actual) {
 
         // Protección frente a ciclos accidentales.
 
         if (
-            visitados.has(
+            idsVisitados.has(
                 Number(actual.id)
             )
         ) {
 
             console.warn(
-                "Se detectó un ciclo en la jerarquía de carpetas."
+                "Se detectó un ciclo entre carpetas."
             );
 
             break;
@@ -5400,12 +5554,12 @@ function construirRutaSeccion(id) {
         }
 
 
-        visitados.add(
+        idsVisitados.add(
             Number(actual.id)
         );
 
 
-        ruta.unshift(
+        rutaSecciones.unshift(
             actual
         );
 
@@ -5433,45 +5587,41 @@ function construirRutaSeccion(id) {
 
     }
 
-
-    return ruta;
-
 }
 
 
 // ============================================================
-// ACTUALIZAR BREADCRUMB
+// ACTUALIZAR RUTA VISUAL
 // ============================================================
 
-function actualizarBreadcrumbMaterial() {
+function actualizarRutaMaterial() {
 
     const contenedor =
         document.getElementById(
-            "breadcrumbMaterial"
+            "rutaMaterial"
         );
 
 
-    if (
-        !contenedor
-        ||
-        !materiaAbierta
-    ) {
-
+    if (!contenedor) {
         return;
-
     }
+
+
+    construirRutaSecciones();
 
 
     let html = `
 
         <button
             type="button"
-            class="breadcrumb-item"
-            onclick="irRaizMateria()"
+            class="ruta-material-item"
+            onclick="navegarRutaMaterial('raiz')"
         >
 
+            📚
+
             ${escaparHTML(
-                materiaAbierta.nombre
+                materiaAbierta?.nombre || "Materia"
             )}
 
         </button>
@@ -5488,7 +5638,7 @@ function actualizarBreadcrumbMaterial() {
             html += `
 
                 <span
-                    class="breadcrumb-separador"
+                    class="ruta-material-separador"
                 >
                     ›
                 </span>
@@ -5506,8 +5656,10 @@ function actualizarBreadcrumbMaterial() {
                 html += `
 
                     <span
-                        class="breadcrumb-actual"
+                        class="ruta-material-actual"
                     >
+
+                        📁
 
                         ${escaparHTML(
                             carpeta.nombre
@@ -5524,9 +5676,11 @@ function actualizarBreadcrumbMaterial() {
 
                     <button
                         type="button"
-                        class="breadcrumb-item"
-                        onclick="irASeccionBreadcrumb(${carpeta.id})"
+                        class="ruta-material-item"
+                        onclick="navegarRutaMaterial(${carpeta.id})"
                     >
+
+                        📁
 
                         ${escaparHTML(
                             carpeta.nombre
@@ -5549,38 +5703,136 @@ function actualizarBreadcrumbMaterial() {
 
 
 // ============================================================
-// VOLVER A LA RAÍZ DE LA MATERIA
+// PREPARAR NUEVA CARPETA
 // ============================================================
 
-async function irRaizMateria() {
+function prepararNuevaCarpeta() {
 
-    seccionActual =
-        null;
-
-
-    rutaSecciones =
-        [];
+    if (!materiaAbierta) {
+        return;
+    }
 
 
-    materialesSeccionActual =
-        [];
+    document
+        .getElementById(
+            "formCarpeta"
+        )
+        ?.reset();
 
 
-    cerrarFormularioCarpeta();
+    const carpetaId =
+        document.getElementById(
+            "carpetaId"
+        );
+
+
+    const nombre =
+        document.getElementById(
+            "nombreCarpeta"
+        );
+
+
+    const orden =
+        document.getElementById(
+            "ordenCarpeta"
+        );
+
+
+    const activa =
+        document.getElementById(
+            "carpetaActiva"
+        );
+
+
+    const contenedorActiva =
+        document.getElementById(
+            "contenedorCarpetaActiva"
+        );
+
+
+    const titulo =
+        document.getElementById(
+            "tituloFormularioCarpeta"
+        );
+
+
+    const formulario =
+        document.getElementById(
+            "formularioCarpeta"
+        );
+
+
+    if (carpetaId) {
+        carpetaId.value = "";
+    }
+
+
+    if (nombre) {
+        nombre.value = "";
+    }
+
+
+    if (orden) {
+        orden.value = "0";
+    }
+
+
+    if (activa) {
+        activa.checked = true;
+    }
+
+
+    contenedorActiva
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            seccionActual
+                ? `Nueva carpeta dentro de ${seccionActual.nombre}`
+                : "Nueva carpeta";
+
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajeCarpeta",
+        ""
+    );
+
+
+    // No mostrar simultáneamente
+    // formulario de material.
 
     cerrarFormularioMaterial();
 
 
-    await cargarContenidoSeccionActual();
+    formulario
+        ?.classList.remove(
+            "oculto"
+        );
+
+
+    formulario
+        ?.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+
+    nombre?.focus();
 
 }
 
 
 // ============================================================
-// NAVEGAR MEDIANTE BREADCRUMB
+// EDITAR CARPETA
 // ============================================================
 
-async function irASeccionBreadcrumb(id) {
+function editarCarpeta(id) {
 
     const carpeta =
         seccionesMateria.find(
@@ -5592,51 +5844,314 @@ async function irASeccionBreadcrumb(id) {
 
 
     if (!carpeta) {
+        return;
+    }
+
+
+    const carpetaId =
+        document.getElementById(
+            "carpetaId"
+        );
+
+
+    const nombre =
+        document.getElementById(
+            "nombreCarpeta"
+        );
+
+
+    const orden =
+        document.getElementById(
+            "ordenCarpeta"
+        );
+
+
+    const activa =
+        document.getElementById(
+            "carpetaActiva"
+        );
+
+
+    const titulo =
+        document.getElementById(
+            "tituloFormularioCarpeta"
+        );
+
+
+    const formulario =
+        document.getElementById(
+            "formularioCarpeta"
+        );
+
+
+    if (carpetaId) {
+
+        carpetaId.value =
+            carpeta.id;
+
+    }
+
+
+    if (nombre) {
+
+        nombre.value =
+            carpeta.nombre || "";
+
+    }
+
+
+    if (orden) {
+
+        orden.value =
+            Number(
+                carpeta.orden || 0
+            );
+
+    }
+
+
+    if (activa) {
+
+        activa.checked =
+            Boolean(
+                carpeta.activo
+            );
+
+    }
+
+
+    document
+        .getElementById(
+            "contenedorCarpetaActiva"
+        )
+        ?.classList.remove(
+            "oculto"
+        );
+
+
+    if (titulo) {
+
+        titulo.textContent =
+            "Editar carpeta";
+
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajeCarpeta",
+        ""
+    );
+
+
+    cerrarFormularioMaterial();
+
+
+    formulario
+        ?.classList.remove(
+            "oculto"
+        );
+
+
+    formulario
+        ?.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        );
+
+
+    nombre?.focus();
+
+}
+
+
+// ============================================================
+// GUARDAR CARPETA
+// ============================================================
+
+async function guardarCarpeta(event) {
+
+    event.preventDefault();
+
+
+    if (!materiaAbierta) {
+        return;
+    }
+
+
+    const id =
+        document.getElementById(
+            "carpetaId"
+        )?.value || "";
+
+
+    const nombre =
+        document.getElementById(
+            "nombreCarpeta"
+        )?.value
+            ?.trim()
+        || "";
+
+
+    const orden =
+        Number(
+            document.getElementById(
+                "ordenCarpeta"
+            )?.value
+            || 0
+        );
+
+
+    const activa =
+        document.getElementById(
+            "carpetaActiva"
+        )?.checked ?? true;
+
+
+    const boton =
+        document.getElementById(
+            "btnGuardarCarpeta"
+        );
+
+
+    mostrarMensajeAdmin(
+        "mensajeCarpeta",
+        ""
+    );
+
+
+    if (!nombre) {
+
+        mostrarMensajeAdmin(
+            "mensajeCarpeta",
+            "Escribe el nombre de la carpeta."
+        );
 
         return;
 
     }
 
 
-    seccionActual =
-        carpeta;
+    if (boton) {
+
+        boton.disabled = true;
+
+        boton.textContent =
+            "GUARDANDO...";
+
+    }
 
 
-    rutaSecciones =
-        construirRutaSeccion(
-            carpeta.id
+    try {
+
+        // ====================================================
+        // EDITAR CARPETA
+        // ====================================================
+
+        if (id) {
+
+            const {
+                error
+            } =
+                await supabaseClient
+                    .from(
+                        "secciones_material"
+                    )
+                    .update({
+
+                        nombre:
+                            nombre,
+
+                        orden:
+                            orden,
+
+                        activo:
+                            activa
+
+                    })
+                    .eq(
+                        "id",
+                        Number(id)
+                    );
+
+
+            if (error) {
+                throw error;
+            }
+
+        }
+
+        // ====================================================
+        // CREAR CARPETA
+        // ====================================================
+
+        else {
+
+            const {
+                error
+            } =
+                await supabaseClient
+                    .from(
+                        "secciones_material"
+                    )
+                    .insert({
+
+                        materia_id:
+                            materiaAbierta.id,
+
+                        seccion_padre_id:
+                            seccionActual
+                                ? seccionActual.id
+                                : null,
+
+                        nombre:
+                            nombre,
+
+                        orden:
+                            orden,
+
+                        activo:
+                            true
+
+                    });
+
+
+            if (error) {
+                throw error;
+            }
+
+        }
+
+
+        cerrarFormularioCarpeta();
+
+
+        await cargarContenidoMateria();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Error guardando carpeta:",
+            error
         );
 
 
-    cerrarFormularioCarpeta();
+        mostrarMensajeAdmin(
+            "mensajeCarpeta",
+            obtenerMensajeError(error)
+        );
 
-    cerrarFormularioMaterial();
+    }
+    finally {
 
+        if (boton) {
 
-    await cargarContenidoSeccionActual();
+            boton.disabled = false;
 
-}
+            boton.textContent =
+                "GUARDAR";
 
-
-// ============================================================
-// ICONO SEGÚN TIPO DE MATERIAL
-// ============================================================
-
-function obtenerIconoMaterial(tipo) {
-
-    switch (tipo) {
-
-        case "drive":
-            return "📄";
-
-        case "video":
-            return "🎬";
-
-        case "enlace":
-            return "🔗";
-
-        default:
-            return "📎";
+        }
 
     }
 
@@ -5644,10 +6159,75 @@ function obtenerIconoMaterial(tipo) {
 
 
 // ============================================================
-// NOMBRE LEGIBLE DEL TIPO DE MATERIAL
+// CERRAR FORMULARIO CARPETA
 // ============================================================
 
-function obtenerNombreTipoMaterial(tipo) {
+function cerrarFormularioCarpeta() {
+
+    document
+        .getElementById(
+            "formularioCarpeta"
+        )
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    document
+        .getElementById(
+            "formCarpeta"
+        )
+        ?.reset();
+
+
+    const carpetaId =
+        document.getElementById(
+            "carpetaId"
+        );
+
+
+    if (carpetaId) {
+
+        carpetaId.value = "";
+
+    }
+
+
+    const orden =
+        document.getElementById(
+            "ordenCarpeta"
+        );
+
+
+    if (orden) {
+
+        orden.value = "0";
+
+    }
+
+
+    document
+        .getElementById(
+            "contenedorCarpetaActiva"
+        )
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    mostrarMensajeAdmin(
+        "mensajeCarpeta",
+        ""
+    );
+
+}
+
+
+// ============================================================
+// NOMBRE DEL TIPO DE MATERIAL
+// ============================================================
+
+function nombreTipoMaterial(tipo) {
 
     switch (tipo) {
 
@@ -5666,27 +6246,35 @@ function obtenerNombreTipoMaterial(tipo) {
     }
 
 }
+
+
 // ============================================================
-// PREPARAR NUEVO MATERIAL ACADÉMICO
+// ESCAPAR VALOR PARA ATRIBUTO HTML
 // ============================================================
 
-function prepararNuevoMaterialAcademico() {
+function escaparAtributo(valor) {
+
+    return escaparHTML(
+        valor || ""
+    );
+
+}
+// ============================================================
+// PREPARAR NUEVO MATERIAL
+// ============================================================
+
+function prepararNuevoMaterial() {
 
     if (!materiaAbierta) {
-
-        alert(
-            "Primero abre una materia."
-        );
-
         return;
-
     }
 
 
+    // El material debe estar dentro de una carpeta.
     if (!seccionActual) {
 
         alert(
-            "Primero abre una carpeta. El material debe estar dentro de una carpeta."
+            "Primero abre una carpeta para agregar material académico."
         );
 
         return;
@@ -5694,83 +6282,150 @@ function prepararNuevoMaterialAcademico() {
     }
 
 
-    document.getElementById(
-        "materialId"
-    ).value =
-        "";
+    document
+        .getElementById(
+            "formMaterialAcademico"
+        )
+        ?.reset();
 
 
-    document.getElementById(
-        "materialTitulo"
-    ).value =
-        "";
+    const materialId =
+        document.getElementById(
+            "materialId"
+        );
 
 
-    document.getElementById(
-        "materialDescripcion"
-    ).value =
-        "";
+    const titulo =
+        document.getElementById(
+            "tituloMaterial"
+        );
 
 
-    document.getElementById(
-        "materialTipo"
-    ).value =
-        "drive";
+    const tipo =
+        document.getElementById(
+            "tipoMaterial"
+        );
 
 
-    document.getElementById(
-        "materialUrl"
-    ).value =
-        "";
+    const url =
+        document.getElementById(
+            "urlMaterial"
+        );
 
 
-    document.getElementById(
-        "materialOrden"
-    ).value =
-        "0";
+    const descripcion =
+        document.getElementById(
+            "descripcionMaterial"
+        );
 
 
-    document.getElementById(
-        "materialActivo"
-    ).checked =
-        true;
+    const orden =
+        document.getElementById(
+            "ordenMaterial"
+        );
 
 
-    document.getElementById(
-        "materialActivoWrap"
-    )?.classList.add(
-        "oculto"
+    const activo =
+        document.getElementById(
+            "materialActivo"
+        );
+
+
+    if (materialId) {
+        materialId.value = "";
+    }
+
+
+    if (titulo) {
+        titulo.value = "";
+    }
+
+
+    if (tipo) {
+        tipo.value = "drive";
+    }
+
+
+    if (url) {
+        url.value = "";
+    }
+
+
+    if (descripcion) {
+        descripcion.value = "";
+    }
+
+
+    if (orden) {
+        orden.value = "0";
+    }
+
+
+    if (activo) {
+        activo.checked = true;
+    }
+
+
+    document
+        .getElementById(
+            "contenedorMaterialActivo"
+        )
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    const tituloFormulario =
+        document.getElementById(
+            "tituloFormularioMaterial"
+        );
+
+
+    if (tituloFormulario) {
+
+        tituloFormulario.textContent =
+            `Nuevo material — ${seccionActual.nombre}`;
+
+    }
+
+
+    mostrarMensajeAdmin(
+        "mensajeMaterialAcademico",
+        ""
     );
 
 
-    document.getElementById(
-        "tituloFormMaterial"
-    ).textContent =
-        `Nuevo material en ${seccionActual.nombre}`;
+    // No mostrar ambos formularios a la vez.
+
+    cerrarFormularioCarpeta();
 
 
-    document.getElementById(
-        "mensajeMaterial"
-    ).textContent =
-        "";
+    const formulario =
+        document.getElementById(
+            "formularioMaterial"
+        );
 
 
-    document.getElementById(
-        "formMaterialWrap"
-    )?.classList.remove(
-        "oculto"
-    );
+    formulario
+        ?.classList.remove(
+            "oculto"
+        );
 
 
-    document.getElementById(
-        "materialTitulo"
-    )?.focus();
+    formulario
+        ?.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+
+    titulo?.focus();
 
 }
 
 
 // ============================================================
-// EDITAR MATERIAL ACADÉMICO
+// EDITAR MATERIAL
 // ============================================================
 
 function editarMaterialAcademico(id) {
@@ -5785,152 +6440,160 @@ function editarMaterialAcademico(id) {
 
 
     if (!material) {
-
         return;
-
     }
 
 
-    document.getElementById(
-        "materialId"
-    ).value =
-        material.id;
-
-
-    document.getElementById(
-        "materialTitulo"
-    ).value =
-        material.titulo || "";
-
-
-    document.getElementById(
-        "materialDescripcion"
-    ).value =
-        material.descripcion || "";
-
-
-    document.getElementById(
-        "materialTipo"
-    ).value =
-        material.tipo || "enlace";
-
-
-    document.getElementById(
-        "materialUrl"
-    ).value =
-        material.url || "";
-
-
-    document.getElementById(
-        "materialOrden"
-    ).value =
-        Number(
-            material.orden || 0
-        );
-
-
-    document.getElementById(
-        "materialActivo"
-    ).checked =
-        Boolean(
-            material.activo
-        );
-
-
-    document.getElementById(
-        "materialActivoWrap"
-    )?.classList.remove(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "tituloFormMaterial"
-    ).textContent =
-        "Editar material";
-
-
-    document.getElementById(
-        "mensajeMaterial"
-    ).textContent =
-        "";
-
-
-    document.getElementById(
-        "formMaterialWrap"
-    )?.classList.remove(
-        "oculto"
-    );
-
-}
-
-
-// ============================================================
-// CERRAR FORMULARIO MATERIAL
-// ============================================================
-
-function cerrarFormularioMaterial() {
-
-    document.getElementById(
-        "formMaterialWrap"
-    )?.classList.add(
-        "oculto"
-    );
-
-
-    document.getElementById(
-        "formMaterialAcademico"
-    )?.reset();
-
-
-    const mensaje =
+    const materialId =
         document.getElementById(
-            "mensajeMaterial"
+            "materialId"
         );
 
 
-    if (mensaje) {
+    const titulo =
+        document.getElementById(
+            "tituloMaterial"
+        );
 
-        mensaje.textContent =
-            "";
 
+    const tipo =
+        document.getElementById(
+            "tipoMaterial"
+        );
+
+
+    const url =
+        document.getElementById(
+            "urlMaterial"
+        );
+
+
+    const descripcion =
+        document.getElementById(
+            "descripcionMaterial"
+        );
+
+
+    const orden =
+        document.getElementById(
+            "ordenMaterial"
+        );
+
+
+    const activo =
+        document.getElementById(
+            "materialActivo"
+        );
+
+
+    if (materialId) {
+        materialId.value =
+            material.id;
     }
 
-}
+
+    if (titulo) {
+        titulo.value =
+            material.titulo || "";
+    }
 
 
-// ============================================================
-// VALIDAR URL
-// ============================================================
+    if (tipo) {
+        tipo.value =
+            material.tipo || "drive";
+    }
 
-function esUrlValidaMaterial(url) {
 
-    try {
+    if (url) {
+        url.value =
+            material.url || "";
+    }
 
-        const objeto =
-            new URL(
-                url
+
+    if (descripcion) {
+        descripcion.value =
+            material.descripcion || "";
+    }
+
+
+    if (orden) {
+
+        orden.value =
+            Number(
+                material.orden || 0
             );
 
+    }
 
-        return (
-            objeto.protocol === "http:"
-            ||
-            objeto.protocol === "https:"
+
+    if (activo) {
+
+        activo.checked =
+            Boolean(
+                material.activo
+            );
+
+    }
+
+
+    document
+        .getElementById(
+            "contenedorMaterialActivo"
+        )
+        ?.classList.remove(
+            "oculto"
         );
 
-    }
-    catch {
 
-        return false;
+    const tituloFormulario =
+        document.getElementById(
+            "tituloFormularioMaterial"
+        );
+
+
+    if (tituloFormulario) {
+
+        tituloFormulario.textContent =
+            "Editar material";
 
     }
+
+
+    mostrarMensajeAdmin(
+        "mensajeMaterialAcademico",
+        ""
+    );
+
+
+    cerrarFormularioCarpeta();
+
+
+    const formulario =
+        document.getElementById(
+            "formularioMaterial"
+        );
+
+
+    formulario
+        ?.classList.remove(
+            "oculto"
+        );
+
+
+    formulario
+        ?.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        );
+
+
+    titulo?.focus();
 
 }
 
 
 // ============================================================
-// GUARDAR MATERIAL ACADÉMICO
+// GUARDAR MATERIAL
 // ============================================================
 
 async function guardarMaterialAcademico(event) {
@@ -5938,14 +6601,23 @@ async function guardarMaterialAcademico(event) {
     event.preventDefault();
 
 
-    if (
-        !materiaAbierta
-        ||
-        !seccionActual
-    ) {
+    if (!materiaAbierta) {
 
-        alert(
-            "No existe una carpeta seleccionada."
+        mostrarMensajeAdmin(
+            "mensajeMaterialAcademico",
+            "No hay una materia seleccionada."
+        );
+
+        return;
+
+    }
+
+
+    if (!seccionActual) {
+
+        mostrarMensajeAdmin(
+            "mensajeMaterialAcademico",
+            "El material debe guardarse dentro de una carpeta."
         );
 
         return;
@@ -5956,38 +6628,45 @@ async function guardarMaterialAcademico(event) {
     const id =
         document.getElementById(
             "materialId"
-        ).value;
+        )?.value || "";
 
 
     const titulo =
         document.getElementById(
-            "materialTitulo"
-        ).value.trim();
-
-
-    const descripcion =
-        document.getElementById(
-            "materialDescripcion"
-        ).value.trim();
+            "tituloMaterial"
+        )?.value
+            ?.trim()
+        || "";
 
 
     const tipo =
         document.getElementById(
-            "materialTipo"
-        ).value;
+            "tipoMaterial"
+        )?.value
+        || "drive";
 
 
     const url =
         document.getElementById(
-            "materialUrl"
-        ).value.trim();
+            "urlMaterial"
+        )?.value
+            ?.trim()
+        || "";
+
+
+    const descripcion =
+        document.getElementById(
+            "descripcionMaterial"
+        )?.value
+            ?.trim()
+        || "";
 
 
     const orden =
         Number(
             document.getElementById(
-                "materialOrden"
-            ).value
+                "ordenMaterial"
+            )?.value
             || 0
         );
 
@@ -5995,22 +6674,43 @@ async function guardarMaterialAcademico(event) {
     const activo =
         document.getElementById(
             "materialActivo"
-        ).checked;
+        )?.checked ?? true;
 
 
-    const mensaje =
+    const boton =
         document.getElementById(
-            "mensajeMaterial"
+            "btnGuardarMaterial"
         );
 
 
+    mostrarMensajeAdmin(
+        "mensajeMaterialAcademico",
+        ""
+    );
+
+
+    // ========================================================
+    // VALIDACIONES
+    // ========================================================
+
     if (!titulo) {
 
-        mensaje.textContent =
-            "Ingrese el título del material.";
+        mostrarMensajeAdmin(
+            "mensajeMaterialAcademico",
+            "Escribe el título del material."
+        );
 
-        mensaje.className =
-            "mensaje error";
+        return;
+
+    }
+
+
+    if (!url) {
+
+        mostrarMensajeAdmin(
+            "mensajeMaterialAcademico",
+            "Escribe el enlace del material."
+        );
 
         return;
 
@@ -6022,29 +6722,13 @@ async function guardarMaterialAcademico(event) {
             "drive",
             "video",
             "enlace"
-        ].includes(
-            tipo
-        )
+        ].includes(tipo)
     ) {
 
-        mensaje.textContent =
-            "Selecciona un tipo de material válido.";
-
-        mensaje.className =
-            "mensaje error";
-
-        return;
-
-    }
-
-
-    if (!url) {
-
-        mensaje.textContent =
-            "Ingrese el enlace del material.";
-
-        mensaje.className =
-            "mensaje error";
+        mostrarMensajeAdmin(
+            "mensajeMaterialAcademico",
+            "El tipo de material no es válido."
+        );
 
         return;
 
@@ -6052,42 +6736,46 @@ async function guardarMaterialAcademico(event) {
 
 
     if (
-        !esUrlValidaMaterial(
-            url
-        )
+        !esUrlMaterialValida(url)
     ) {
 
-        mensaje.textContent =
-            "El enlace debe comenzar con http:// o https://";
-
-        mensaje.className =
-            "mensaje error";
+        mostrarMensajeAdmin(
+            "mensajeMaterialAcademico",
+            "Escribe un enlace válido que comience con http:// o https://"
+        );
 
         return;
 
     }
 
 
-    mensaje.textContent =
-        "Guardando...";
+    if (boton) {
 
-    mensaje.className =
-        "mensaje";
+        boton.disabled = true;
+
+        boton.textContent =
+            "GUARDANDO...";
+
+    }
 
 
     try {
 
-        let resultado;
-
+        // ====================================================
+        // EDITAR MATERIAL
+        // ====================================================
 
         if (id) {
 
-            resultado =
+            const {
+                error
+            } =
                 await supabaseClient
                     .from(
                         "material_estudiantes"
                     )
                     .update({
+
                         titulo:
                             titulo,
 
@@ -6105,25 +6793,37 @@ async function guardarMaterialAcademico(event) {
 
                         activo:
                             activo
+
                     })
                     .eq(
                         "id",
                         Number(id)
                     );
 
+
+            if (error) {
+                throw error;
+            }
+
         }
+
+        // ====================================================
+        // CREAR MATERIAL
+        // ====================================================
+
         else {
 
-            resultado =
+            const {
+                error
+            } =
                 await supabaseClient
                     .from(
                         "material_estudiantes"
                     )
                     .insert({
+
                         seccion_id:
-                            Number(
-                                seccionActual.id
-                            ),
+                            seccionActual.id,
 
                         titulo:
                             titulo,
@@ -6142,35 +6842,21 @@ async function guardarMaterialAcademico(event) {
 
                         activo:
                             true
+
                     });
 
-        }
 
-
-        if (resultado.error) {
-
-            throw resultado.error;
+            if (error) {
+                throw error;
+            }
 
         }
 
 
-        mensaje.textContent =
-            id
-                ? "Material actualizado correctamente."
-                : "Material creado correctamente.";
+        cerrarFormularioMaterial();
 
 
-        mensaje.className =
-            "mensaje exito";
-
-
-        await cargarContenidoSeccionActual();
-
-
-        setTimeout(
-            cerrarFormularioMaterial,
-            700
-        );
+        await cargarContenidoMateria();
 
     }
     catch (error) {
@@ -6181,13 +6867,22 @@ async function guardarMaterialAcademico(event) {
         );
 
 
-        mensaje.textContent =
-            error?.message ||
-            "No fue posible guardar el material.";
+        mostrarMensajeAdmin(
+            "mensajeMaterialAcademico",
+            obtenerMensajeError(error)
+        );
 
+    }
+    finally {
 
-        mensaje.className =
-            "mensaje error";
+        if (boton) {
+
+            boton.disabled = false;
+
+            boton.textContent =
+                "GUARDAR";
+
+        }
 
     }
 
@@ -6195,57 +6890,348 @@ async function guardarMaterialAcademico(event) {
 
 
 // ============================================================
-// ABRIR ENLACE DEL MATERIAL
+// CERRAR FORMULARIO MATERIAL
 // ============================================================
 
-function abrirEnlaceMaterialAdmin(id) {
+function cerrarFormularioMaterial() {
 
-    const material =
-        materialesSeccionActual.find(
-            item =>
-                Number(item.id)
-                ===
-                Number(id)
-        );
-
-
-    if (
-        !material
-        ||
-        !material.url
-    ) {
-
-        return;
-
-    }
-
-
-    if (
-        !esUrlValidaMaterial(
-            material.url
+    document
+        .getElementById(
+            "formularioMaterial"
         )
-    ) {
-
-        alert(
-            "El enlace de este material no es válido."
+        ?.classList.add(
+            "oculto"
         );
 
-        return;
 
+    document
+        .getElementById(
+            "formMaterialAcademico"
+        )
+        ?.reset();
+
+
+    const materialId =
+        document.getElementById(
+            "materialId"
+        );
+
+
+    if (materialId) {
+        materialId.value = "";
     }
 
 
-    window.open(
-        material.url,
-        "_blank",
-        "noopener,noreferrer"
+    const tipo =
+        document.getElementById(
+            "tipoMaterial"
+        );
+
+
+    if (tipo) {
+        tipo.value = "drive";
+    }
+
+
+    const orden =
+        document.getElementById(
+            "ordenMaterial"
+        );
+
+
+    if (orden) {
+        orden.value = "0";
+    }
+
+
+    document
+        .getElementById(
+            "contenedorMaterialActivo"
+        )
+        ?.classList.add(
+            "oculto"
+        );
+
+
+    mostrarMensajeAdmin(
+        "mensajeMaterialAcademico",
+        ""
     );
 
 }
 
 
 // ============================================================
-// OBSERVACIONES DEL ADMINISTRADOR
+// VALIDAR URL
+// ============================================================
+
+function esUrlMaterialValida(url) {
+
+    try {
+
+        const enlace =
+            new URL(url);
+
+
+        return (
+            enlace.protocol === "http:"
+            ||
+            enlace.protocol === "https:"
+        );
+
+    }
+    catch {
+
+        return false;
+
+    }
+
+}
+
+
+// ============================================================
+// NORMALIZAR ENLACE DE GOOGLE DRIVE
+// ============================================================
+
+function obtenerEnlaceDriveVisualizacion(url) {
+
+    if (!url) {
+        return "";
+    }
+
+
+    try {
+
+        const enlace =
+            new URL(url);
+
+
+        if (
+            !enlace.hostname.includes(
+                "drive.google.com"
+            )
+        ) {
+
+            return url;
+
+        }
+
+
+        // Ejemplo:
+        // drive.google.com/file/d/ID/view
+
+        const coincidencia =
+            enlace.pathname.match(
+                /\/file\/d\/([^/]+)/
+            );
+
+
+        if (coincidencia?.[1]) {
+
+            return (
+                "https://drive.google.com/file/d/"
+                +
+                coincidencia[1]
+                +
+                "/preview"
+            );
+
+        }
+
+
+        return url;
+
+    }
+    catch {
+
+        return url;
+
+    }
+
+}
+
+
+// ============================================================
+// IDENTIFICAR VIDEO DE YOUTUBE
+// ============================================================
+
+function obtenerIdYoutube(url) {
+
+    if (!url) {
+        return null;
+    }
+
+
+    try {
+
+        const enlace =
+            new URL(url);
+
+
+        // youtube.com/watch?v=XXXXXXXX
+
+        if (
+            enlace.hostname.includes(
+                "youtube.com"
+            )
+        ) {
+
+            const id =
+                enlace.searchParams.get(
+                    "v"
+                );
+
+
+            if (id) {
+                return id;
+            }
+
+
+            // youtube.com/embed/XXXXXXXX
+
+            const embed =
+                enlace.pathname.match(
+                    /\/embed\/([^/?]+)/
+                );
+
+
+            if (embed?.[1]) {
+                return embed[1];
+            }
+
+
+            // youtube.com/shorts/XXXXXXXX
+
+            const shorts =
+                enlace.pathname.match(
+                    /\/shorts\/([^/?]+)/
+                );
+
+
+            if (shorts?.[1]) {
+                return shorts[1];
+            }
+
+        }
+
+
+        // youtu.be/XXXXXXXX
+
+        if (
+            enlace.hostname ===
+            "youtu.be"
+        ) {
+
+            return enlace.pathname
+                .replace("/", "")
+                .split("/")[0]
+                || null;
+
+        }
+
+
+        return null;
+
+    }
+    catch {
+
+        return null;
+
+    }
+
+}
+
+
+// ============================================================
+// OBTENER URL EMBEBIDA DE VIDEO
+// ============================================================
+
+function obtenerUrlVideoEmbebido(url) {
+
+    const youtubeId =
+        obtenerIdYoutube(url);
+
+
+    if (youtubeId) {
+
+        return (
+            "https://www.youtube.com/embed/"
+            +
+            encodeURIComponent(
+                youtubeId
+            )
+        );
+
+    }
+
+
+    // Si no es YouTube,
+    // conservamos el enlace original.
+
+    return url || "";
+
+}
+
+
+// ============================================================
+// ACTUALIZAR AYUDA SEGÚN TIPO DE MATERIAL
+// ============================================================
+
+function actualizarAyudaTipoMaterial() {
+
+    const tipo =
+        document.getElementById(
+            "tipoMaterial"
+        )?.value;
+
+
+    const url =
+        document.getElementById(
+            "urlMaterial"
+        );
+
+
+    if (!url) {
+        return;
+    }
+
+
+    switch (tipo) {
+
+        case "drive":
+
+            url.placeholder =
+                "https://drive.google.com/file/d/.../view";
+
+            break;
+
+
+        case "video":
+
+            url.placeholder =
+                "https://www.youtube.com/watch?v=...";
+
+            break;
+
+
+        case "enlace":
+
+            url.placeholder =
+                "https://...";
+
+            break;
+
+
+        default:
+
+            url.placeholder =
+                "https://...";
+
+    }
+
+}
+// ============================================================
+// CARGAR OBSERVACIONES
 // ============================================================
 
 async function cargarObservacionesAdmin() {
@@ -6257,18 +7243,14 @@ async function cargarObservacionesAdmin() {
 
 
     if (!contenedor) {
-
         return;
-
     }
 
 
     contenedor.innerHTML = `
 
         <p class="estado-carga">
-
             Cargando observaciones...
-
         </p>
 
     `;
@@ -6286,9 +7268,7 @@ async function cargarObservacionesAdmin() {
 
 
         if (error) {
-
             throw error;
-
         }
 
 
@@ -6311,22 +7291,9 @@ async function cargarObservacionesAdmin() {
 
         contenedor.innerHTML = `
 
-            <div class="vacio">
-
-                <strong>
-                    No fue posible cargar
-                    las observaciones.
-                </strong>
-
-                <p>
-
-                    ${escaparHTML(
-                        error?.message || ""
-                    )}
-
-                </p>
-
-            </div>
+            <p class="mensaje error">
+                No se pudieron cargar las observaciones.
+            </p>
 
         `;
 
@@ -6347,66 +7314,60 @@ function actualizarResumenObservacionesAdmin() {
 
     const pendientes =
         observacionesAdmin.filter(
-            item =>
-                item.estado ===
+            observacion =>
+                observacion.estado ===
                 "pendiente"
         ).length;
 
 
     const atendidas =
         observacionesAdmin.filter(
-            item =>
-                item.estado ===
+            observacion =>
+                observacion.estado ===
                 "atendida"
         ).length;
 
 
-    const elementoTotal =
+    const totalElemento =
         document.getElementById(
             "totalObservacionesAdmin"
         );
 
 
-    const elementoPendientes =
+    const pendientesElemento =
         document.getElementById(
             "totalPendientesAdmin"
         );
 
 
-    const elementoAtendidas =
+    const atendidasElemento =
         document.getElementById(
             "totalAtendidasAdmin"
         );
 
 
-    if (elementoTotal) {
-
-        elementoTotal.textContent =
+    if (totalElemento) {
+        totalElemento.textContent =
             total;
-
     }
 
 
-    if (elementoPendientes) {
-
-        elementoPendientes.textContent =
+    if (pendientesElemento) {
+        pendientesElemento.textContent =
             pendientes;
-
     }
 
 
-    if (elementoAtendidas) {
-
-        elementoAtendidas.textContent =
+    if (atendidasElemento) {
+        atendidasElemento.textContent =
             atendidas;
-
     }
 
 }
 
 
 // ============================================================
-// RENDERIZAR OBSERVACIONES
+// MOSTRAR OBSERVACIONES
 // ============================================================
 
 function renderizarObservacionesAdmin() {
@@ -6418,9 +7379,7 @@ function renderizarObservacionesAdmin() {
 
 
     if (!contenedor) {
-
         return;
-
     }
 
 
@@ -6435,12 +7394,26 @@ function renderizarObservacionesAdmin() {
 
         lista =
             lista.filter(
-                item =>
-                    item.estado ===
+                observacion =>
+                    observacion.estado ===
                     filtroObservacionesAdmin
             );
 
     }
+
+
+    // Más recientes primero.
+
+    lista.sort(
+        (a, b) =>
+            new Date(
+                b.created_at || 0
+            )
+            -
+            new Date(
+                a.created_at || 0
+            )
+    );
 
 
     if (!lista.length) {
@@ -6449,7 +7422,7 @@ function renderizarObservacionesAdmin() {
 
             <div class="vacio">
 
-                <span class="icono-vacio-admin">
+                <span>
                     💬
                 </span>
 
@@ -6458,7 +7431,7 @@ function renderizarObservacionesAdmin() {
                 </strong>
 
                 <p>
-                    No existen mensajes
+                    No existen observaciones
                     para este filtro.
                 </p>
 
@@ -6493,26 +7466,10 @@ function crearTarjetaObservacionAdmin(
     observacion
 ) {
 
-    const origen =
-        String(
-            observacion.origen || ""
-        ).toLowerCase();
-
-
-    const esEstudiante =
-        origen === "estudiante";
-
-
-    const iconoOrigen =
-        esEstudiante
-            ? "🎓"
-            : "👨‍🏫";
-
-
-    const textoOrigen =
-        esEstudiante
-            ? "Estudiante"
-            : "Docente";
+    const id =
+        Number(
+            observacion.id
+        );
 
 
     const estado =
@@ -6520,6 +7477,34 @@ function crearTarjetaObservacionAdmin(
         "atendida"
             ? "atendida"
             : "pendiente";
+
+
+    const nombre =
+        observacion.nombre
+        ||
+        observacion.nombre_origen
+        ||
+        observacion.usuario_nombre
+        ||
+        observacion.estudiante_nombre
+        ||
+        "Usuario";
+
+
+    const codigo =
+        observacion.codigo_ceta
+        ||
+        observacion.codigo
+        ||
+        "";
+
+
+    const grupo =
+        observacion.grupo
+        ||
+        observacion.codigo_grupo
+        ||
+        "";
 
 
     const tipo =
@@ -6534,48 +7519,9 @@ function crearTarjetaObservacionAdmin(
         );
 
 
-    const codigoHTML =
-        observacion.codigo
-            ? `
-
-                <span>
-
-                    Código:
-
-                    <strong>
-
-                        ${escaparHTML(
-                            observacion.codigo
-                        )}
-
-                    </strong>
-
-                </span>
-
-            `
-            : "";
-
-
-    const grupoHTML =
-        observacion.grupo
-            ? `
-
-                <span>
-
-                    Grupo:
-
-                    <strong>
-
-                        ${escaparHTML(
-                            observacion.grupo
-                        )}
-
-                    </strong>
-
-                </span>
-
-            `
-            : "";
+    const respuesta =
+        observacion.respuesta_admin
+        || "";
 
 
     return `
@@ -6584,48 +7530,62 @@ function crearTarjetaObservacionAdmin(
             class="observacion-admin-card ${estado}"
         >
 
-            <div class="cabecera-observacion-admin">
+            <div
+                class="observacion-admin-cabecera"
+            >
 
-                <div class="origen-observacion-admin">
+                <div>
 
-                    <span class="icono-origen-observacion">
+                    <strong>
 
-                        ${iconoOrigen}
+                        ${escaparHTML(
+                            nombre
+                        )}
 
-                    </span>
-
-
-                    <div>
-
-                        <span class="tipo-origen-observacion">
-
-                            ${textoOrigen}
-
-                        </span>
+                    </strong>
 
 
-                        <strong>
+                    ${
+                        codigo
 
-                            ${escaparHTML(
-                                observacion.nombre ||
-                                "Sin nombre"
-                            )}
+                            ? `
 
-                        </strong>
+                                <span>
+                                    ${escaparHTML(codigo)}
+                                </span>
 
-                    </div>
+                            `
+
+                            : ""
+                    }
+
+
+                    ${
+                        grupo
+
+                            ? `
+
+                                <span>
+                                    Grupo:
+                                    ${escaparHTML(grupo)}
+                                </span>
+
+                            `
+
+                            : ""
+                    }
 
                 </div>
 
 
                 <span
-                    class="estado-observacion-admin ${estado}"
+                    class="estado-badge ${estado}"
                 >
 
                     ${
                         estado === "atendida"
-                            ? "✓ Atendida"
-                            : "● Pendiente"
+                            ? "Atendida"
+                            : "Pendiente"
                     }
 
                 </span>
@@ -6633,102 +7593,90 @@ function crearTarjetaObservacionAdmin(
             </div>
 
 
-            <div class="datos-observacion-admin">
-
-                ${codigoHTML}
-
-                ${grupoHTML}
-
+            <div
+                class="observacion-admin-meta"
+            >
 
                 <span>
-
-                    Tipo:
-
-                    <strong>
-
-                        ${escaparHTML(
-                            tipo
-                        )}
-
-                    </strong>
-
+                    ${escaparHTML(tipo)}
                 </span>
 
-
                 <span>
-
-                    ${escaparHTML(
-                        fecha
-                    )}
-
+                    ${escaparHTML(fecha)}
                 </span>
 
             </div>
 
 
-            <div class="texto-observacion-admin">
+            <div
+                class="observacion-admin-texto"
+            >
 
                 ${escaparHTML(
                     observacion.observacion
+                    || ""
                 )}
 
             </div>
 
 
-            <div class="respuesta-observacion-admin">
+            <div
+                class="observacion-admin-respuesta"
+            >
 
                 <label
-                    for="respuestaObservacion${observacion.id}"
+                    for="respuestaObservacion${id}"
                 >
-
-                    Respuesta / nota administrativa
-
+                    Respuesta del administrador
                 </label>
 
 
                 <textarea
-                    id="respuestaObservacion${observacion.id}"
+                    id="respuestaObservacion${id}"
                     rows="3"
                     maxlength="1500"
-                    placeholder="Escribe una respuesta o nota..."
-                >${escaparHTML(
-                    observacion.respuesta_admin || ""
-                )}</textarea>
+                    placeholder="Escribe una respuesta..."
+                >${escaparHTML(respuesta)}</textarea>
 
             </div>
 
 
-            <div class="acciones-observacion-admin">
+            <div
+                class="observacion-admin-acciones"
+            >
+
+                <button
+                    type="button"
+                    class="btn-secundario"
+                    onclick="guardarRespuestaObservacionAdmin(${id})"
+                >
+                    GUARDAR RESPUESTA
+                </button>
+
 
                 ${
                     estado === "pendiente"
+
                         ? `
 
                             <button
                                 type="button"
-                                class="btn-atender-observacion"
-                                onclick="marcarObservacionAtendida(${Number(
-                                    observacion.id
-                                )})"
+                                class="btn-primario"
+                                onclick="marcarObservacionAtendida(${id})"
                             >
-
-                                ✓ Marcar atendida
-
+                                MARCAR ATENDIDA
                             </button>
 
                         `
+
                         : `
 
                             <button
                                 type="button"
-                                class="btn-reabrir-observacion"
-                                onclick="reabrirObservacionAdmin(${Number(
-                                    observacion.id
-                                )})"
+                                class="btn-secundario"
+                                onclick="reabrirObservacionAdmin(${id})"
                             >
-
-                                ↶ Marcar pendiente
-
+                                MARCAR PENDIENTE
                             </button>
 
                         `
@@ -6737,27 +7685,10 @@ function crearTarjetaObservacionAdmin(
 
                 <button
                     type="button"
-                    class="btn-guardar-respuesta-observacion"
-                    onclick="guardarRespuestaObservacionAdmin(${Number(
-                        observacion.id
-                    )})"
+                    class="btn-peligro"
+                    onclick="eliminarObservacionAdmin(${id})"
                 >
-
-                    Guardar respuesta
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="btn-eliminar-observacion"
-                    onclick="eliminarObservacionAdmin(${Number(
-                        observacion.id
-                    )})"
-                >
-
-                    Eliminar
-
+                    ELIMINAR
                 </button>
 
             </div>
@@ -6770,38 +7701,27 @@ function crearTarjetaObservacionAdmin(
 
 
 // ============================================================
-// NOMBRE LEGIBLE DEL TIPO DE OBSERVACIÓN
+// NOMBRE DEL TIPO DE OBSERVACIÓN
 // ============================================================
 
-function nombreTipoObservacionAdmin(
-    tipo
-) {
+function nombreTipoObservacionAdmin(tipo) {
 
     switch (tipo) {
 
         case "sugerencia":
-
             return "Sugerencia";
 
-
         case "problema_material":
-
             return "Problema con material";
 
-
         case "enlace_caido":
-
             return "Enlace caído";
 
-
         case "otro":
-
             return "Otro";
 
-
         default:
-
-            return tipo || "Otro";
+            return "Observación";
 
     }
 
@@ -6809,7 +7729,7 @@ function nombreTipoObservacionAdmin(
 
 
 // ============================================================
-// FORMATEAR FECHA DE OBSERVACIÓN
+// FORMATEAR FECHA
 // ============================================================
 
 function formatearFechaObservacionAdmin(
@@ -6817,9 +7737,7 @@ function formatearFechaObservacionAdmin(
 ) {
 
     if (!fecha) {
-
         return "";
-
     }
 
 
@@ -6828,46 +7746,32 @@ function formatearFechaObservacionAdmin(
         return new Intl.DateTimeFormat(
             "es-BO",
             {
-                dateStyle:
-                    "medium",
-
-                timeStyle:
-                    "short"
+                dateStyle: "medium",
+                timeStyle: "short"
             }
         ).format(
-            new Date(
-                fecha
-            )
+            new Date(fecha)
         );
 
     }
     catch {
 
-        return String(
-            fecha
-        );
+        return String(fecha);
 
     }
 
 }
+
+
 // ============================================================
 // ACTUALIZAR OBSERVACIÓN
 // ============================================================
 
 async function actualizarObservacionAdmin(
     id,
-    estado
+    estado,
+    respuesta
 ) {
-
-    const textarea =
-        document.getElementById(
-            `respuestaObservacion${id}`
-        );
-
-
-    const respuesta =
-        textarea?.value.trim() || null;
-
 
     const {
         error
@@ -6882,33 +7786,44 @@ async function actualizarObservacionAdmin(
                     estado,
 
                 p_respuesta_admin:
-                    respuesta
+                    respuesta || null
             }
         );
 
 
     if (error) {
-
         throw error;
-
     }
 
 }
 
 
 // ============================================================
-// MARCAR OBSERVACIÓN COMO ATENDIDA
+// MARCAR COMO ATENDIDA
 // ============================================================
 
 async function marcarObservacionAtendida(
     id
 ) {
 
+    const textarea =
+        document.getElementById(
+            `respuestaObservacion${id}`
+        );
+
+
+    const respuesta =
+        textarea?.value
+            ?.trim()
+        || "";
+
+
     try {
 
         await actualizarObservacionAdmin(
             id,
-            "atendida"
+            "atendida",
+            respuesta
         );
 
 
@@ -6924,8 +7839,7 @@ async function marcarObservacionAtendida(
 
 
         alert(
-            error?.message ||
-            "No fue posible actualizar la observación."
+            obtenerMensajeError(error)
         );
 
     }
@@ -6941,11 +7855,24 @@ async function reabrirObservacionAdmin(
     id
 ) {
 
+    const textarea =
+        document.getElementById(
+            `respuestaObservacion${id}`
+        );
+
+
+    const respuesta =
+        textarea?.value
+            ?.trim()
+        || "";
+
+
     try {
 
         await actualizarObservacionAdmin(
             id,
-            "pendiente"
+            "pendiente",
+            respuesta
         );
 
 
@@ -6961,8 +7888,7 @@ async function reabrirObservacionAdmin(
 
 
         alert(
-            error?.message ||
-            "No fue posible actualizar la observación."
+            obtenerMensajeError(error)
         );
 
     }
@@ -6971,7 +7897,7 @@ async function reabrirObservacionAdmin(
 
 
 // ============================================================
-// GUARDAR RESPUESTA SIN CAMBIAR EL ESTADO
+// GUARDAR RESPUESTA
 // ============================================================
 
 async function guardarRespuestaObservacionAdmin(
@@ -6988,26 +7914,33 @@ async function guardarRespuestaObservacionAdmin(
 
 
     if (!observacion) {
-
         return;
-
     }
+
+
+    const textarea =
+        document.getElementById(
+            `respuestaObservacion${id}`
+        );
+
+
+    const respuesta =
+        textarea?.value
+            ?.trim()
+        || "";
 
 
     try {
 
         await actualizarObservacionAdmin(
             id,
-            observacion.estado
+            observacion.estado ||
+                "pendiente",
+            respuesta
         );
 
 
         await cargarObservacionesAdmin();
-
-
-        alert(
-            "Respuesta guardada correctamente."
-        );
 
     }
     catch (error) {
@@ -7019,8 +7952,7 @@ async function guardarRespuestaObservacionAdmin(
 
 
         alert(
-            error?.message ||
-            "No fue posible guardar la respuesta."
+            obtenerMensajeError(error)
         );
 
     }
@@ -7036,35 +7968,14 @@ async function eliminarObservacionAdmin(
     id
 ) {
 
-    const observacion =
-        observacionesAdmin.find(
-            item =>
-                Number(item.id)
-                ===
-                Number(id)
-        );
-
-
-    if (!observacion) {
-
-        return;
-
-    }
-
-
     const confirmar =
         window.confirm(
-            `¿Eliminar la observación de ${
-                observacion.nombre ||
-                "este usuario"
-            }?\n\nEsta acción no se puede deshacer.`
+            "¿Deseas eliminar esta observación?"
         );
 
 
     if (!confirmar) {
-
         return;
-
     }
 
 
@@ -7083,9 +7994,7 @@ async function eliminarObservacionAdmin(
 
 
         if (error) {
-
             throw error;
-
         }
 
 
@@ -7101,8 +8010,7 @@ async function eliminarObservacionAdmin(
 
 
         alert(
-            error?.message ||
-            "No fue posible eliminar la observación."
+            obtenerMensajeError(error)
         );
 
     }
@@ -7111,23 +8019,198 @@ async function eliminarObservacionAdmin(
 
 
 // ============================================================
-// TEMA CETA
-// MODO CLARO / OSCURO
+// FILTRO DE OBSERVACIONES
+// ============================================================
+
+function cambiarFiltroObservacionesAdmin(
+    filtro
+) {
+
+    filtroObservacionesAdmin =
+        filtro;
+
+
+    document
+        .querySelectorAll(
+            ".filtro-observacion"
+        )
+        .forEach(
+            boton => {
+
+                boton.classList.toggle(
+                    "activo",
+                    boton.dataset.filtro ===
+                        filtro
+                );
+
+            }
+        );
+
+
+    renderizarObservacionesAdmin();
+
+}
+
+
+// ============================================================
+// MENSAJES
+// ============================================================
+
+function mostrarMensajeAdmin(
+    elementoId,
+    texto,
+    tipo = "error"
+) {
+
+    const elemento =
+        document.getElementById(
+            elementoId
+        );
+
+
+    if (!elemento) {
+        return;
+    }
+
+
+    elemento.textContent =
+        texto;
+
+
+    elemento.classList.remove(
+        "error",
+        "exito"
+    );
+
+
+    if (texto) {
+
+        elemento.classList.add(
+            tipo
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// MENSAJES DE SUPABASE
+// ============================================================
+
+function obtenerMensajeError(error) {
+
+    const mensaje =
+        error?.message
+        ||
+        error?.details
+        ||
+        "Ocurrió un error inesperado.";
+
+
+    if (
+        mensaje.includes(
+            "Ya existe un grupo"
+        )
+    ) {
+
+        return "Ya existe un grupo con ese código.";
+
+    }
+
+
+    if (
+        mensaje.includes(
+            "Ya existe un estudiante"
+        )
+    ) {
+
+        return "Ese código CETA ya está registrado.";
+
+    }
+
+
+    if (
+        mensaje
+            .toLowerCase()
+            .includes(
+                "duplicate"
+            )
+    ) {
+
+        return "Ya existe un registro con esos datos.";
+
+    }
+
+
+    if (
+        mensaje.includes(
+            "No autorizado"
+        )
+        ||
+        mensaje
+            .toLowerCase()
+            .includes(
+                "permission"
+            )
+    ) {
+
+        return "No tienes autorización para realizar esta acción.";
+
+    }
+
+
+    return mensaje;
+
+}
+
+
+// ============================================================
+// ESCAPAR HTML
+// ============================================================
+
+function escaparHTML(valor) {
+
+    return String(
+        valor ?? ""
+    )
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
+    .replaceAll(
+        "'",
+        "&#039;"
+    );
+
+}
+
+
+// ============================================================
+// INSTALAR TEMA CETA
 // ============================================================
 
 function instalarTemaCeta() {
 
     // --------------------------------------------------------
-    // CARGAR AUTOMÁTICAMENTE EL CSS DEL TEMA
+    // CARGAR CSS DEL TEMA SI TODAVÍA NO ESTÁ CARGADO
     // --------------------------------------------------------
-
-    const idCss =
-        "temaCetaCss";
-
 
     if (
         !document.getElementById(
-            idCss
+            "temaCetaCss"
         )
     ) {
 
@@ -7138,7 +8221,7 @@ function instalarTemaCeta() {
 
 
         link.id =
-            idCss;
+            "temaCetaCss";
 
 
         link.rel =
@@ -7163,144 +8246,117 @@ function instalarTemaCeta() {
     const temaGuardado =
         localStorage.getItem(
             "ceta_tema"
-        );
+        )
+        ||
+        "claro";
 
 
     aplicarTemaAdministrador(
-        temaGuardado === "oscuro"
-            ? "oscuro"
-            : "claro"
+        temaGuardado
     );
 
 
     // --------------------------------------------------------
-    // EVITAR CREAR DOS BOTONES
+    // CREAR BOTÓN DE TEMA
     // --------------------------------------------------------
 
     if (
-        document.getElementById(
-            "btnTemaAdministrador"
+        !document.getElementById(
+            "btnTemaAdmin"
         )
     ) {
 
-        actualizarTextoBotonTemaAdministrador();
+        const boton =
+            document.createElement(
+                "button"
+            );
 
-        return;
 
-    }
+        boton.type =
+            "button";
 
 
-    // --------------------------------------------------------
-    // CREAR BOTÓN
-    // --------------------------------------------------------
+        boton.id =
+            "btnTemaAdmin";
 
-    const boton =
-        document.createElement(
-            "button"
+
+        boton.className =
+            "btn-tema-ceta";
+
+
+        boton.setAttribute(
+            "aria-label",
+            "Cambiar tema"
         );
 
 
-    boton.id =
-        "btnTemaAdministrador";
+        boton.addEventListener(
+            "click",
+            () => {
+
+                const actual =
+                    document.documentElement
+                        .dataset.tema
+                    ||
+                    "claro";
 
 
-    boton.type =
-        "button";
+                const nuevo =
+                    actual === "oscuro"
+                        ? "claro"
+                        : "oscuro";
 
 
-    boton.className =
-        "btn-tema-ceta";
+                aplicarTemaAdministrador(
+                    nuevo
+                );
 
 
-    boton.title =
-        "Cambiar modo claro u oscuro";
+                localStorage.setItem(
+                    "ceta_tema",
+                    nuevo
+                );
 
-
-    boton.setAttribute(
-        "aria-label",
-        "Cambiar modo claro u oscuro"
-    );
-
-
-    // --------------------------------------------------------
-    // COLOCAR JUNTO A CERRAR SESIÓN
-    // --------------------------------------------------------
-
-    const btnCerrar =
-        document.getElementById(
-            "btnCerrarSesion"
+            }
         );
 
 
-    if (
-        btnCerrar
-        &&
-        btnCerrar.parentElement
-    ) {
-
-        btnCerrar.parentElement.insertBefore(
-            boton,
-            btnCerrar
-        );
-
-    }
-    else {
-
-        // Si la cabecera cambiara en el futuro,
-        // el botón aparecerá flotando.
-
-        document.body.appendChild(
-            boton
-        );
+        const cerrarSesion =
+            document.getElementById(
+                "btnCerrarSesion"
+            );
 
 
-        boton.classList.add(
-            "btn-tema-flotante"
-        );
+        if (
+            cerrarSesion
+            &&
+            cerrarSesion.parentElement
+        ) {
+
+            cerrarSesion.parentElement
+                .insertBefore(
+                    boton,
+                    cerrarSesion
+                );
+
+        }
+        else {
+
+            boton.classList.add(
+                "btn-tema-flotante"
+            );
+
+
+            document.body.appendChild(
+                boton
+            );
+
+        }
 
     }
 
 
     actualizarTextoBotonTemaAdministrador();
-
-
-    // --------------------------------------------------------
-    // CAMBIAR TEMA
-    // --------------------------------------------------------
-
-    boton.addEventListener(
-        "click",
-        () => {
-
-            const oscuro =
-                document.documentElement
-                    .classList
-                    .contains(
-                        "tema-oscuro"
-                    );
-
-
-            const nuevoTema =
-                oscuro
-                    ? "claro"
-                    : "oscuro";
-
-
-            localStorage.setItem(
-                "ceta_tema",
-                nuevoTema
-            );
-
-
-            aplicarTemaAdministrador(
-                nuevoTema
-            );
-
-
-            actualizarTextoBotonTemaAdministrador();
-
-        }
-    );
 
 }
 
@@ -7313,100 +8369,68 @@ function aplicarTemaAdministrador(
     tema
 ) {
 
-    const oscuro =
-        tema === "oscuro";
+    const temaFinal =
+        tema === "oscuro"
+            ? "oscuro"
+            : "claro";
 
 
     document.documentElement
-        .classList
-        .toggle(
+        .dataset.tema =
+        temaFinal;
+
+
+    document.body
+        ?.classList.toggle(
             "tema-oscuro",
-            oscuro
+            temaFinal === "oscuro"
         );
 
 
-    if (document.body) {
-
-        document.body.classList.toggle(
-            "tema-oscuro",
-            oscuro
+    document.body
+        ?.classList.toggle(
+            "tema-claro",
+            temaFinal === "claro"
         );
 
-    }
+
+    actualizarTextoBotonTemaAdministrador();
 
 }
 
 
 // ============================================================
-// TEXTO DEL BOTÓN DE TEMA
+// ACTUALIZAR BOTÓN DE TEMA
 // ============================================================
 
 function actualizarTextoBotonTemaAdministrador() {
 
     const boton =
         document.getElementById(
-            "btnTemaAdministrador"
+            "btnTemaAdmin"
         );
 
 
     if (!boton) {
-
         return;
-
     }
 
 
     const oscuro =
         document.documentElement
-            .classList
-            .contains(
-                "tema-oscuro"
-            );
+            .dataset.tema ===
+        "oscuro";
 
 
-    boton.textContent =
+    boton.innerHTML =
         oscuro
             ? "☀️ Modo claro"
             : "🌙 Modo oscuro";
 
-}
 
-
-// ============================================================
-// ESCAPAR HTML
-// Evita que texto introducido por usuarios se interprete
-// como código HTML.
-// ============================================================
-
-function escaparHTML(valor) {
-
-    return String(
-        valor ?? ""
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    boton.title =
+        oscuro
+            ? "Cambiar a modo claro"
+            : "Cambiar a modo oscuro";
 
 }
-
-
-// ============================================================
-// FIN DE ADMIN.JS
-// ============================================================
