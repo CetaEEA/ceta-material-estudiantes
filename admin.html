@@ -853,25 +853,608 @@
         ================================================== -->
 
         <section
-            id="seccion-material"
-            class="seccion-admin"
-        >
+    id="seccion-material"
+    class="seccion-admin"
+>
 
-            <div class="tarjeta-panel">
+    <!-- =====================================================
+         CABECERA MATERIAL
+    ====================================================== -->
+
+    <div class="tarjeta-panel">
+
+        <div class="titulo-seccion">
+
+            <div>
+
+                <p class="etiqueta-panel">
+                    MATERIAL ACADÉMICO
+                </p>
 
                 <h3>
-                    📚 Material académico
+                    📚 Administración de material
                 </h3>
 
-                <p class="texto-secundario">
-                    El módulo para materias, carpetas, Drive,
-                    videos y enlaces se incorporará en la
-                    siguiente etapa.
+                <p>
+                    Organiza materias, carpetas,
+                    documentos, videos y enlaces.
                 </p>
 
             </div>
 
-        </section>
+        </div>
+
+
+        <!-- SEMESTRES -->
+
+        <div class="selector-semestres">
+
+            <button
+                type="button"
+                class="btn-semestre activo"
+                data-semestre="1"
+            >
+                1°
+            </button>
+
+            <button
+                type="button"
+                class="btn-semestre"
+                data-semestre="2"
+            >
+                2°
+            </button>
+
+            <button
+                type="button"
+                class="btn-semestre"
+                data-semestre="3"
+            >
+                3°
+            </button>
+
+            <button
+                type="button"
+                class="btn-semestre"
+                data-semestre="4"
+            >
+                4°
+            </button>
+
+            <button
+                type="button"
+                class="btn-semestre"
+                data-semestre="5"
+            >
+                5°
+            </button>
+
+            <button
+                type="button"
+                class="btn-semestre"
+                data-semestre="6"
+            >
+                6°
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         LISTA DE MATERIAS
+    ====================================================== -->
+
+    <div
+        id="panelListaMaterias"
+        class="tarjeta-panel"
+    >
+
+        <div class="titulo-seccion">
+
+            <div>
+
+                <p class="etiqueta-panel">
+                    SEMESTRE
+                </p>
+
+                <h3 id="tituloSemestreMaterial">
+                    1° semestre
+                </h3>
+
+            </div>
+
+
+            <button
+                id="btnNuevaMateria"
+                type="button"
+                class="btn-principal btn-auto"
+            >
+                + Nueva materia
+            </button>
+
+        </div>
+
+
+        <!-- FORMULARIO MATERIA -->
+
+        <div
+            id="formularioMateria"
+            class="formulario-desplegable oculto"
+        >
+
+            <h4 id="tituloFormularioMateria">
+                Nueva materia
+            </h4>
+
+
+            <form id="formMateria">
+
+                <input
+                    type="hidden"
+                    id="materiaId"
+                >
+
+
+                <div class="campo">
+
+                    <label for="nombreMateria">
+                        Nombre de la materia
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombreMateria"
+                        placeholder="Ej. Electrónica Digital"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="descripcionMateria">
+                        Descripción
+                    </label>
+
+                    <textarea
+                        id="descripcionMateria"
+                        rows="3"
+                        placeholder="Descripción opcional..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="ordenMateria">
+                        Orden
+                    </label>
+
+                    <input
+                        type="number"
+                        id="ordenMateria"
+                        value="0"
+                        min="0"
+                    >
+
+                </div>
+
+
+                <label
+                    id="contenedorMateriaActiva"
+                    class="check-linea oculto"
+                >
+
+                    <input
+                        type="checkbox"
+                        id="materiaActiva"
+                        checked
+                    >
+
+                    Materia activa
+
+                </label>
+
+
+                <p
+                    id="mensajeMateria"
+                    class="mensaje"
+                ></p>
+
+
+                <div class="botones-formulario">
+
+                    <button
+                        type="submit"
+                        id="btnGuardarMateria"
+                        class="btn-principal btn-auto"
+                    >
+                        GUARDAR
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btnCancelarMateria"
+                        class="btn-secundario"
+                    >
+                        Cancelar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <div
+            id="listaMaterias"
+            class="lista-materias"
+        >
+
+            <p class="estado-carga">
+                Cargando materias...
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INTERIOR DE UNA MATERIA
+    ====================================================== -->
+
+    <div
+        id="panelMateriaAbierta"
+        class="tarjeta-panel oculto"
+    >
+
+        <div class="cabecera-materia-abierta">
+
+            <button
+                id="btnVolverMaterias"
+                type="button"
+                class="btn-secundario"
+            >
+                ← Materias
+            </button>
+
+
+            <div>
+
+                <p
+                    id="semestreMateriaAbierta"
+                    class="etiqueta-panel"
+                >
+                    -
+                </p>
+
+                <h3 id="nombreMateriaAbierta">
+                    -
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <!-- RUTA -->
+
+        <div
+            id="rutaMaterial"
+            class="ruta-material"
+        ></div>
+
+
+        <!-- ACCIONES -->
+
+        <div class="acciones-material">
+
+            <button
+                id="btnNuevaCarpeta"
+                type="button"
+                class="btn-principal btn-auto"
+            >
+                + Carpeta
+            </button>
+
+            <button
+                id="btnNuevoMaterial"
+                type="button"
+                class="btn-secundario"
+            >
+                + Material
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             FORMULARIO CARPETA
+        ================================================== -->
+
+        <div
+            id="formularioCarpeta"
+            class="formulario-desplegable oculto"
+        >
+
+            <h4 id="tituloFormularioCarpeta">
+                Nueva carpeta
+            </h4>
+
+
+            <form id="formCarpeta">
+
+                <input
+                    type="hidden"
+                    id="carpetaId"
+                >
+
+
+                <div class="campo">
+
+                    <label for="nombreCarpeta">
+                        Nombre
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nombreCarpeta"
+                        placeholder="Ej. Unidad 1"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="ordenCarpeta">
+                        Orden
+                    </label>
+
+                    <input
+                        type="number"
+                        id="ordenCarpeta"
+                        value="0"
+                        min="0"
+                    >
+
+                </div>
+
+
+                <label
+                    id="contenedorCarpetaActiva"
+                    class="check-linea oculto"
+                >
+
+                    <input
+                        type="checkbox"
+                        id="carpetaActiva"
+                        checked
+                    >
+
+                    Carpeta activa
+
+                </label>
+
+
+                <p
+                    id="mensajeCarpeta"
+                    class="mensaje"
+                ></p>
+
+
+                <div class="botones-formulario">
+
+                    <button
+                        type="submit"
+                        id="btnGuardarCarpeta"
+                        class="btn-principal btn-auto"
+                    >
+                        GUARDAR
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="btnCancelarCarpeta"
+                        class="btn-secundario"
+                    >
+                        Cancelar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             FORMULARIO MATERIAL
+        ================================================== -->
+
+        <div
+            id="formularioMaterial"
+            class="formulario-desplegable oculto"
+        >
+
+            <h4 id="tituloFormularioMaterial">
+                Nuevo material
+            </h4>
+
+
+            <form id="formMaterialAcademico">
+
+                <input
+                    type="hidden"
+                    id="materialId"
+                >
+
+
+                <div class="campo">
+
+                    <label for="tituloMaterial">
+                        Título
+                    </label>
+
+                    <input
+                        type="text"
+                        id="tituloMaterial"
+                        placeholder="Ej. Sistemas de numeración"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="tipoMaterial">
+                        Tipo
+                    </label>
+
+                    <select
+                        id="tipoMaterial"
+                        required
+                    >
+
+                        <option value="drive">
+                            📄 Google Drive
+                        </option>
+
+                        <option value="video">
+                            ▶️ Video
+                        </option>
+
+                        <option value="enlace">
+                            🔗 Enlace
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="urlMaterial">
+                        Enlace / URL
+                    </label>
+
+                    <input
+                        type="url"
+                        id="urlMaterial"
+                        placeholder="https://..."
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="descripcionMaterial">
+                        Descripción
+                    </label>
+
+                    <textarea
+                        id="descripcionMaterial"
+                        rows="3"
+                        placeholder="Descripción opcional..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label for="ordenMaterial">
+                        Orden
+                    </label>
+
+                    <input
+                        type="number"
+                        id="ordenMaterial"
+                        value="0"
+                        min="0"
+                    >
+
+                </div>
+
+
+                <label
+                    id="contenedorMaterialActivo"
+                    class="check-linea oculto"
+                >
+
+                    <input
+                        type="checkbox"
+                        id="materialActivo"
+                        checked
+                    >
+
+                    Material activo
+
+                </label>
+
+
+                <p
+                    id="mensajeMaterialAcademico"
+                    class="mensaje"
+                ></p>
+
+
+                <div class="botones-formulario">
+
+                    <button
+                        type="submit"
+                        id="btnGuardarMaterial"
+                        class="btn-principal btn-auto"
+                    >
+                        GUARDAR
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="btnCancelarMaterial"
+                        class="btn-secundario"
+                    >
+                        Cancelar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             CONTENIDO
+        ================================================== -->
+
+        <div
+            id="contenidoMateria"
+            class="contenido-materia"
+        >
+
+            <p class="estado-carga">
+                Cargando...
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
 
 
         <!-- =================================================
